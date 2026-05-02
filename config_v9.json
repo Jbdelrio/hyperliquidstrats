@@ -58,6 +58,8 @@
     "file": "logs/engine_v9.log",
     "trade_log": "logs/fills_v9.csv",
     "metrics_log": "metrics_v9/metrics_v9.csv",
-    "dashboard_interval_s": 60
+    "dashboard_interval_s": 60,
+    "decision_log": "logs/decisions_v9.csv",
+    "decision_logging_enabled": true
   }
 }

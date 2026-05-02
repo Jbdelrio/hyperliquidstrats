@@ -35,6 +35,7 @@ from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from risk.kill_switch import KillSwitch
 from risk.adverse_selection_monitor import AdverseSelectionMonitor
 from monitoring.pnl_tracker import PnLTracker
+from monitoring.decision_logger import DecisionLogger
 from data.universe import TOP_COINS
 
 log = logging.getLogger(__name__)
@@ -95,6 +96,11 @@ class EngineV9:
             log_path=log_cfg.get("metrics_log", "metrics_v9/metrics_v9.csv"),
             equity=self.equity,
         )
+        self.decision_logger = DecisionLogger(
+            path=log_cfg.get("decision_log", "logs/decisions_v9.csv"),
+            enabled=log_cfg.get("decision_logging_enabled", True),
+        )
+        self.strategy.set_decision_logger(self.decision_logger)
 
         self._dashboard_interval = log_cfg.get("dashboard_interval_s", 60)
         self._last_dashboard     = 0.0
@@ -364,6 +370,7 @@ class EngineV9:
         self.executor.cancel_all()
         mids = {s: (self.obm.get_mid(s) or 0.0) for s in self.symbols}
         self.executor.close_all_market(mids, "shutdown")
+        self.decision_logger.flush()
         await self.obm.stop()
         self._print_dashboard()
 

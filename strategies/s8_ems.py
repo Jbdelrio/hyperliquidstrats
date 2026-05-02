@@ -89,6 +89,11 @@ class S8EconophysicsMakerScalping:
         # Per-symbol pending order IDs (so engine can cancel)
         self._pending_ids: dict[str, list[str]] = {s: [] for s in self.symbols}
 
+        self._decision_logger = None
+
+    def set_decision_logger(self, logger) -> None:
+        self._decision_logger = logger
+
     # ------------------------------------------------------------------
     # 1. Orderbook update → quote decision
     # ------------------------------------------------------------------
@@ -105,6 +110,12 @@ class S8EconophysicsMakerScalping:
         bid = book.best_bid
         ask = book.best_ask
         if bid is None or ask is None:
+            if self._decision_logger:
+                self._decision_logger.log_skip(
+                    symbol, "insufficient_orderbook", timestamp=timestamp,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                )
             return None
 
         mid    = (bid + ask) / 2
@@ -121,21 +132,62 @@ class S8EconophysicsMakerScalping:
         min_bps = self.p.get("min_spread_bps", 4.0)
         max_bps = self.p.get("max_spread_bps", 20.0)
         if not (min_bps <= spread_bps <= max_bps):
+            if self._decision_logger:
+                _reason = "spread_too_tight" if spread_bps < min_bps else "spread_too_wide"
+                self._decision_logger.log_skip(
+                    symbol, _reason, timestamp=timestamp,
+                    mid=mid, spread_bps=spread_bps,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
             return self._cancel_action(symbol)
 
         if state.wavelet.is_alert_active(timestamp):
+            if self._decision_logger:
+                self._decision_logger.log_skip(
+                    symbol, "wavelet_alert_active", timestamp=timestamp,
+                    mid=mid, spread_bps=spread_bps,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
             return self._cancel_action(symbol)
 
         hurst_mult = state.hurst.get_size_multiplier()
         if hurst_mult <= 0.0:
+            if self._decision_logger:
+                self._decision_logger.log_skip(
+                    symbol, "hurst_unfavorable", timestamp=timestamp,
+                    mid=mid, spread_bps=spread_bps,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
             return self._cancel_action(symbol)
 
         har_mult = state.har_rv.get_size_multiplier()
         if har_mult < 0.3:
+            if self._decision_logger:
+                self._decision_logger.log_skip(
+                    symbol, "har_rv_too_high", timestamp=timestamp,
+                    mid=mid, spread_bps=spread_bps,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
             return self._cancel_action(symbol)
 
         # Position already open — no new quotes
         if state.open_position is not None:
+            if self._decision_logger:
+                self._decision_logger.log_skip(
+                    symbol, "max_positions_reached", timestamp=timestamp,
+                    mid=mid, spread_bps=spread_bps,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
             return None
 
         # Don't requote if fresh enough
@@ -309,6 +361,14 @@ class S8EconophysicsMakerScalping:
         notional_usd = base_notional * size_mult * self.p.get("max_leverage", 5)
 
         if notional_usd < 10:
+            if self._decision_logger:
+                self._decision_logger.log_skip(
+                    state.symbol, "notional_too_small", timestamp=timestamp,
+                    mid=mid, spread_bps=spread / mid * 10_000,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
             return None
 
         size_units = notional_usd / max(fv, 1e-9)
@@ -322,9 +382,30 @@ class S8EconophysicsMakerScalping:
         if sell_price <= bid:
             sell_price = bid + bid * 5e-5
         if buy_price >= sell_price:
+            if self._decision_logger:
+                self._decision_logger.log_skip(
+                    state.symbol, "spread_invalid_after_skew", timestamp=timestamp,
+                    mid=mid, spread_bps=spread / mid * 10_000,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
             return None
 
         state.last_quote_ts = timestamp
+
+        if self._decision_logger:
+            self._decision_logger.log_place(
+                state.symbol, timestamp=timestamp,
+                mid=mid, spread_bps=spread / mid * 10_000,
+                hurst=state.hurst.h,
+                har_rv_forecast=state.har_rv.predict_vol(),
+                kalman_fv=fv,
+                buy_price=round(buy_price, 8),
+                sell_price=round(sell_price, 8),
+                size=size_units,
+                notional_usd=notional_usd,
+            )
 
         return {
             "action":       ACTION_PLACE_QUOTES,
