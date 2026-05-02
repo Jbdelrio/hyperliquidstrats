@@ -1,0 +1,90 @@
+2026-04-23 08:35:53,222 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:35:53,223 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:35:53,224 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:35:53,225 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:35:53,225 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:35:53,226 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:35:53,227 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-04-23 08:35:53,227 INFO __main__ EngineV9 | paper=True | symbols=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK'] | equity=500.00
+2026-04-23 08:36:18,468 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:36:18,468 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:36:18,470 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-04-23 08:36:18,471 INFO __main__ EngineV9 | paper=True | symbols=['BTC', 'ETH'] | equity=500.00
+2026-04-23 08:36:19,157 INFO data.orderbook_manager WS connected. Subscribing to 2 symbols...
+2026-04-23 08:36:19,801 INFO data.orderbook_manager All subscriptions sent.
+2026-04-23 08:36:21,465 INFO data.orderbook_manager OrderbookManager connected. Books ready: 2/2
+2026-04-23 08:36:21,466 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-04-23 08:38:32,010 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:38:32,011 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:38:32,011 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:38:32,014 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:38:32,015 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:38:32,015 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-23 08:38:32,016 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-04-23 08:38:32,017 INFO __main__ EngineV9 | paper=True | symbols=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK'] | equity=500.00
+2026-04-23 08:38:32,574 INFO data.orderbook_manager WS connected. Subscribing to 6 symbols...
+2026-04-23 08:38:34,446 INFO data.orderbook_manager All subscriptions sent.
+2026-04-23 08:38:35,030 INFO data.orderbook_manager OrderbookManager connected. Books ready: 6/6
+2026-04-23 08:38:35,030 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-04-23 08:39:06,979 INFO execution.high_freq_executor [FILL] HYPE BUY @ 41.067000 notional=$50
+2026-04-23 08:40:06,896 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=41.067000 exit=41.047500 net=$-0.0372 hold=60s max_hold
+2026-04-23 08:40:06,898 INFO __main__ [CLOSE] HYPE BUY @ 41.047500 | net=$-0.0372 | max_hold
+2026-04-23 08:47:00,419 INFO execution.high_freq_executor [FILL] HYPE BUY @ 41.005000 notional=$100
+2026-04-23 08:48:00,526 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=41.005000 exit=40.994500 net=$-0.0526 hold=60s max_hold
+2026-04-23 08:48:00,528 INFO __main__ [CLOSE] HYPE BUY @ 40.994500 | net=$-0.0526 | max_hold
+2026-04-23 10:00:20,339 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.283800 notional=$60
+2026-04-23 10:01:20,396 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.283800 exit=9.277600 net=$-0.0563 hold=60s max_hold
+2026-04-23 10:01:20,399 INFO __main__ [CLOSE] AVAX BUY @ 9.277600 | net=$-0.0563 | max_hold
+2026-04-23 10:02:30,568 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.265200 notional=$60
+2026-04-23 10:03:30,622 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.265200 exit=9.266800 net=$-0.0058 hold=60s max_hold
+2026-04-23 10:03:30,627 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-04-23 10:03:30,773 INFO __main__ [CLOSE] AVAX BUY @ 9.266800 | net=$-0.0058 | max_hold
+2026-04-23 11:36:48,604 INFO data.orderbook_manager WS connected. Subscribing to 6 symbols...
+2026-04-23 11:36:50,489 INFO data.orderbook_manager All subscriptions sent.
+2026-04-23 14:33:53,982 INFO data.orderbook_manager WS connected. Subscribing to 6 symbols...
+2026-04-23 14:33:55,885 INFO data.orderbook_manager All subscriptions sent.
+2026-04-23 17:34:53,294 INFO data.orderbook_manager WS connected. Subscribing to 6 symbols...
+2026-04-23 17:34:55,267 INFO data.orderbook_manager All subscriptions sent.
+2026-04-23 20:27:28,497 INFO data.orderbook_manager WS connected. Subscribing to 6 symbols...
+2026-04-23 20:27:30,413 INFO data.orderbook_manager All subscriptions sent.
+2026-04-24 09:14:56,924 CRITICAL risk.kill_switch HARD KILL: network_timeout=35767s
+2026-04-24 09:14:57,332 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=35767s
+2026-04-24 09:14:58,303 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-04-24 09:14:58,759 INFO monitoring.pnl_tracker PnL tracker daily reset
+2026-04-24 09:15:00,304 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-04-24 09:15:11,434 WARNING data.orderbook_manager WS error (timed out during handshake). Reconnect in 2s (attempt 2)
+2026-04-24 09:15:19,742 INFO data.orderbook_manager WS connected. Subscribing to 6 symbols...
+2026-04-24 09:15:22,100 INFO data.orderbook_manager All subscriptions sent.
+2026-04-24 09:15:24,059 INFO __main__ Shutting down v9...
+2026-04-28 23:20:01,446 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,446 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,446 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,446 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,446 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,446 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,446 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,458 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,458 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,458 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,458 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,460 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-04-28 23:20:01,460 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-04-28 23:20:01,462 INFO __main__ EngineV9 | paper=True | symbols=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'] | equity=500.00
+2026-04-28 23:20:02,335 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-04-28 23:20:04,483 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-04-28 23:20:04,483 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-04-28 23:20:06,104 INFO data.orderbook_manager All subscriptions sent.
+2026-04-28 23:21:27,334 INFO execution.high_freq_executor [FILL] LINK SELL @ 9.260700 notional=$140
+2026-04-28 23:22:27,936 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=9.260700 exit=9.261650 net=$-0.0522 hold=61s max_hold
+2026-04-28 23:22:27,936 INFO __main__ [CLOSE] LINK SELL @ 9.261650 | net=$-0.0522 | max_hold
+2026-04-28 23:29:39,265 INFO execution.high_freq_executor [FILL] OP BUY @ 0.121330 notional=$140
+2026-04-28 23:30:39,662 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.121330 exit=0.121265 net=$-0.1128 hold=60s max_hold
+2026-04-28 23:30:39,662 INFO __main__ [CLOSE] OP BUY @ 0.121265 | net=$-0.1128 | max_hold
+2026-04-28 23:36:56,026 INFO execution.high_freq_executor [FILL] XRP SELL @ 1.379400 notional=$100
+2026-04-28 23:37:56,608 INFO execution.high_freq_executor [CLOSE] XRP SELL entry=1.379400 exit=1.379350 net=$-0.0234 hold=61s max_hold
+2026-04-28 23:37:56,609 INFO __main__ [CLOSE] XRP SELL @ 1.379350 | net=$-0.0234 | max_hold
+2026-04-28 23:38:00,805 INFO execution.high_freq_executor [FILL] OP BUY @ 0.121290 notional=$100
+2026-04-28 23:39:01,435 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.121290 exit=0.121150 net=$-0.1424 hold=61s max_hold
+2026-04-28 23:39:01,436 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-04-28 23:39:01,578 INFO __main__ [CLOSE] OP BUY @ 0.121150 | net=$-0.1424 | max_hold
+2026-04-28 23:48:40,751 INFO __main__ Shutting down v9...

@@ -1,0 +1,63 @@
+{
+  "_comment": "Artemisia v9 — S8 EMS. 14-day paper STRICT before live.",
+
+  "capital": 500,
+  "paper_mode": true,
+
+  "symbols": ["BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK",
+               "ARB", "OP", "AAVE", "LTC", "BCH", "XRP"],
+
+  "websocket_url": "wss://api.hyperliquid.xyz/ws",
+  "subscription_delay_s": 0.15,
+
+  "strategy": {
+    "base_notional_pct": 0.04,
+    "max_leverage": 5,
+    "min_spread_bps": 4.0,
+    "max_spread_bps": 20.0,
+    "quote_refresh_s": 5.0,
+    "max_hold_s": 60,
+    "stop_loss_bps": 30
+  },
+
+  "econophysics": {
+    "hurst_window": 300,
+    "hurst_min_samples": 100,
+    "hurst_cache_ticks": 5,
+    "har_lookback_minutes": [5, 30, 120],
+    "har_coefs_path": "config/har_coefs.json",
+    "kalman_process_noise": 1e-7,
+    "kalman_obs_noise_mid": 1e-5,
+    "kalman_obs_noise_vwap": 5e-5,
+    "bouchaud_decay_s": 30,
+    "bouchaud_volume_exp": 0.5,
+    "wavelet_window": 200,
+    "wavelet_threshold": 3.0,
+    "wavelet_min_scales": 3,
+    "wavelet_cooldown_s": 30
+  },
+
+  "risk": {
+    "max_dd_per_trade_pct": 0.005,
+    "max_dd_daily_pct": 0.030,
+    "max_dd_total_pct": 0.060,
+    "max_open_positions": 4,
+    "max_notional_total": 1500,
+    "network_timeout_s": 20,
+    "max_trades_per_hour": 25,
+    "max_loss_streak": 4,
+    "btc_move_5m_pct": 1.2,
+    "max_pick_rate": 0.65,
+    "rampage_suspend_s": 600,
+    "streak_suspend_s": 1800,
+    "volguard_suspend_s": 900
+  },
+
+  "logging": {
+    "level": "INFO",
+    "file": "logs/engine_v9.log",
+    "trade_log": "logs/fills_v9.csv",
+    "metrics_log": "metrics_v9/metrics_v9.csv",
+    "dashboard_interval_s": 60
+  }
+}
