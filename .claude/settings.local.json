@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import engine_v9; print\\('engine_v9 imports OK'\\)\")",
+      "Bash(del logs\\\\test.csv)",
+      "Bash(python -c \"from gui.app import app; print\\('app loads OK'\\)\")",
+      "Bash(start /B python -m gui.app)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:8050/)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'chore: add dash deps to requirements.txt *)"
+    ]
+  }
+}
