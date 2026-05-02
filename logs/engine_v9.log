@@ -88,3 +88,94 @@
 2026-04-28 23:39:01,436 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
 2026-04-28 23:39:01,578 INFO __main__ [CLOSE] OP BUY @ 0.121150 | net=$-0.1424 | max_hold
 2026-04-28 23:48:40,751 INFO __main__ Shutting down v9...
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-02 17:40:15,812 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-02 17:40:15,812 INFO __main__ EngineV9 | paper=True | symbols=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'] | equity=500.00
+2026-05-02 17:40:16,429 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-02 17:40:18,824 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-02 17:40:18,824 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-02 17:40:20,244 INFO data.orderbook_manager All subscriptions sent.
+2026-05-02 17:40:33,429 INFO execution.high_freq_executor [FILL] LINK BUY @ 9.136600 notional=$50
+2026-05-02 17:41:09,297 INFO execution.high_freq_executor [FILL] OP BUY @ 0.122870 notional=$50
+2026-05-02 17:41:15,312 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.122720 notional=$140
+2026-05-02 17:41:33,667 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=9.136600 exit=9.133650 net=$-0.0296 hold=60s max_hold
+2026-05-02 17:41:33,670 INFO __main__ [CLOSE] LINK BUY @ 9.133650 | net=$-0.0296 | max_hold
+2026-05-02 17:42:09,686 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.122870 exit=0.122730 net=$-0.0705 hold=60s max_hold
+2026-05-02 17:42:09,686 INFO __main__ [CLOSE] OP BUY @ 0.122730 | net=$-0.0705 | max_hold
+2026-05-02 17:42:15,690 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.122720 exit=0.122785 net=$0.0364 hold=60s max_hold
+2026-05-02 17:42:15,690 INFO __main__ [CLOSE] ARB BUY @ 0.122785 | net=$0.0364 | max_hold
+2026-05-02 17:45:12,030 INFO execution.high_freq_executor [FILL] OP SELL @ 0.122890 notional=$100
+2026-05-02 17:46:12,284 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.122890 exit=0.122940 net=$-0.0677 hold=60s max_hold
+2026-05-02 17:46:12,316 INFO __main__ [CLOSE] OP SELL @ 0.122940 | net=$-0.0677 | max_hold
+2026-05-02 17:47:47,510 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.123090 notional=$60
+2026-05-02 17:48:47,588 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.123090 exit=0.122960 net=$-0.0796 hold=60s max_hold
+2026-05-02 17:48:47,588 INFO __main__ [CLOSE] ARB BUY @ 0.122960 | net=$-0.0796 | max_hold
+2026-05-02 17:49:25,340 INFO execution.high_freq_executor [FILL] LINK SELL @ 9.143700 notional=$60
+2026-05-02 17:49:51,780 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.123030 notional=$60
+2026-05-02 17:50:25,353 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=9.143700 exit=9.152700 net=$-0.0753 hold=60s max_hold
+2026-05-02 17:50:25,353 INFO __main__ [CLOSE] LINK SELL @ 9.152700 | net=$-0.0753 | max_hold
+2026-05-02 17:50:52,116 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.123030 exit=0.123095 net=$0.0155 hold=60s max_hold
+2026-05-02 17:50:52,117 INFO __main__ [CLOSE] ARB BUY @ 0.123095 | net=$0.0155 | max_hold
+2026-05-02 17:51:04,023 INFO execution.high_freq_executor [FILL] OP SELL @ 0.122990 notional=$60
+2026-05-02 17:52:03,927 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.122990 exit=0.123055 net=$-0.0479 hold=60s max_hold
+2026-05-02 17:52:03,927 INFO __main__ [CLOSE] OP SELL @ 0.123055 | net=$-0.0479 | max_hold
+2026-05-02 17:52:35,098 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123080 notional=$100
+2026-05-02 17:53:35,492 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123080 exit=0.123010 net=$0.0299 hold=60s max_hold
+2026-05-02 17:53:35,492 INFO __main__ [CLOSE] OP SELL @ 0.123010 | net=$0.0299 | max_hold
+2026-05-02 17:53:56,396 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.123130 notional=$60
+2026-05-02 17:54:00,215 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123080 notional=$60
+2026-05-02 17:54:56,347 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.123130 exit=0.123140 net=$-0.0113 hold=60s max_hold
+2026-05-02 17:54:56,347 INFO __main__ [CLOSE] ARB BUY @ 0.123140 | net=$-0.0113 | max_hold
+2026-05-02 17:55:00,410 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123080 exit=0.123025 net=$0.0106 hold=60s max_hold
+2026-05-02 17:55:00,410 INFO __main__ [CLOSE] OP SELL @ 0.123025 | net=$0.0106 | max_hold
+2026-05-02 17:55:43,664 INFO execution.high_freq_executor [FILL] OP BUY @ 0.122990 notional=$60
+2026-05-02 17:56:43,942 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.122990 exit=0.123030 net=$0.0033 hold=60s max_hold
+2026-05-02 17:56:43,942 INFO __main__ [CLOSE] OP BUY @ 0.123030 | net=$0.0033 | max_hold
+2026-05-02 17:56:55,909 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123080 notional=$100
+2026-05-02 17:57:54,167 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.123110 notional=$140
+2026-05-02 17:57:56,149 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123080 exit=0.123040 net=$0.0055 hold=60s max_hold
+2026-05-02 17:57:56,149 INFO __main__ [CLOSE] OP SELL @ 0.123040 | net=$0.0055 | max_hold
+2026-05-02 17:58:01,674 INFO execution.high_freq_executor [FILL] OP BUY @ 0.123000 notional=$100
+2026-05-02 17:58:54,344 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.123110 exit=0.123090 net=$-0.0605 hold=60s max_hold
+2026-05-02 17:58:54,344 INFO __main__ [CLOSE] ARB BUY @ 0.123090 | net=$-0.0605 | max_hold
+2026-05-02 17:59:01,944 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.123000 exit=0.123035 net=$0.0015 hold=60s max_hold
+2026-05-02 17:59:01,945 INFO __main__ [CLOSE] OP BUY @ 0.123035 | net=$0.0015 | max_hold
+2026-05-02 17:59:02,686 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123080 notional=$60
+2026-05-02 18:00:03,053 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123080 exit=0.123195 net=$-0.0723 hold=60s max_hold
+2026-05-02 18:00:03,053 INFO __main__ [CLOSE] OP SELL @ 0.123195 | net=$-0.0723 | max_hold
+2026-05-02 18:01:02,389 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123430 notional=$60
+2026-05-02 18:02:02,641 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123430 exit=0.123610 net=$-0.1037 hold=60s max_hold
+2026-05-02 18:02:02,641 INFO __main__ [CLOSE] OP SELL @ 0.123610 | net=$-0.1037 | max_hold
+2026-05-02 18:04:12,688 INFO execution.high_freq_executor [FILL] AAVE SELL @ 92.798000 notional=$100
+2026-05-02 18:05:12,971 INFO execution.high_freq_executor [CLOSE] AAVE SELL entry=92.798000 exit=92.788500 net=$-0.0168 hold=60s max_hold
+2026-05-02 18:05:12,971 INFO __main__ [CLOSE] AAVE SELL @ 92.788500 | net=$-0.0168 | max_hold
+2026-05-02 18:07:49,223 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123540 notional=$60
+2026-05-02 18:08:49,206 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123540 exit=0.123340 net=$0.0809 hold=60s max_hold
+2026-05-02 18:08:49,206 INFO __main__ [CLOSE] OP SELL @ 0.123340 | net=$0.0809 | max_hold
+2026-05-02 18:09:02,063 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123410 notional=$60
+2026-05-02 18:10:02,124 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123410 exit=0.123440 net=$-0.0308 hold=60s max_hold
+2026-05-02 18:10:02,125 INFO __main__ [CLOSE] OP SELL @ 0.123440 | net=$-0.0308 | max_hold
+2026-05-02 18:11:17,588 INFO execution.high_freq_executor [FILL] OP BUY @ 0.123390 notional=$60
+2026-05-02 18:12:17,551 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.123390 exit=0.123355 net=$-0.0332 hold=60s max_hold
+2026-05-02 18:12:17,554 INFO __main__ [CLOSE] OP BUY @ 0.123355 | net=$-0.0332 | max_hold
+2026-05-02 18:15:00,661 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-05-02 18:15:05,867 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-02 18:15:07,912 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-02 18:15:11,950 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 8s (attempt 4)
+2026-05-02 18:15:28,853 CRITICAL risk.kill_switch HARD KILL: network_timeout=29s
+2026-05-02 18:15:28,859 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=29s
+2026-05-02 18:15:28,872 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-02 18:15:29,549 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-02 18:15:33,320 INFO data.orderbook_manager All subscriptions sent.
+2026-05-02 18:16:20,840 INFO __main__ Shutting down v9...
