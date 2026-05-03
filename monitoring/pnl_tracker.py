@@ -133,16 +133,20 @@ class PnLTracker:
         killed_s = f" !! KILLED: {ks_status.get('kill_reason','')} !!" \
                    if ks_status.get("killed") else "  [PAPER]"
 
+        # Truncate strategy list to fit width
+        strat_line = (bl_detail or "no strategies")[:61]
+
         w = 65
         lines = [
             "┌" + "─" * (w - 2) + "┐",
-            f"│ S8 ECONOPHYSICS MAKER SCALPING{killed_s:<33}│",
+            f"│ ARTEMISIA v9 — MULTI-STRATEGY{killed_s:<33}│",
+            f"│ {strat_line:<{w-4}} │",
             "├" + "─" * (w - 2) + "┤",
             f"│ Equity: ${snap.equity:>8.2f}  │  Quotes: {snap.quotes_active:<4}  │  Pos: {snap.open_pos:<2}           │",
             f"│ PnL today: ${snap.pnl_day:+9.4f}  │  Trades: {total:<5} │  WR: {wr_s:<7}     │",
             f"│ PnL 1h:   ${snap.pnl_hour:+9.4f}  │  TP:{snap.tps:<4} Stop:{snap.stops:<4} Hold:{snap.max_holds:<3} {h_s:<5}│",
             "├" + "─" * (w - 2) + "┤",
-            f"│ Sensors: Wavelet alerts today: {snap.wavelet_alerts:<4}  Pick rate: {snap.pick_rate_avg*100:4.1f}%          │",
+            f"│ Wavelet alerts: {snap.wavelet_alerts:<4}  Pick rate: {snap.pick_rate_avg*100:4.1f}%                         │",
             f"│ Open: {pos_detail:<57}│",
             "├" + "─" * (w - 2) + "┤",
             f"│ Daily DD:  {bar(dd_d, 3.0)} {dd_d:5.2f}% / 3.0%                        │",
