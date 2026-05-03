@@ -7,6 +7,8 @@ Then open http://127.0.0.1:8050
 
 Architecture: read-only file reader, completely separate from the engine process.
 """
+import os as _os
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
@@ -14,8 +16,11 @@ from dash import dcc, html
 from gui.theme import COLORS, THEME
 from gui.tabs import calibration, coins, decisions, overview, risk, strategies, trades
 
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+
 app = dash.Dash(
     __name__,
+    assets_folder=_os.path.join(_HERE, "assets"),
     external_stylesheets=[THEME],
     suppress_callback_exceptions=True,
     title="Artemisia v9",
@@ -122,4 +127,10 @@ calibration.register_callbacks(app)
 
 
 if __name__ == "__main__":
-    app.run(debug=False, host="127.0.0.1", port=8050)
+    import argparse as _ap
+    _parser = _ap.ArgumentParser()
+    _parser.add_argument("--host", default="127.0.0.1")
+    _parser.add_argument("--port", type=int, default=8050)
+    _args, _ = _parser.parse_known_args()
+    print(f"Dashboard: http://{_args.host}:{_args.port}")
+    app.run(debug=False, host=_args.host, port=_args.port)

@@ -179,3 +179,575 @@
 2026-05-02 18:15:29,549 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
 2026-05-02 18:15:33,320 INFO data.orderbook_manager All subscriptions sent.
 2026-05-02 18:16:20,840 INFO __main__ Shutting down v9...
+2026-05-02 19:54:00,151 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,153 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,153 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,153 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,153 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,154 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,154 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,154 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,155 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,155 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,155 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,155 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-02 19:54:00,156 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-02 19:54:00,157 INFO __main__ EngineV9 | paper=True | symbols=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'] | equity=500.00
+2026-05-02 19:54:00,736 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-02 19:54:03,160 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-02 19:54:03,160 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-02 19:54:04,452 INFO data.orderbook_manager All subscriptions sent.
+2026-05-02 19:54:48,082 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.122740 notional=$50
+2026-05-02 19:55:11,775 INFO execution.high_freq_executor [FILL] OP BUY @ 0.123820 notional=$50
+2026-05-02 19:55:48,356 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.122740 exit=0.122750 net=$-0.0094 hold=60s max_hold
+2026-05-02 19:55:48,359 INFO __main__ [CLOSE] ARB BUY @ 0.122750 | net=$-0.0094 | max_hold
+2026-05-02 19:56:12,189 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.123820 exit=0.123745 net=$-0.0438 hold=60s max_hold
+2026-05-02 19:56:12,191 INFO __main__ [CLOSE] OP BUY @ 0.123745 | net=$-0.0438 | max_hold
+2026-05-02 19:58:23,930 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.122840 notional=$60
+2026-05-02 19:59:04,303 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.122840 exit=0.122420 net=$-0.2213 hold=40s stop_loss
+2026-05-02 19:59:04,304 INFO __main__ [CLOSE] ARB BUY @ 0.122420 | net=$-0.2213 | stop_loss
+2026-05-02 20:00:13,510 INFO execution.high_freq_executor [FILL] OP BUY @ 0.123700 notional=$60
+2026-05-02 20:01:13,967 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.123700 exit=0.123615 net=$-0.0574 hold=60s max_hold
+2026-05-02 20:01:13,967 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-02 20:01:14,075 INFO __main__ [CLOSE] OP BUY @ 0.123615 | net=$-0.0574 | max_hold
+2026-05-02 20:15:13,169 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-05-02 20:15:14,189 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-02 20:15:16,188 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-02 20:15:20,204 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 8s (attempt 4)
+2026-05-02 20:15:28,943 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-02 20:15:32,741 INFO data.orderbook_manager All subscriptions sent.
+2026-05-02 20:31:16,444 INFO execution.high_freq_executor [FILL] OP SELL @ 0.123840 notional=$60
+2026-05-02 20:32:02,745 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.123840 exit=0.124260 net=$-0.2197 hold=46s stop_loss
+2026-05-02 20:32:02,775 INFO __main__ [CLOSE] OP SELL @ 0.124260 | net=$-0.2197 | stop_loss
+2026-05-02 20:33:02,120 INFO execution.high_freq_executor [FILL] OP SELL @ 0.124370 notional=$60
+2026-05-02 20:33:18,902 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.122390 notional=$60
+2026-05-02 20:34:02,570 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.124370 exit=0.124390 net=$-0.0258 hold=60s max_hold
+2026-05-02 20:34:02,572 INFO __main__ [CLOSE] OP SELL @ 0.124390 | net=$-0.0258 | max_hold
+2026-05-02 20:34:19,298 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.122390 exit=0.122250 net=$-0.0848 hold=60s max_hold
+2026-05-02 20:34:19,299 INFO __main__ [CLOSE] ARB BUY @ 0.122250 | net=$-0.0848 | max_hold
+2026-05-02 20:34:35,479 INFO execution.high_freq_executor [FILL] OP SELL @ 0.124240 notional=$60
+2026-05-02 20:35:35,903 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.124240 exit=0.124300 net=$-0.0452 hold=60s max_hold
+2026-05-02 20:35:35,905 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-02 20:35:35,909 INFO __main__ [CLOSE] OP SELL @ 0.124300 | net=$-0.0452 | max_hold
+2026-05-02 21:06:33,715 INFO execution.high_freq_executor [FILL] OP BUY @ 0.125430 notional=$100
+2026-05-02 21:07:34,061 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.125430 exit=0.125375 net=$-0.0708 hold=60s max_hold
+2026-05-02 21:07:34,061 INFO __main__ [CLOSE] OP BUY @ 0.125375 | net=$-0.0708 | max_hold
+2026-05-02 21:08:01,134 INFO execution.high_freq_executor [FILL] OP BUY @ 0.125460 notional=$100
+2026-05-02 21:09:01,264 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.125460 exit=0.125525 net=$0.0248 hold=60s max_hold
+2026-05-02 21:09:01,264 INFO __main__ [CLOSE] OP BUY @ 0.125525 | net=$0.0248 | max_hold
+2026-05-02 21:14:09,899 INFO execution.high_freq_executor [FILL] SOL BUY @ 84.262000 notional=$60
+2026-05-02 21:15:10,410 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=84.262000 exit=84.250500 net=$-0.0244 hold=61s max_hold
+2026-05-02 21:15:10,414 INFO __main__ [CLOSE] SOL BUY @ 84.250500 | net=$-0.0244 | max_hold
+2026-05-02 21:15:47,580 INFO execution.high_freq_executor [FILL] OP SELL @ 0.125550 notional=$60
+2026-05-02 21:16:47,840 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.125550 exit=0.125615 net=$-0.0473 hold=60s max_hold
+2026-05-02 21:16:47,840 INFO __main__ [CLOSE] OP SELL @ 0.125615 | net=$-0.0473 | max_hold
+2026-05-02 21:18:18,901 INFO execution.high_freq_executor [FILL] OP BUY @ 0.125650 notional=$100
+2026-05-02 21:19:19,380 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.125650 exit=0.125620 net=$-0.0509 hold=60s max_hold
+2026-05-02 21:19:19,383 INFO __main__ [CLOSE] OP BUY @ 0.125620 | net=$-0.0509 | max_hold
+2026-05-02 21:21:01,918 INFO execution.high_freq_executor [FILL] OP BUY @ 0.125560 notional=$100
+2026-05-02 21:22:02,041 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.125560 exit=0.125695 net=$0.0805 hold=60s max_hold
+2026-05-02 21:22:02,099 INFO __main__ [CLOSE] OP BUY @ 0.125695 | net=$0.0805 | max_hold
+2026-05-02 21:28:38,489 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.122680 notional=$60
+2026-05-02 21:29:38,692 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.122680 exit=0.122630 net=$0.0083 hold=60s max_hold
+2026-05-02 21:29:38,696 INFO __main__ [CLOSE] ARB SELL @ 0.122630 | net=$0.0083 | max_hold
+2026-05-02 21:42:42,016 INFO execution.high_freq_executor [FILL] OP SELL @ 0.125370 notional=$100
+2026-05-02 21:43:42,172 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.125370 exit=0.125435 net=$-0.0788 hold=60s max_hold
+2026-05-02 21:43:42,182 INFO __main__ [CLOSE] OP SELL @ 0.125435 | net=$-0.0788 | max_hold
+2026-05-02 23:09:53,533 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-02 23:09:57,301 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 00:02:55,563 INFO __main__ Shutting down v9...
+2026-05-03 09:57:10,826 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 09:57:10,830 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,830 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,831 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,831 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,832 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,832 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,832 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,834 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,834 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,834 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,836 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,836 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 09:57:10,836 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 09:57:10,836 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 09:57:10,838 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 09:57:10,838 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 09:57:10,839 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 09:57:10,839 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 09:57:11,691 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 09:57:13,851 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 09:57:13,851 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 09:57:15,433 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 10:08:19,331 INFO __main__ Shutting down v9...
+2026-05-03 10:32:48,418 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 10:32:48,425 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,425 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,425 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,425 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,425 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,434 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,434 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,434 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,434 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,434 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,436 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,436 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R�=0.258)
+2026-05-03 10:32:48,436 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 10:32:48,436 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 10:32:48,436 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 10:32:48,436 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 10:32:48,436 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 10:32:48,436 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 10:32:48,992 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 10:32:51,441 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 10:32:51,441 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 10:32:52,806 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 10:33:13,525 INFO execution.high_freq_executor [FILL] BTC BUY @ 78376.000000 notional=$100
+2026-05-03 10:33:13,525 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=78376.000000 exit=78375.500000 net=$-0.0276 hold=0s stop_z
+2026-05-03 10:33:13,525 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 78375.500000 | net=$-0.0276 | stop_z
+2026-05-03 10:33:14,633 INFO execution.high_freq_executor [FILL] BTC BUY @ 78376.000000 notional=$100
+2026-05-03 10:33:14,634 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=78376.000000 exit=78375.500000 net=$-0.0276 hold=0s z_reversion
+2026-05-03 10:33:14,635 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 78375.500000 | net=$-0.0276 | z_reversion
+2026-05-03 10:33:24,893 INFO execution.high_freq_executor [FILL] BTC BUY @ 78372.000000 notional=$100
+2026-05-03 10:33:25,436 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=78372.000000 exit=78371.500000 net=$-0.0276 hold=1s z_reversion
+2026-05-03 10:33:25,438 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 78371.500000 | net=$-0.0276 | z_reversion
+2026-05-03 10:33:25,440 INFO execution.high_freq_executor [FILL] OP BUY @ 0.122040 notional=$10
+2026-05-03 10:33:47,192 INFO execution.high_freq_executor [FILL] BTC BUY @ 78365.000000 notional=$100
+2026-05-03 10:33:47,208 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=78365.000000 exit=78364.500000 net=$-0.0276 hold=0s stop_z
+2026-05-03 10:33:47,208 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 78364.500000 | net=$-0.0276 | stop_z
+2026-05-03 10:33:48,107 INFO execution.high_freq_executor [FILL] ETH BUY @ 2307.500000 notional=$100
+2026-05-03 10:33:48,108 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2307.500000 exit=2307.450000 net=$-0.0292 hold=0s stop_z
+2026-05-03 10:33:48,109 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2307.450000 | net=$-0.0292 | stop_z
+2026-05-03 10:33:48,110 INFO execution.high_freq_executor [FILL] SOL BUY @ 83.807000 notional=$100
+2026-05-03 10:33:49,484 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=83.807000 exit=83.806500 net=$-0.0276 hold=1s z_reversion
+2026-05-03 10:33:49,486 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-03 10:33:49,486 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.122040 exit=0.122025 net=$-0.0039 hold=24s loss_streak
+2026-05-03 10:33:50,290 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 83.806500 | net=$-0.0276 | z_reversion
+2026-05-03 10:36:46,166 INFO __main__ Shutting down v9...
+2026-05-03 10:43:05,021 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,021 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 10:43:05,031 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 10:43:05,031 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 10:43:05,031 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 10:43:05,031 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 10:43:05,031 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 10:43:05,031 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 10:43:05,565 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 10:43:08,028 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 10:43:08,028 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 10:43:09,264 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 10:43:10,825 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121870 notional=$10
+2026-05-03 10:44:11,291 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121870 exit=0.121915 net=$-0.0064 hold=60s max_hold
+2026-05-03 10:44:11,305 INFO __main__ [CLOSE] S8EMS OP SELL @ 0.121915 | net=$-0.0064 | max_hold
+2026-05-03 10:47:31,287 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121960 notional=$20
+2026-05-03 10:48:07,174 INFO execution.high_freq_executor [FILL] AAVE BUY @ 92.577000 notional=$12
+2026-05-03 10:48:07,668 INFO execution.high_freq_executor [FILL] BTC BUY @ 78423.000000 notional=$100
+2026-05-03 10:48:07,668 INFO execution.high_freq_executor [FILL] ETH BUY @ 2309.900000 notional=$100
+2026-05-03 10:48:08,841 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=78423.000000 exit=78422.500000 net=$-0.0276 hold=1s z_reversion
+2026-05-03 10:48:08,842 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 78422.500000 | net=$-0.0276 | z_reversion
+2026-05-03 10:48:09,694 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2309.900000 exit=2309.850000 net=$-0.0292 hold=2s z_reversion
+2026-05-03 10:48:09,695 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2309.850000 | net=$-0.0292 | z_reversion
+2026-05-03 10:48:26,059 INFO execution.high_freq_executor [FILL] ETH BUY @ 2309.700000 notional=$100
+2026-05-03 10:48:26,059 INFO execution.high_freq_executor [FILL] SOL BUY @ 83.895000 notional=$100
+2026-05-03 10:48:26,560 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=83.895000 exit=83.894500 net=$-0.0276 hold=1s z_reversion
+2026-05-03 10:48:26,563 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 83.894500 | net=$-0.0276 | z_reversion
+2026-05-03 10:48:26,963 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2309.700000 exit=2309.550000 net=$-0.0335 hold=1s z_reversion
+2026-05-03 10:48:26,963 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2309.550000 | net=$-0.0335 | z_reversion
+2026-05-03 10:48:28,204 INFO execution.high_freq_executor [FILL] ETH SELL @ 2309.500000 notional=$100
+2026-05-03 10:48:30,361 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2309.500000 exit=2309.550000 net=$-0.0292 hold=2s z_reversion
+2026-05-03 10:48:30,361 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-03 10:48:30,361 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121960 exit=0.121995 net=$-0.0111 hold=59s loss_streak
+2026-05-03 10:48:30,363 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=92.577000 exit=92.527500 net=$-0.0097 hold=23s loss_streak
+2026-05-03 10:48:30,363 WARNING risk.kill_switch Loss streak 6 reached -> 30 min suspend
+2026-05-03 10:48:30,363 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2309.550000 | net=$-0.0292 | z_reversion
+2026-05-03 10:51:10,523 INFO __main__ Shutting down v9...
+2026-05-03 11:23:50,787 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:23:50,787 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:23:50,787 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:23:50,787 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:23:50,787 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 11:23:50,787 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 11:23:50,787 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 11:23:51,373 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 11:23:53,780 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 11:23:53,780 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 11:23:55,145 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 11:24:03,215 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121760 notional=$10
+2026-05-03 11:24:11,278 INFO __main__ Shutting down v9...
+2026-05-03 11:24:11,278 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121760 exit=0.121795 net=$-0.0056 hold=8s shutdown
+2026-05-03 11:24:24,199 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 11:24:24,199 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,205 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,205 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,205 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,205 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,205 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,208 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,208 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,208 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,208 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,208 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,208 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:24:24,208 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:24:24,208 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:24:24,208 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:24:24,208 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 11:24:24,208 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 11:24:24,208 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 11:24:24,730 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 11:24:27,208 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 11:24:27,208 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 11:24:28,451 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 11:26:41,790 INFO __main__ Shutting down v9...
+2026-05-03 11:26:45,620 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 11:26:45,621 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,622 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,622 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,623 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,623 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,623 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,624 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,624 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,624 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,625 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,625 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,625 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 11:26:45,625 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:26:45,626 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:26:45,626 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 11:26:45,626 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 11:26:45,626 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 11:26:45,626 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 11:26:46,161 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 11:26:48,627 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 11:26:48,627 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 11:26:49,873 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 11:28:22,966 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.119200 notional=$12
+2026-05-03 11:29:22,373 INFO execution.high_freq_executor [FILL] OP BUY @ 0.121870 notional=$20
+2026-05-03 11:29:23,433 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.119200 exit=0.119140 net=$0.0028 hold=60s max_hold
+2026-05-03 11:29:23,433 INFO __main__ [CLOSE] S8EMS ARB SELL @ 0.119140 | net=$0.0028 | max_hold
+2026-05-03 11:30:22,427 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.121870 exit=0.121640 net=$-0.0431 hold=60s max_hold
+2026-05-03 11:30:22,443 INFO __main__ [CLOSE] S8EMS OP BUY @ 0.121640 | net=$-0.0431 | max_hold
+2026-05-03 11:30:44,431 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121650 notional=$12
+2026-05-03 11:31:44,812 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121650 exit=0.121605 net=$0.0012 hold=60s max_hold
+2026-05-03 11:31:44,815 INFO __main__ [CLOSE] S8EMS OP SELL @ 0.121605 | net=$0.0012 | max_hold
+2026-05-03 11:31:54,597 INFO execution.high_freq_executor [FILL] BTC BUY @ 78433.000000 notional=$100
+2026-05-03 11:31:55,065 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=78433.000000 exit=78432.500000 net=$-0.0276 hold=0s z_reversion
+2026-05-03 11:31:55,066 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 78432.500000 | net=$-0.0276 | z_reversion
+2026-05-03 11:32:05,917 INFO execution.high_freq_executor [FILL] ETH SELL @ 2312.200000 notional=$100
+2026-05-03 11:32:05,917 INFO execution.high_freq_executor [FILL] SOL SELL @ 83.926000 notional=$100
+2026-05-03 11:32:06,430 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2312.200000 exit=2312.250000 net=$-0.0292 hold=1s z_reversion
+2026-05-03 11:32:06,430 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2312.250000 | net=$-0.0292 | z_reversion
+2026-05-03 11:32:06,430 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=83.926000 exit=83.926500 net=$-0.0276 hold=1s z_reversion
+2026-05-03 11:32:06,430 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 83.926500 | net=$-0.0276 | z_reversion
+2026-05-03 11:32:26,272 INFO execution.high_freq_executor [FILL] SOL BUY @ 83.918000 notional=$100
+2026-05-03 11:32:26,272 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=83.918000 exit=83.917500 net=$-0.0276 hold=0s stop_z
+2026-05-03 11:32:26,272 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 83.917500 | net=$-0.0276 | stop_z
+2026-05-03 11:32:38,047 INFO execution.high_freq_executor [FILL] BTC BUY @ 78423.000000 notional=$100
+2026-05-03 11:32:38,673 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=78423.000000 exit=78422.500000 net=$-0.0276 hold=1s z_reversion
+2026-05-03 11:32:38,675 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 78422.500000 | net=$-0.0276 | z_reversion
+2026-05-03 11:33:13,156 INFO execution.high_freq_executor [FILL] OP BUY @ 0.121560 notional=$12
+2026-05-03 11:34:08,574 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.011300 notional=$12
+2026-05-03 11:34:13,193 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.121560 exit=0.121530 net=$-0.0062 hold=60s max_hold
+2026-05-03 11:34:13,193 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-03 11:34:13,194 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.011300 exit=9.016450 net=$0.0036 hold=5s loss_streak
+2026-05-03 11:34:13,195 WARNING risk.kill_switch Loss streak 6 reached -> 30 min suspend
+2026-05-03 11:34:13,195 INFO __main__ [CLOSE] S8EMS OP BUY @ 0.121530 | net=$-0.0062 | max_hold
+2026-05-03 11:34:37,364 INFO __main__ Shutting down v9...
+2026-05-03 16:39:45,918 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 16:39:45,922 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,923 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,924 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,924 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,925 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,925 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,926 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,926 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,926 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 16:39:45,928 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 16:39:46,578 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 16:39:48,924 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 16:39:48,925 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 16:39:50,325 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 16:40:49,941 INFO __main__ Shutting down v9...
+2026-05-03 16:41:12,270 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 16:41:12,271 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,273 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,274 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,274 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,275 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,275 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,275 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,276 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,276 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,276 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 16:41:12,277 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 16:41:12,876 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 16:41:15,290 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 16:41:15,290 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 16:41:16,606 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 16:41:46,701 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121620 notional=$10
+2026-05-03 16:42:15,599 INFO __main__ Shutting down v9...
+2026-05-03 16:42:15,599 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121620 exit=0.121595 net=$-0.0006 hold=29s shutdown
+2026-05-03 16:44:15,709 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 16:44:15,709 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 16:44:15,713 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 16:44:16,239 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 16:44:18,721 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 16:44:18,722 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 16:44:19,986 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 16:44:41,007 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121630 notional=$10
+2026-05-03 16:45:19,507 INFO __main__ Shutting down v9...
+2026-05-03 16:45:19,508 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121630 exit=0.121660 net=$-0.0052 hold=39s shutdown
+2026-05-03 17:46:39,313 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 17:46:39,315 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,316 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,318 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,318 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,319 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,319 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,320 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,320 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 17:46:39,322 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 17:46:39,968 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 17:46:42,341 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 17:46:42,341 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 17:46:43,791 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 17:46:56,545 INFO execution.high_freq_executor [FILL] OP SELL @ 0.122010 notional=$10
+2026-05-03 17:47:43,370 INFO __main__ Shutting down v9...
+2026-05-03 17:47:43,370 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.122010 exit=0.122075 net=$-0.0080 hold=47s shutdown
+2026-05-03 18:21:26,197 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 18:21:26,197 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 18:21:26,215 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 18:21:26,798 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 18:21:29,210 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 18:21:29,210 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 18:21:30,495 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 18:22:29,922 INFO __main__ Shutting down v9...
+2026-05-03 19:02:13,518 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 19:02:13,539 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,549 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,549 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,551 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,553 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,555 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,555 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,557 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,559 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,559 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,561 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,564 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,564 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:02:13,564 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:02:13,566 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:02:13,566 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 19:02:13,566 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 19:02:13,566 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 19:02:14,479 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 19:02:16,569 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 19:02:16,570 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 19:02:18,246 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 19:03:17,392 INFO __main__ Shutting down v9...
+2026-05-03 19:03:54,325 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 19:03:54,327 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,327 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,329 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,329 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,329 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,329 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,331 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,331 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,331 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,331 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,332 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,332 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,332 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,333 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,333 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,333 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 19:03:54,333 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 19:03:54,333 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 19:03:54,361 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,367 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,372 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,372 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 19:03:54,372 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 19:03:54,373 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 19:03:54,914 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 19:03:54,944 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 19:03:57,334 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 19:03:57,334 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 19:03:57,391 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 19:03:57,391 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 19:03:58,690 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 19:03:58,701 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 19:04:30,405 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121910 notional=$10
+2026-05-03 19:04:30,405 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121910 notional=$10
+2026-05-03 19:04:58,510 INFO __main__ Shutting down v9...
+2026-05-03 19:04:58,512 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121910 exit=0.121940 net=$-0.0052 hold=28s shutdown
+2026-05-03 19:04:58,718 INFO __main__ Shutting down v9...
+2026-05-03 19:04:58,719 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121910 exit=0.121945 net=$-0.0056 hold=28s shutdown
+2026-05-03 20:49:39,816 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 20:49:39,822 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,828 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,830 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,832 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,834 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,836 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,838 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,840 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,842 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,842 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,844 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,846 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,846 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 20:49:39,848 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 20:49:39,848 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 20:49:39,848 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 20:49:39,850 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 20:49:39,850 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 20:49:40,698 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 20:49:42,842 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 20:49:42,843 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 20:49:44,482 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 20:50:42,860 INFO __main__ Shutting down v9...
+2026-05-03 21:01:30,395 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 21:01:30,411 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 21:01:31,197 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 21:01:33,415 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 21:01:33,415 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 21:01:34,913 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 21:02:22,747 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 21:02:22,747 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 21:02:23,427 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 21:02:25,761 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 21:02:25,761 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 21:02:27,195 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 21:03:25,809 INFO __main__ Shutting down v9...

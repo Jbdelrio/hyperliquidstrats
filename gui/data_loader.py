@@ -11,9 +11,12 @@ from typing import Optional
 
 import pandas as pd
 
-DECISIONS_PATH = "logs/decisions_v9.csv"
-FILLS_PATH     = "logs/fills_v9.csv"
-METRICS_PATH   = "metrics_v9/metrics_v9.csv"
+# Absolute repo root — works regardless of CWD
+_REPO = Path(__file__).parent.parent
+
+DECISIONS_PATH = str(_REPO / "logs/decisions_v9.csv")
+FILLS_PATH     = str(_REPO / "logs/fills_v9.csv")
+METRICS_PATH   = str(_REPO / "metrics_v9/metrics_v9.csv")
 
 _cache: dict = {}
 
@@ -26,7 +29,9 @@ def _cached_csv(path: str) -> pd.DataFrame:
         mtime = p.stat().st_mtime
         if path in _cache and _cache[path][0] == mtime:
             return _cache[path][1]
-        df = pd.read_csv(p, low_memory=False)
+        df = pd.read_csv(p, low_memory=False, on_bad_lines="skip")
+        # Drop duplicate columns that appear when CSV is read mid-write
+        df = df.loc[:, ~df.columns.duplicated()].reset_index(drop=True)
         _cache[path] = (mtime, df)
         return df
     except Exception:
@@ -62,13 +67,16 @@ def load_metrics() -> pd.DataFrame:
     df = _cached_csv(METRICS_PATH)
     if df.empty:
         return df
-    if "ts" in df.columns:
-        df["dt"] = pd.to_datetime(df["ts"], errors="coerce")
-    for col in ("equity", "pnl_min", "pnl_hour", "pnl_day",
-                "win_rate", "avg_hold_s", "pick_rate",
-                "wins", "losses", "stops", "tps", "max_holds"):
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
+    try:
+        if "ts" in df.columns:
+            df["dt"] = pd.to_datetime(df["ts"], errors="coerce")
+        for col in ("equity", "pnl_min", "pnl_hour", "pnl_day",
+                    "win_rate", "avg_hold_s", "pick_rate",
+                    "wins", "losses", "stops", "tps", "max_holds"):
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
+    except Exception:
+        pass
     return df
 
 
@@ -85,8 +93,8 @@ def recent_decisions(hours: float = 2.0) -> pd.DataFrame:
 # Runtime JSON loaders (written by engine every 60s)
 # ---------------------------------------------------------------------------
 
-STRATEGY_STATUS_PATH = "runtime/strategy_status.json"
-CALIBRATION_PATH     = "runtime/calibration_data.json"
+STRATEGY_STATUS_PATH = str(_REPO / "runtime/strategy_status.json")
+CALIBRATION_PATH     = str(_REPO / "runtime/calibration_data.json")
 
 _json_cache: dict = {}
 
