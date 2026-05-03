@@ -52,8 +52,8 @@ def register_callbacks(app) -> None:
 
         cards = dbc.Row([
             dbc.Col(stat_card("Equity",       f"${equity:.2f}",         COLORS["accent"])),
-            dbc.Col(stat_card("PnL today",    f"${pnl_day:+.4f}",       pnl_day_color)),
-            dbc.Col(stat_card("PnL 1h",       f"${pnl_1h:+.4f}",        pnl_1h_color)),
+            dbc.Col(stat_card("PnL today",    f"${pnl_day:+.2f}",       pnl_day_color)),
+            dbc.Col(stat_card("PnL 1h",       f"${pnl_1h:+.2f}",        pnl_1h_color)),
             dbc.Col(stat_card("Daily P&L %",  f"{dd_daily:+.2f}%",      dd_color)),
             dbc.Col(stat_card("Trades",       str(total),               COLORS["text_light"])),
             dbc.Col(stat_card("Win rate",     wr,                       COLORS["accent"])),

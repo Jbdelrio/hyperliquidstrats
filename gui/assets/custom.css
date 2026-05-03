@@ -1,0 +1,102 @@
+/* ── Artemisia v9 — Cyborg theme overrides ───────────────────────── */
+
+/* Use Cyborg's native font everywhere (NOT monospace for UI) */
+body, h1, h2, h3, h4, h5, h6, p, label, .btn, .badge, .card,
+.nav-link, .tab-content, select, input, textarea {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* Monospace ONLY for code/numbers/pre */
+pre, code, .font-mono, .dash-spreadsheet td,
+.dash-spreadsheet th {
+    font-family: "JetBrains Mono", "Consolas", "Courier New", monospace !important;
+}
+
+/* ── DCC Dropdown — dark react-select ──────────────────────────── */
+.dropdown-dark .Select-control {
+    background-color: #1a1a1a !important;
+    border: 1px solid #2a2a2a !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+}
+.dropdown-dark .Select-control:hover {
+    border-color: #2A9FD6 !important;
+}
+.dropdown-dark .Select-placeholder { color: #555 !important; }
+.dropdown-dark .Select-value-label  { color: #ffffff !important; }
+.dropdown-dark .Select-input input  { color: #ffffff !important; }
+.dropdown-dark .Select-arrow { border-top-color: #ADAFAE !important; }
+
+.dropdown-dark .Select-menu-outer {
+    background-color: #1a1a1a !important;
+    border: 1px solid #2a2a2a !important;
+    z-index: 9999 !important;
+}
+.dropdown-dark .Select-option {
+    background-color: #1a1a1a !important;
+    color: #ADAFAE !important;
+}
+.dropdown-dark .Select-option:hover,
+.dropdown-dark .Select-option.is-focused  {
+    background-color: #2A9FD6 !important;
+    color: #ffffff !important;
+}
+.dropdown-dark .Select-option.is-selected {
+    background-color: #155a7a !important;
+    color: #ffffff !important;
+}
+/* Multi-value tags */
+.dropdown-dark .Select-multi-value-wrapper .Select-value {
+    background-color: #155a7a !important;
+    border-color: #2A9FD6 !important;
+    color: #ffffff !important;
+}
+.dropdown-dark .Select-value-icon:hover { background-color: #2A9FD6 !important; }
+
+/* Newer Dash / react-select v5 class names */
+.dropdown-dark [class*="-control"]      { background-color: #1a1a1a !important; border-color: #2a2a2a !important; }
+.dropdown-dark [class*="-menu"]         { background-color: #1a1a1a !important; border: 1px solid #2a2a2a !important; }
+.dropdown-dark [class*="-option"]       { background-color: #1a1a1a !important; color: #ADAFAE !important; }
+.dropdown-dark [class*="-option"]:hover { background-color: #2A9FD6 !important; color: #fff !important; }
+.dropdown-dark [class*="-singleValue"]  { color: #ffffff !important; }
+.dropdown-dark [class*="-multiValue"]   { background-color: #155a7a !important; }
+.dropdown-dark [class*="-multiValueLabel"] { color: #ffffff !important; }
+.dropdown-dark input                    { color: #ffffff !important; }
+
+/* ── Textarea dark ──────────────────────────────────────────────── */
+textarea.dark-textarea {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 1px solid #2a2a2a !important;
+    font-family: "Consolas", "Courier New", monospace !important;
+    font-size: 12px !important;
+    resize: vertical;
+    border-radius: 4px;
+}
+textarea.dark-textarea:focus {
+    border-color: #2A9FD6 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important;
+}
+
+/* ── Input dark ─────────────────────────────────────────────────── */
+input.dark-input {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 1px solid #2a2a2a !important;
+}
+input.dark-input:focus {
+    border-color: #2A9FD6 !important;
+    box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar             { width: 6px; height: 6px; }
+::-webkit-scrollbar-track       { background: #060606; }
+::-webkit-scrollbar-thumb       { background: #2a2a2a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2A9FD6; }
+
+/* ── Feedback pill ──────────────────────────────────────────────── */
+.feedback-ok  { color: #77B300 !important; font-size: 12px; }
+.feedback-err { color: #CC0000 !important; font-size: 12px; }

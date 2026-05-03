@@ -7,7 +7,20 @@
       "Bash(start /B python -m gui.app)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:8050/)",
       "Bash(git add *)",
-      "Bash(git commit -m 'chore: add dash deps to requirements.txt *)"
+      "Bash(git commit -m 'chore: add dash deps to requirements.txt *)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('gui/tabs/strategies.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK strategies.py'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('monitoring/pnl_tracker.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK pnl_tracker.py'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('gui/tabs/overview.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK overview.py'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('gui/app.py', encoding='utf-8'\\).read\\(\\)\\); print\\('app.py OK'\\)\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":8050\")",
+      "Bash(taskkill /F /PID 90536)",
+      "Bash(taskkill /F /PID 75564)",
+      "PowerShell(Stop-Process *)",
+      "Bash(findstr \"LISTENING\")",
+      "Bash(python *)",
+      "Bash(python3)"
     ]
   }
 }

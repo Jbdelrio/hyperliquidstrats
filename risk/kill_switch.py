@@ -125,7 +125,7 @@ class KillSwitch:
             self._loss_streak  = 0
             if self.close_all_cb:
                 self.close_all_cb("loss_streak")
-            log.warning("Loss streak %d reached → 30 min suspend", self.max_loss_streak)
+            log.warning("Loss streak %d reached -> 30 min suspend", self.max_loss_streak)
 
     def update_btc_price(self, price: float) -> None:
         self._btc_prices.append((time.time(), price))

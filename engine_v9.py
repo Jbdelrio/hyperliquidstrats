@@ -191,6 +191,7 @@ class EngineV9:
     async def run(self) -> None:
         self._running = True
         await self.obm.connect()
+        self.ks.record_heartbeat()   # reset watchdog clock after connect
         log.info("Engine V9 running. Ctrl+C to stop.")
         try:
             await asyncio.gather(
@@ -355,7 +356,7 @@ class EngineV9:
 
         control_file.parent.mkdir(parents=True, exist_ok=True)
         last_cmd_id   = None
-        last_status_t = 0.0
+        last_status_t = -999999.0
 
         while self._running:
             await asyncio.sleep(2.0)
@@ -378,6 +379,8 @@ class EngineV9:
                 result_file.parent.mkdir(parents=True, exist_ok=True)
                 with open(result_file, "w") as f:
                     json.dump({"command_id": cmd_id, "result": result}, f)
+                    f.flush()
+                    import os as _os; _os.fsync(f.fileno())
             except (json.JSONDecodeError, FileNotFoundError, OSError):
                 pass
 
@@ -671,15 +674,20 @@ class EngineV9:
 # ---------------------------------------------------------------------------
 
 def _setup_logging(cfg: dict) -> None:
+    import io
     level    = getattr(logging, cfg.get("level", "INFO"), logging.INFO)
     log_file = cfg.get("file", "logs/engine_v9.log")
     Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+    stdout_stream = (
+        io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+        if hasattr(sys.stdout, "buffer") else sys.stdout
+    )
     logging.basicConfig(
         level=level,
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
         handlers=[
-            logging.StreamHandler(sys.stdout),
-            logging.FileHandler(log_file),
+            logging.StreamHandler(stdout_stream),
+            logging.FileHandler(log_file, encoding="utf-8"),
         ],
     )
 
@@ -718,7 +726,7 @@ async def _graceful_stop(engine: EngineV9) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Artemisia v9 — multi-strategy")
     parser.add_argument("--config", default="config_v9.json")
-    parser.add_argument("--paper",  action="store_true", default=True)
+    parser.add_argument("--paper",  action="store_true", default=False)
     parser.add_argument("--live",   action="store_true",
                         help="Real money. Only after 14-day paper validation.")
     parser.add_argument("--coins",     type=str, default="",

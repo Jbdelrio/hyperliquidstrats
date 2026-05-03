@@ -1,112 +1,104 @@
 """
 control_api.py — GUI → Engine command bus via runtime/control.json.
 
-The GUI calls ControlAPI methods which write a command to control.json.
-The engine polls that file every 2s, executes via StrategyManager.control(),
-and writes the result to control_result.json.
+send_nowait() writes a command immediately and returns — does NOT block.
+The engine picks it up within 2s and writes the result to control_result.json.
+The GUI shows the effect on the next status refresh (every 10s).
 """
 import json
+import os
 import time
 import uuid
 from pathlib import Path
 from typing import Optional
 
+_REPO = Path(__file__).parent.parent   # gui/../ = repo root
+
 
 class ControlAPI:
 
-    def __init__(self,
-                 control_file: str = "runtime/control.json",
-                 result_file:  str = "runtime/control_result.json"):
-        self._control_file = Path(control_file)
-        self._result_file  = Path(result_file)
+    def __init__(self):
+        self._control_file = _REPO / "runtime" / "control.json"
+        self._result_file  = _REPO / "runtime" / "control_result.json"
         self._control_file.parent.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------
-    # Low-level
+    # Fire-and-forget (non-blocking) — use this from Dash callbacks
     # ------------------------------------------------------------------
 
-    def send_command(self, command: str, args: dict,
-                     timeout_s: float = 5.0) -> dict:
-        cmd_id = str(uuid.uuid4())[:8]
+    def send_nowait(self, command: str, args: dict) -> None:
+        """Write command to control.json and return immediately.
+        Engine processes it within 2s; result visible on next status refresh."""
         payload = {
-            "command_id": cmd_id,
+            "command_id": str(uuid.uuid4())[:8],
             "timestamp":  time.time(),
             "command":    command,
             "args":       args,
         }
-        with open(self._control_file, "w") as f:
-            json.dump(payload, f)
-
-        deadline = time.time() + timeout_s
-        while time.time() < deadline:
-            time.sleep(0.25)
-            try:
-                with open(self._result_file) as f:
-                    result = json.load(f)
-                if result.get("command_id") == cmd_id:
-                    return result.get("result", {"ok": False, "error": "empty result"})
-            except (FileNotFoundError, json.JSONDecodeError, OSError):
-                pass
-        return {"ok": False, "error": "timeout — engine may not be running"}
+        try:
+            with open(self._control_file, "w") as f:
+                json.dump(payload, f)
+                f.flush()
+                os.fsync(f.fileno())
+        except OSError:
+            pass
 
     # ------------------------------------------------------------------
-    # Strategy control
+    # Strategy actions
     # ------------------------------------------------------------------
 
-    def enable_strategy(self, name: str) -> dict:
-        return self.send_command("update_strategy",
-                                 {"strategy": name, "action": "enable"})
+    def enable_strategy(self, name: str)  -> None:
+        self.send_nowait("update_strategy", {"strategy": name, "action": "enable"})
 
-    def disable_strategy(self, name: str) -> dict:
-        return self.send_command("update_strategy",
-                                 {"strategy": name, "action": "disable"})
+    def disable_strategy(self, name: str) -> None:
+        self.send_nowait("update_strategy", {"strategy": name, "action": "disable"})
 
-    def reset_strategy(self, name: str) -> dict:
-        return self.send_command("update_strategy",
-                                 {"strategy": name, "action": "reset"})
+    def reset_strategy(self, name: str)   -> None:
+        self.send_nowait("update_strategy", {"strategy": name, "action": "reset"})
 
-    def update_params(self, name: str, params: dict) -> dict:
-        return self.send_command("update_strategy",
-                                 {"strategy": name, "action": "update_params",
-                                  "params": params})
+    def update_params(self, name: str, params: dict) -> None:
+        self.send_nowait("update_strategy",
+                         {"strategy": name, "action": "update_params",
+                          "params": params})
 
-    def set_capital(self, name: str, capital_usd: float) -> dict:
-        return self.send_command("update_strategy",
-                                 {"strategy": name, "action": "set_capital",
-                                  "capital_usd": capital_usd})
+    def set_capital(self, name: str, capital_usd: float) -> None:
+        self.send_nowait("update_strategy",
+                         {"strategy": name, "action": "set_capital",
+                          "capital_usd": capital_usd})
 
-    def set_coins(self, name: str, coins: list) -> dict:
-        return self.send_command("update_strategy",
-                                 {"strategy": name, "action": "set_coins",
-                                  "coins": coins})
-
-    def flatten_strategy(self, name: str) -> dict:
-        return self.send_command("flatten_strategy", {"strategy": name})
+    def flatten_strategy(self, name: str) -> None:
+        self.send_nowait("flatten_strategy", {"strategy": name})
 
     # ------------------------------------------------------------------
     # Global controls
     # ------------------------------------------------------------------
 
-    def flatten_all(self) -> dict:
-        return self.send_command("flatten_all", {})
+    def flatten_all(self)                -> None:
+        self.send_nowait("flatten_all", {})
 
-    def pause_all(self, minutes: int = 60) -> dict:
-        return self.send_command("pause_all", {"minutes": minutes})
+    def pause_all(self, minutes: int = 60) -> None:
+        self.send_nowait("pause_all", {"minutes": minutes})
 
-    def reset_capital(self, capital_usd: float = 500.0) -> dict:
-        return self.send_command("reset_capital", {"capital_usd": capital_usd})
+    def set_trading(self, enabled: bool) -> None:
+        self.send_nowait("set_trading", {"enabled": enabled})
 
-    def set_trading(self, enabled: bool) -> dict:
-        return self.send_command("set_trading", {"enabled": enabled})
+    def reset_capital(self, capital_usd: float = 500.0) -> None:
+        self.send_nowait("reset_capital", {"capital_usd": capital_usd})
 
     # ------------------------------------------------------------------
-    # Status read (direct file read, no engine roundtrip)
+    # Connection / engine status (file-age heuristic, never blocks)
     # ------------------------------------------------------------------
 
-    def read_strategy_status(self) -> Optional[dict]:
-        status_file = self._control_file.parent / "strategy_status.json"
-        try:
-            with open(status_file) as f:
-                return json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            return None
+    def engine_status(self) -> dict:
+        """Return connection status based on strategy_status.json age."""
+        status_file = _REPO / "runtime" / "strategy_status.json"
+        if not status_file.exists():
+            return {"running": False, "connected": False, "age_s": None,
+                    "exchange": "Hyperliquid"}
+        age = time.time() - status_file.stat().st_mtime
+        return {
+            "running":   age < 30,
+            "connected": age < 15,
+            "age_s":     round(age, 1),
+            "exchange":  "Hyperliquid",
+        }
