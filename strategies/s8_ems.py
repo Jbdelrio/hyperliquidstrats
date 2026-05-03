@@ -2,14 +2,13 @@
 s8_ems.py — S8 Econophysics Maker Scalping.
 
 Orchestrates 5 sensors:
-  1. HurstLocalEstimator      → size multiplier (regime)
-  2. HARRealizedVolatility    → size multiplier (vol prediction)
+  1. HurstLocalEstimator       → size multiplier (regime)
+  2. HARRealizedVolatility     → size multiplier (vol prediction)
   3. WaveletSingularityDetector → cancel quotes on singularity
-  4. BouchaudImpactModel      → quote skew (order-flow pressure)
-  5. KalmanFairValue          → clean fair value + drift skew
+  4. BouchaudImpactModel       → quote skew (order-flow pressure)
+  5. KalmanFairValue           → clean fair value + drift skew
 
-All computation is stateless from the engine's perspective — state lives
-inside each CoinState instance maintained here.
+Inherits BaseStrategy. Disabled by default (needs spread > 4 bps to operate).
 """
 import logging
 import time
@@ -22,6 +21,8 @@ from econophysics.wavelet_singularity import WaveletSingularityDetector
 from econophysics.bouchaud_impact import BouchaudImpactModel
 from econophysics.kalman_fair_value import KalmanFairValue
 
+from strategies.base_strategy import BarData, BaseStrategy, StrategyConfig, StrategyDecision
+
 log = logging.getLogger(__name__)
 
 
@@ -31,78 +32,38 @@ log = logging.getLogger(__name__)
 
 @dataclass
 class CoinState:
-    symbol: str
-    hurst:   HurstLocalEstimator     = field(default_factory=lambda: HurstLocalEstimator(window=300))
-    har_rv:  HARRealizedVolatility   = field(default_factory=HARRealizedVolatility)
-    wavelet: WaveletSingularityDetector = field(default_factory=WaveletSingularityDetector)
-    bouchaud: BouchaudImpactModel    = field(default_factory=BouchaudImpactModel)
-    kalman:  KalmanFairValue         = field(default_factory=lambda: KalmanFairValue())
+    symbol:   str
+    hurst:    HurstLocalEstimator        = field(default_factory=lambda: HurstLocalEstimator(window=300))
+    har_rv:   HARRealizedVolatility      = field(default_factory=HARRealizedVolatility)
+    wavelet:  WaveletSingularityDetector = field(default_factory=WaveletSingularityDetector)
+    bouchaud: BouchaudImpactModel        = field(default_factory=BouchaudImpactModel)
+    kalman:   KalmanFairValue            = field(default_factory=lambda: KalmanFairValue())
 
-    # Position (None = flat)
     open_position: Optional[dict] = None
-
-    # Quote refresh tracker
     last_quote_ts: float = 0.0
-
-    # Stats
-    fills: int = 0
-    pnl: float = 0.0
+    fills:         int   = 0
+    pnl:           float = 0.0
 
 
 # ---------------------------------------------------------------------------
-# Action type constants
-# ---------------------------------------------------------------------------
-ACTION_PLACE_QUOTES   = "place_quotes"
-ACTION_CANCEL_QUOTES  = "cancel_quotes"
-ACTION_MANAGE_POS     = "manage_position"
-ACTION_CLOSE_MARKET   = "close_market"
-
-
-# ---------------------------------------------------------------------------
-# Main strategy class
+# Strategy
 # ---------------------------------------------------------------------------
 
-class S8EconophysicsMakerScalping:
-    """
-    Stateless decision-maker; all per-coin state stored in CoinState objects.
+class S8EconophysicsMakerScalping(BaseStrategy):
 
-    Engine calls:
-      on_orderbook_update()  → returns action or None
-      on_trade_event()       → returns action or None (wavelet cancel)
-      on_fill()              → returns manage_position action
-      on_minute_close()      → updates HAR-RV (no action)
-      check_position_exits() → returns close_market or None
-    """
-
-    def __init__(self, params: dict, capital: float, symbols: list[str]):
-        self.capital  = capital
-        self.symbols  = [s.upper() for s in symbols]
-        self.p        = params
-
+    def __init__(self, config: StrategyConfig, logger=None, decision_logger=None):
+        super().__init__(config, logger, decision_logger)
         self.coin_states: dict[str, CoinState] = {
-            s: CoinState(symbol=s) for s in self.symbols
+            s: CoinState(symbol=s) for s in config.coins
         }
-
-        self.total_trades  = 0
-        self.daily_pnl     = 0.0
-
-        # Per-symbol pending order IDs (so engine can cancel)
-        self._pending_ids: dict[str, list[str]] = {s: [] for s in self.symbols}
-
-        self._decision_logger = None
-
-    def set_decision_logger(self, logger) -> None:
-        self._decision_logger = logger
+        self._pending_ids: dict[str, list[str]] = {s: [] for s in config.coins}
+        self.daily_pnl: float = 0.0
 
     # ------------------------------------------------------------------
-    # 1. Orderbook update → quote decision
+    # BaseStrategy interface
     # ------------------------------------------------------------------
 
-    def on_orderbook_update(self, symbol: str, book, timestamp: float) -> Optional[dict]:
-        """
-        Main decision gate. Called on every L2 update.
-        Returns action dict or None.
-        """
+    def on_orderbook_update(self, symbol: str, book, ts: float) -> Optional[StrategyDecision]:
         state = self.coin_states.get(symbol)
         if state is None:
             return None
@@ -110,79 +71,76 @@ class S8EconophysicsMakerScalping:
         bid = book.best_bid
         ask = book.best_ask
         if bid is None or ask is None:
-            if self._decision_logger:
-                self._decision_logger.log_skip(
-                    symbol, "insufficient_orderbook", timestamp=timestamp,
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    symbol, "insufficient_orderbook", timestamp=ts,
                     hurst=state.hurst.h,
                     har_rv_forecast=state.har_rv.predict_vol(),
                 )
             return None
 
-        mid    = (bid + ask) / 2
-        spread = ask - bid
+        mid        = (bid + ask) / 2
+        spread     = ask - bid
         spread_bps = spread / mid * 10_000
 
-        # Update Kalman with current mid (VWAP fed from engine later via get_vwap)
         fv, drift = state.kalman.update(mid)
-
-        # Update Hurst
         state.hurst.update(mid)
 
-        # ── Filters ──────────────────────────────────────────────────
-        min_bps = self.p.get("min_spread_bps", 4.0)
-        max_bps = self.p.get("max_spread_bps", 20.0)
-        if not (min_bps <= spread_bps <= max_bps):
-            if self._decision_logger:
-                _reason = "spread_too_tight" if spread_bps < min_bps else "spread_too_wide"
-                self._decision_logger.log_skip(
-                    symbol, _reason, timestamp=timestamp,
-                    mid=mid, spread_bps=spread_bps,
-                    hurst=state.hurst.h,
-                    har_rv_forecast=state.har_rv.predict_vol(),
-                    kalman_fv=fv,
-                )
-            return self._cancel_action(symbol)
+        p       = self.config.params
+        min_bps = p.get("min_spread_bps", 4.0)
+        max_bps = p.get("max_spread_bps", 20.0)
 
-        if state.wavelet.is_alert_active(timestamp):
-            if self._decision_logger:
-                self._decision_logger.log_skip(
-                    symbol, "wavelet_alert_active", timestamp=timestamp,
+        if not (min_bps <= spread_bps <= max_bps):
+            reason = "spread_too_tight" if spread_bps < min_bps else "spread_too_wide"
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    symbol, reason, timestamp=ts,
                     mid=mid, spread_bps=spread_bps,
                     hurst=state.hurst.h,
                     har_rv_forecast=state.har_rv.predict_vol(),
                     kalman_fv=fv,
                 )
-            return self._cancel_action(symbol)
+            return self._cancel_decision(symbol)
+
+        if state.wavelet.is_alert_active(ts):
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    symbol, "wavelet_alert_active", timestamp=ts,
+                    mid=mid, spread_bps=spread_bps,
+                    hurst=state.hurst.h,
+                    har_rv_forecast=state.har_rv.predict_vol(),
+                    kalman_fv=fv,
+                )
+            return self._cancel_decision(symbol)
 
         hurst_mult = state.hurst.get_size_multiplier()
         if hurst_mult <= 0.0:
-            if self._decision_logger:
-                self._decision_logger.log_skip(
-                    symbol, "hurst_unfavorable", timestamp=timestamp,
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    symbol, "hurst_unfavorable", timestamp=ts,
                     mid=mid, spread_bps=spread_bps,
                     hurst=state.hurst.h,
                     har_rv_forecast=state.har_rv.predict_vol(),
                     kalman_fv=fv,
                 )
-            return self._cancel_action(symbol)
+            return self._cancel_decision(symbol)
 
         har_mult = state.har_rv.get_size_multiplier()
         if har_mult < 0.3:
-            if self._decision_logger:
-                self._decision_logger.log_skip(
-                    symbol, "har_rv_too_high", timestamp=timestamp,
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    symbol, "har_rv_too_high", timestamp=ts,
                     mid=mid, spread_bps=spread_bps,
                     hurst=state.hurst.h,
                     har_rv_forecast=state.har_rv.predict_vol(),
                     kalman_fv=fv,
                 )
-            return self._cancel_action(symbol)
+            return self._cancel_decision(symbol)
 
-        # Position already open — no new quotes
         if state.open_position is not None:
-            if self._decision_logger:
-                self._decision_logger.log_skip(
-                    symbol, "max_positions_reached", timestamp=timestamp,
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    symbol, "max_positions_reached", timestamp=ts,
                     mid=mid, spread_bps=spread_bps,
                     hurst=state.hurst.h,
                     har_rv_forecast=state.har_rv.predict_vol(),
@@ -190,180 +148,165 @@ class S8EconophysicsMakerScalping:
                 )
             return None
 
-        # Don't requote if fresh enough
-        refresh_s = self.p.get("quote_refresh_s", 5.0)
-        if (timestamp - state.last_quote_ts) < refresh_s:
+        refresh_s = p.get("quote_refresh_s", 5.0)
+        if (ts - state.last_quote_ts) < refresh_s:
             return None
 
-        # ── Compute quotes ───────────────────────────────────────────
         return self._compute_quotes(state, bid, ask, mid, spread, fv, drift,
-                                    hurst_mult, har_mult, timestamp)
+                                    hurst_mult, har_mult, ts)
 
-    # ------------------------------------------------------------------
-    # 2. Trade event → wavelet singularity check
-    # ------------------------------------------------------------------
+    def on_trade_update(self, symbol: str, trade, ts: float) -> None:
+        state = self.coin_states.get(symbol)
+        if state is None:
+            return
+        state.bouchaud.add_trade(
+            ts, trade.price, trade.volume_usd,
+            trade.best_bid, trade.best_ask, trade.side,
+        )
+        state.wavelet.update(trade.price, ts)
 
-    def on_trade_event(self, symbol: str, price: float, volume_usd: float,
-                       best_bid: float, best_ask: float,
-                       side: str, timestamp: float) -> Optional[dict]:
+    def on_bar_minute(self, symbol: str, bar: BarData, ts: float) -> Optional[StrategyDecision]:
+        state = self.coin_states.get(symbol)
+        if state:
+            state.har_rv.update(bar.return_1m)
+        return None
+
+    def on_fill(self, symbol: str, side: str, price: float, size: float,
+                ts: float, pos_id: str = "") -> Optional[dict]:
         state = self.coin_states.get(symbol)
         if state is None:
             return None
 
-        state.bouchaud.add_trade(timestamp, price, volume_usd,
-                                  best_bid, best_ask, side)
-
-        alert = state.wavelet.update(price, timestamp)
-        if alert:
-            log.debug("[%s] Wavelet singularity alert", symbol)
-            return self._cancel_action(symbol)
-
-        return None
-
-    # ------------------------------------------------------------------
-    # 3. Fill → open position + manage legs
-    # ------------------------------------------------------------------
-
-    def on_fill(self, symbol: str, side: str, fill_price: float,
-                size_units: float, notional_usd: float, timestamp: float) -> dict:
-        state = self.coin_states[symbol]
         state.fills += 1
-        self.total_trades += 1
+        notional_usd = size * price
 
-        stop_bps   = self.p.get("stop_loss_bps", 30) / 10_000
-        max_hold_s = self.p.get("max_hold_s", 60)
+        p          = self.config.params
+        stop_bps   = p.get("stop_loss_bps", 30) / 10_000
+        max_hold_s = int(p.get("max_hold_s", 60))
         tp_capture = 0.60
 
-        # TP distance = stop_distance × tp_capture (symmetric around stop size)
-        stop_dist = fill_price * stop_bps
-
+        stop_dist = price * stop_bps
         if side == "BUY":
-            tp_price   = fill_price + stop_dist * tp_capture
-            stop_price = fill_price * (1 - stop_bps)
+            tp_price   = price + stop_dist * tp_capture
+            stop_price = price * (1 - stop_bps)
         else:
-            tp_price   = fill_price - stop_dist * tp_capture
-            stop_price = fill_price * (1 + stop_bps)
+            tp_price   = price - stop_dist * tp_capture
+            stop_price = price * (1 + stop_bps)
 
         state.open_position = {
             "side":        side,
-            "entry":       fill_price,
-            "size":        size_units,
+            "entry":       price,
+            "size":        size,
             "notional":    notional_usd,
             "tp":          tp_price,
             "stop":        stop_price,
-            "opened_at":   timestamp,
-            "max_hold_ts": timestamp + max_hold_s,
+            "opened_at":   ts,
+            "max_hold_ts": ts + max_hold_s,
+            "pos_id":      pos_id,
         }
-
-        close_side = "SELL" if side == "BUY" else "BUY"
         return {
-            "action":     ACTION_MANAGE_POS,
-            "symbol":     symbol,
-            "tp_price":   round(tp_price, 8),
-            "stop_price": round(stop_price, 8),
-            "close_side": close_side,
-            "size":       size_units,
-            "notional":   notional_usd,
+            "tp_price":         round(tp_price, 8),
+            "stop_price":       round(stop_price, 8),
+            "max_hold_seconds": max_hold_s,
         }
 
-    # ------------------------------------------------------------------
-    # 4. Minute close → update HAR-RV
-    # ------------------------------------------------------------------
-
-    def on_minute_close(self, symbol: str, return_1m: float) -> None:
-        state = self.coin_states.get(symbol)
-        if state:
-            state.har_rv.update(return_1m)
-
-    # ------------------------------------------------------------------
-    # 5. Exit check (called every 500ms by engine)
-    # ------------------------------------------------------------------
-
-    def check_position_exits(self, symbol: str, mid: float,
-                              best_bid: float, best_ask: float,
-                              timestamp: float) -> Optional[dict]:
+    def check_position_exits(self, symbol: str, book, ts: float) -> Optional[StrategyDecision]:
         state = self.coin_states.get(symbol)
         if state is None or state.open_position is None:
             return None
 
-        pos = state.open_position
+        bid = getattr(book, "best_bid", None) or getattr(book, "mid", None)
+        ask = getattr(book, "best_ask", None) or getattr(book, "mid", None)
+        mid = getattr(book, "mid", None)
+        if mid is None:
+            mid = (bid + ask) / 2 if bid and ask else None
+        if mid is None:
+            return None
+
+        pos  = state.open_position
         side = pos["side"]
 
         stop_hit = (side == "BUY"  and mid <= pos["stop"]) or \
                    (side == "SELL" and mid >= pos["stop"])
-        # Maker TP: BUY limit-sell fills when bid rises to tp;
-        #           SELL limit-buy fills when ask drops to tp
-        tp_hit   = (side == "BUY"  and best_bid >= pos["tp"]) or \
-                   (side == "SELL" and best_ask <= pos["tp"])
-        max_hold = timestamp >= pos["max_hold_ts"]
+        tp_hit   = (side == "BUY"  and (bid or mid) >= pos["tp"]) or \
+                   (side == "SELL" and (ask or mid) <= pos["tp"])
+        max_hold = ts >= pos["max_hold_ts"]
 
         if not (stop_hit or tp_hit or max_hold):
             return None
 
-        reason = "stop_loss" if stop_hit else ("take_profit" if tp_hit else "max_hold")
-        if reason == "stop_loss":
-            exit_price = best_bid if side == "BUY" else best_ask
-        elif reason == "take_profit":
+        if stop_hit:
+            reason     = "stop_loss"
+            exit_price = bid if side == "BUY" else ask
+        elif tp_hit:
+            reason     = "take_profit"
             exit_price = pos["tp"]
         else:
+            reason     = "max_hold"
             exit_price = mid
 
-        # PnL
-        if side == "BUY":
-            pnl = (exit_price - pos["entry"]) / pos["entry"] * pos["notional"]
-        else:
-            pnl = (pos["entry"] - exit_price) / pos["entry"] * pos["notional"]
+        return StrategyDecision(
+            action="CLOSE", symbol=symbol, reason=reason,
+            metadata={
+                "exit_price": exit_price or mid,
+                "hold_s":     ts - pos["opened_at"],
+                "pos_id":     pos.get("pos_id"),
+            },
+        )
 
-        # Fees: maker entry (+0.3 bps), maker TP (−0.3 bps rebate), taker stop (+3 bps)
-        entry_rebate = pos["notional"] * 0.3 / 10_000
-        if reason == "take_profit":
-            exit_fee = -pos["notional"] * 0.3 / 10_000   # rebate
-        else:
-            exit_fee = pos["notional"] * 3.0 / 10_000
-        net_pnl = pnl + entry_rebate - exit_fee
+    def on_position_closed(self, symbol: str, pnl_net: float, exit_reason: str) -> None:
+        state = self.coin_states.get(symbol)
+        if state:
+            state.open_position = None
+            state.pnl    += pnl_net
+            self.daily_pnl += pnl_net
+        super().on_position_closed(symbol, pnl_net, exit_reason)
 
-        state.pnl += net_pnl
-        self.daily_pnl += net_pnl
-        state.open_position = None
-
-        close_side = "SELL" if side == "BUY" else "BUY"
+    def get_calibration_data(self, symbol: str) -> dict:
+        state = self.coin_states.get(symbol)
+        if state is None:
+            return {}
         return {
-            "action":      ACTION_CLOSE_MARKET,
-            "symbol":      symbol,
-            "close_side":  close_side,
-            "exit_price":  round(exit_price, 8),
-            "size":        pos["size"],
-            "notional":    pos["notional"],
-            "net_pnl":     net_pnl,
-            "reason":      reason,
-            "hold_s":      timestamp - pos["opened_at"],
+            "hurst":           state.hurst.h,
+            "hurst_regime":    state.hurst.get_regime(),
+            "har_rv_forecast": state.har_rv.predict_vol(),
+            "har_ratio":       state.har_rv.get_vol_ratio(),
+            "wavelet_alert":   state.wavelet.is_alert_active(time.time()),
+            "has_position":    state.open_position is not None,
         }
 
     # ------------------------------------------------------------------
-    # Internal helpers
+    # Engine-callable helpers (S8-specific, duck-typed by engine)
+    # ------------------------------------------------------------------
+
+    def register_pending(self, symbol: str, order_ids: list[str]) -> None:
+        self._pending_ids[symbol] = order_ids
+
+    def clear_pending(self, symbol: str) -> None:
+        self._pending_ids[symbol] = []
+
+    # ------------------------------------------------------------------
+    # Internal
     # ------------------------------------------------------------------
 
     def _compute_quotes(self, state: CoinState,
                         bid: float, ask: float, mid: float, spread: float,
                         fv: float, drift: float,
                         hurst_mult: float, har_mult: float,
-                        timestamp: float) -> Optional[dict]:
-        # Bouchaud skew
-        bouchaud_skew = state.bouchaud.get_quote_skew(timestamp, spread)
-        # Drift anticipation (5-tick horizon)
-        drift_skew = drift * 5
+                        ts: float) -> Optional[StrategyDecision]:
+        p             = self.config.params
+        bouchaud_skew = state.bouchaud.get_quote_skew(ts, spread)
+        drift_skew    = drift * 5
+        total_skew    = bouchaud_skew + drift_skew
 
-        total_skew = bouchaud_skew + drift_skew
-
-        # Sizing
-        base_notional = self.capital * self.p.get("base_notional_pct", 0.04)
-        size_mult = hurst_mult * har_mult
-        notional_usd = base_notional * size_mult * self.p.get("max_leverage", 5)
+        base_notional = self.config.capital_allocated_usd * p.get("base_notional_pct", 0.04)
+        size_mult     = hurst_mult * har_mult
+        notional_usd  = base_notional * size_mult * p.get("max_leverage", 5)
 
         if notional_usd < 10:
-            if self._decision_logger:
-                self._decision_logger.log_skip(
-                    state.symbol, "notional_too_small", timestamp=timestamp,
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    state.symbol, "notional_too_small", timestamp=ts,
                     mid=mid, spread_bps=spread / mid * 10_000,
                     hurst=state.hurst.h,
                     har_rv_forecast=state.har_rv.predict_vol(),
@@ -372,19 +315,17 @@ class S8EconophysicsMakerScalping:
             return None
 
         size_units = notional_usd / max(fv, 1e-9)
-
         buy_price  = fv - spread / 2 + total_skew
         sell_price = fv + spread / 2 + total_skew
 
-        # POST_ONLY guard
         if buy_price >= ask:
             buy_price = ask - ask * 5e-5
         if sell_price <= bid:
             sell_price = bid + bid * 5e-5
         if buy_price >= sell_price:
-            if self._decision_logger:
-                self._decision_logger.log_skip(
-                    state.symbol, "spread_invalid_after_skew", timestamp=timestamp,
+            if self.decision_logger:
+                self.decision_logger.log_skip(
+                    state.symbol, "spread_invalid_after_skew", timestamp=ts,
                     mid=mid, spread_bps=spread / mid * 10_000,
                     hurst=state.hurst.h,
                     har_rv_forecast=state.har_rv.predict_vol(),
@@ -392,11 +333,11 @@ class S8EconophysicsMakerScalping:
                 )
             return None
 
-        state.last_quote_ts = timestamp
+        state.last_quote_ts = ts
 
-        if self._decision_logger:
-            self._decision_logger.log_place(
-                state.symbol, timestamp=timestamp,
+        if self.decision_logger:
+            self.decision_logger.log_place(
+                state.symbol, timestamp=ts,
                 mid=mid, spread_bps=spread / mid * 10_000,
                 hurst=state.hurst.h,
                 har_rv_forecast=state.har_rv.predict_vol(),
@@ -407,37 +348,31 @@ class S8EconophysicsMakerScalping:
                 notional_usd=notional_usd,
             )
 
-        return {
-            "action":       ACTION_PLACE_QUOTES,
-            "symbol":       state.symbol,
-            "buy_price":    round(buy_price, 8),
-            "sell_price":   round(sell_price, 8),
-            "size":         size_units,
-            "notional_usd": notional_usd,
-            "meta": {
-                "hurst":           state.hurst.h,
-                "hurst_regime":    state.hurst.get_regime(),
-                "har_ratio":       state.har_rv.get_vol_ratio(),
-                "bouchaud_skew":   bouchaud_skew,
-                "drift_skew":      drift_skew,
-                "kalman_fv":       fv,
-                "spread_bps":      spread / mid * 10_000,
-                "size_mult":       size_mult,
+        return StrategyDecision(
+            action="PLACE_QUOTES",
+            symbol=state.symbol,
+            buy_price=round(buy_price, 8),
+            sell_price=round(sell_price, 8),
+            size=size_units,
+            notional_usd=notional_usd,
+            metadata={
+                "hurst":         state.hurst.h,
+                "hurst_regime":  state.hurst.get_regime(),
+                "har_ratio":     state.har_rv.get_vol_ratio(),
+                "bouchaud_skew": bouchaud_skew,
+                "drift_skew":    drift_skew,
+                "kalman_fv":     fv,
+                "spread_bps":    spread / mid * 10_000,
+                "size_mult":     size_mult,
             },
-        }
+        )
 
-    def _cancel_action(self, symbol: str) -> Optional[dict]:
+    def _cancel_decision(self, symbol: str) -> Optional[StrategyDecision]:
         ids = self._pending_ids.get(symbol, [])
         if not ids:
             return None
-        return {
-            "action":   ACTION_CANCEL_QUOTES,
-            "symbol":   symbol,
-            "order_ids": list(ids),
-        }
-
-    def register_pending(self, symbol: str, order_ids: list[str]) -> None:
-        self._pending_ids[symbol] = order_ids
-
-    def clear_pending(self, symbol: str) -> None:
-        self._pending_ids[symbol] = []
+        return StrategyDecision(
+            action="CANCEL_QUOTES",
+            symbol=symbol,
+            metadata={"order_ids": list(ids)},
+        )
