@@ -55,7 +55,8 @@ class EngineV9:
 
     def __init__(self, config_path: str = "config_v9.json",
                  paper: bool = True,
-                 symbols: Optional[list[str]] = None):
+                 symbols: Optional[list[str]] = None,
+                 enable_strategies: Optional[list[str]] = None):
 
         cfg_file = Path(__file__).parent / config_path
         with open(cfg_file) as f:
@@ -125,6 +126,9 @@ class EngineV9:
             decision_logger=self.decision_logger,
             kill_switch=self.ks,
         )
+        # --strategy flag: override enabled flags from config
+        _force_enable = {s.upper() for s in (enable_strategies or [])}
+
         for sc in strategies_cfg:
             cls_name = sc.get("class", sc.get("name", ""))
             cls = _STRATEGY_CLASSES.get(cls_name)
@@ -134,9 +138,16 @@ class EngineV9:
             coins = [c.upper() for c in sc.get("coins", [])]
             if symbols:
                 coins = [c for c in coins if c in self.symbols]
+
+            # If --strategy flag given: enable only those named, disable the rest
+            if _force_enable:
+                enabled = sc["name"].upper() in _force_enable
+            else:
+                enabled = sc.get("enabled", True)
+
             strat_cfg = StrategyConfig(
                 name=sc["name"],
-                enabled=sc.get("enabled", True),
+                enabled=enabled,
                 capital_allocated_usd=float(sc.get("capital_allocated_usd", 100.0)),
                 max_positions=int(sc.get("max_positions", 1)),
                 max_position_size_usd=float(sc.get("max_position_size_usd", 100.0)),
@@ -683,10 +694,12 @@ async def _main(args: argparse.Namespace) -> None:
         cfg = json.load(f)
     _setup_logging(cfg.get("logging", {}))
 
-    symbols = [s.strip().upper() for s in args.coins.split(",")] if args.coins else None
-    paper   = not args.live
+    symbols          = [s.strip().upper() for s in args.coins.split(",")]     if args.coins     else None
+    enable_strategies = [s.strip()        for s in args.strategy.split(",")]  if args.strategy  else None
+    paper             = not args.live
 
-    engine = EngineV9(config_path=args.config, paper=paper, symbols=symbols)
+    engine = EngineV9(config_path=args.config, paper=paper,
+                      symbols=symbols, enable_strategies=enable_strategies)
 
     loop = asyncio.get_running_loop()
     try:
@@ -708,8 +721,12 @@ if __name__ == "__main__":
     parser.add_argument("--paper",  action="store_true", default=True)
     parser.add_argument("--live",   action="store_true",
                         help="Real money. Only after 14-day paper validation.")
-    parser.add_argument("--coins",  type=str, default="",
+    parser.add_argument("--coins",     type=str, default="",
                         help="Comma-separated coin override, e.g. BTC,ETH,SOL")
+    parser.add_argument("--strategy", type=str, default="",
+                        help="Enable only these strategies (comma-separated). "
+                             "Overrides config enabled flags. "
+                             "e.g. MomentumLS,BreakoutControlled")
     args = parser.parse_args()
 
     if args.live:
