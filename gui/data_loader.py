@@ -4,6 +4,7 @@ data_loader.py — Read-only CSV loaders with mtime-based cache.
 All paths are relative to the repo root (where `python -m gui.app` is run).
 Returns empty DataFrames when files are missing — never raises on missing data.
 """
+import json
 import os
 from pathlib import Path
 from typing import Optional
@@ -78,3 +79,39 @@ def recent_decisions(hours: float = 2.0) -> pd.DataFrame:
         return df
     cutoff = time.time() - hours * 3600
     return df[df["timestamp"] >= cutoff].copy()
+
+
+# ---------------------------------------------------------------------------
+# Runtime JSON loaders (written by engine every 60s)
+# ---------------------------------------------------------------------------
+
+STRATEGY_STATUS_PATH = "runtime/strategy_status.json"
+CALIBRATION_PATH     = "runtime/calibration_data.json"
+
+_json_cache: dict = {}
+
+
+def _cached_json(path: str):
+    p = Path(path)
+    if not p.exists():
+        return None
+    try:
+        mtime = p.stat().st_mtime
+        if path in _json_cache and _json_cache[path][0] == mtime:
+            return _json_cache[path][1]
+        with open(p) as f:
+            data = json.load(f)
+        _json_cache[path] = (mtime, data)
+        return data
+    except Exception:
+        return None
+
+
+def load_strategy_status() -> list:
+    data = _cached_json(STRATEGY_STATUS_PATH)
+    return data if isinstance(data, list) else []
+
+
+def load_calibration() -> dict:
+    data = _cached_json(CALIBRATION_PATH)
+    return data if isinstance(data, dict) else {}
