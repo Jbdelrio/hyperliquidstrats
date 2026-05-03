@@ -1,0 +1,589 @@
+2026-05-03 16:39:45,918 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 16:39:45,922 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,923 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,924 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,924 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,925 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,925 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,926 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,926 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,926 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:39:45,927 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 16:39:45,928 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 16:39:45,928 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 16:39:46,578 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 16:39:48,924 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 16:39:48,925 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 16:39:50,325 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 16:40:49,941 INFO __main__ Shutting down v9...
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 650, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 744, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 716, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 666, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 650, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 16:41:12,270 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 16:41:12,271 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,273 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,274 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,274 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,275 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,275 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,275 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,276 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,276 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,276 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 16:41:12,277 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 16:41:12,277 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 16:41:12,876 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 16:41:15,290 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 16:41:15,290 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 16:41:16,606 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 16:41:46,701 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121620 notional=$10
+2026-05-03 16:42:15,599 INFO __main__ Shutting down v9...
+2026-05-03 16:42:15,599 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121620 exit=0.121595 net=$-0.0006 hold=29s shutdown
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 650, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 744, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 716, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 666, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 650, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 16:44:15,709 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 16:44:15,709 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,711 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 16:44:15,713 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 16:44:15,713 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 16:44:16,239 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 16:44:18,721 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 16:44:18,722 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 16:44:19,986 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 16:44:41,007 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121630 notional=$10
+2026-05-03 16:45:19,507 INFO __main__ Shutting down v9...
+2026-05-03 16:45:19,508 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121630 exit=0.121660 net=$-0.0052 hold=39s shutdown
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 650, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 744, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 716, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 666, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 650, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 17:46:39,313 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 17:46:39,315 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,316 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,318 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,318 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,319 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,319 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,320 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,320 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,321 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 17:46:39,322 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 17:46:39,322 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 17:46:39,968 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 17:46:42,341 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 17:46:42,341 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 17:46:43,791 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 17:46:56,545 INFO execution.high_freq_executor [FILL] OP SELL @ 0.122010 notional=$10
+2026-05-03 17:47:43,370 INFO __main__ Shutting down v9...
+2026-05-03 17:47:43,370 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.122010 exit=0.122075 net=$-0.0080 hold=47s shutdown
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 746, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 718, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 668, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 18:21:26,197 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 18:21:26,197 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,213 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 18:21:26,215 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 18:21:26,215 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 18:21:26,798 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 18:21:29,210 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 18:21:29,210 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 18:21:30,495 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 18:22:29,922 INFO __main__ Shutting down v9...
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 746, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 718, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 668, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 19:02:13,518 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 19:02:13,539 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,549 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,549 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,551 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,553 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,555 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,555 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,557 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,559 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,559 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,561 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,564 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:02:13,564 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:02:13,564 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:02:13,566 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:02:13,566 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 19:02:13,566 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 19:02:13,566 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 19:02:14,479 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 19:02:16,569 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 19:02:16,570 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 19:02:18,246 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 19:03:17,392 INFO __main__ Shutting down v9...
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 746, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 718, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 668, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 19:03:54,361 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 19:03:54,367 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,367 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,372 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 19:03:54,372 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 19:03:54,372 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 19:03:54,373 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 19:03:54,944 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 19:03:57,391 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 19:03:57,391 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 19:03:58,701 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 19:04:30,405 INFO execution.high_freq_executor [FILL] OP SELL @ 0.121910 notional=$10
+2026-05-03 19:04:58,718 INFO __main__ Shutting down v9...
+2026-05-03 19:04:58,719 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.121910 exit=0.121945 net=$-0.0056 hold=28s shutdown
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 746, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 718, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 668, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 20:49:39,816 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 20:49:39,822 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,828 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,830 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,832 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,834 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,836 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,838 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,840 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,842 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,842 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,844 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,846 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 20:49:39,846 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 20:49:39,848 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 20:49:39,848 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 20:49:39,848 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 20:49:39,850 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 20:49:39,850 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 20:49:40,698 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 20:49:42,842 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 20:49:42,843 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 20:49:44,482 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 20:50:42,860 INFO __main__ Shutting down v9...
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 746, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 718, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 668, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+2026-05-03 21:01:30,395 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,395 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 21:01:30,411 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 21:01:30,411 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 21:01:31,197 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 21:01:33,415 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 21:01:33,415 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 21:01:34,913 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 21:02:22,747 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-03 21:02:22,747 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-03 21:02:22,747 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage']
+2026-05-03 21:02:23,427 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-03 21:02:25,761 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-03 21:02:25,761 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-03 21:02:27,195 INFO data.orderbook_manager All subscriptions sent.
+2026-05-03 21:03:25,809 INFO __main__ Shutting down v9...
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 196, in run
+    await asyncio.gather(
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 343, in _dashboard_loop
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 746, in <module>
+    asyncio.run(_main(args))
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 718, in _main
+    await engine.run()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 208, in run
+    await self._shutdown()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 668, in _shutdown
+    self._print_dashboard()
+  File "C:\Users\jeanb\Documents\Mercantour\Arbitragedetector\genepi\gptversion\artemisia\hyperliquidbis\artemisia_v9\engine_v9.py", line 652, in _print_dashboard
+    print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>

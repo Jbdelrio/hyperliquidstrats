@@ -35,6 +35,8 @@ class MeanReversionKalman(BaseStrategy):
         self._fv_cache:    dict[str, float] = {}
         self._positions:   dict[str, dict]  = {}
         self._last_vol:    dict[str, deque] = {c: deque(maxlen=60) for c in config.coins}
+        # Warmup: per-symbol timestamp of first book update seen
+        self._first_seen:  dict[str, float] = {}
 
     # ------------------------------------------------------------------
 
@@ -64,7 +66,12 @@ class MeanReversionKalman(BaseStrategy):
         inno_buf   = self._innovations[symbol]
         inno_buf.append(innovation)
 
-        if len(inno_buf) < 30:
+        warmup_s = p.get("warmup_seconds", 300)
+        if symbol not in self._first_seen:
+            self._first_seen[symbol] = ts
+        if ts - self._first_seen[symbol] < warmup_s:
+            return None
+        if len(inno_buf) < 200:
             return None
 
         sigma = float(np.std(list(inno_buf)))

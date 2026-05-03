@@ -91,6 +91,7 @@
       "suspend_minutes_on_kill": 30,
       "coins": ["BTC","ETH","SOL"],
       "params": {
+        "warmup_seconds": 300,
         "z_entry": 2.0,
         "z_exit": 0.0,
         "z_stop": 3.5,
@@ -127,7 +128,7 @@
     "max_dd_total_pct": 0.060,
     "max_open_positions": 8,
     "max_notional_total": 2000,
-    "network_timeout_s": 20,
+    "network_timeout_s": 60,
     "max_trades_per_hour": 50,
     "max_loss_streak": 6,
     "btc_move_5m_pct": 1.2,
@@ -152,6 +153,6 @@
     "result_file": "runtime/control_result.json",
     "status_file": "runtime/strategy_status.json",
     "calibration_file": "runtime/calibration_data.json",
-    "status_interval_s": 60
+    "status_interval_s": 10
   }
 }
