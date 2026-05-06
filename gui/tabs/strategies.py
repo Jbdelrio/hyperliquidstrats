@@ -13,7 +13,7 @@ import time
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dash_table, dcc, html
+from dash import ALL, Input, Output, State, dash_table, dcc, html
 
 from gui.control_api import ControlAPI
 from gui.data_loader import load_strategy_status
@@ -26,30 +26,30 @@ _ALL = ["S8EMS", "MomentumLS", "BreakoutControlled",
         "MeanReversionKalman", "FundingArbitrage"]
 
 _DEF = {
-    "S8EMS":              {"capital": 100, "enabled": False,
-                           "params": {"min_spread_bps": 4.0, "max_hold_s": 60,
-                                      "stop_loss_bps": 30, "max_leverage": 5,
-                                      "quote_refresh_s": 5.0, "bouchaud_decay_s": 30,
-                                      "wavelet_threshold": 3.0}},
+    "S8EMS":              {"capital": 100, "enabled": True,
+                           "params": {"min_spread_bps": 1.5, "max_hold_s": 180,
+                                      "stop_loss_bps": 50, "max_leverage": 5,
+                                      "quote_refresh_s": 2.0, "bouchaud_decay_s": 15,
+                                      "wavelet_threshold": 6.0}},
     "MomentumLS":         {"capital": 150, "enabled": True,
-                           "params": {"rerank_seconds": 300, "top_k_long": 4,
-                                      "bottom_k_short": 4, "score_threshold": 75,
-                                      "stop_loss_pct": 2.5, "take_profit_pct": 3.0,
-                                      "trailing_stop_pct": 1.5, "max_hold_hours": 4}},
+                           "params": {"rerank_seconds": 60, "top_k_long": 6,
+                                      "bottom_k_short": 6, "score_threshold": 20,
+                                      "stop_loss_pct": 4.0, "take_profit_pct": 1.5,
+                                      "trailing_stop_pct": 2.0, "max_hold_hours": 12}},
     "BreakoutControlled": {"capital": 100, "enabled": True,
-                           "params": {"lookback_bars": 60, "bo_max_pct": 4.0,
-                                      "vr_min": 1.5, "take_profit_pct": 5.0,
-                                      "stop_below_resistance_pct": 0.5,
-                                      "max_hold_hours": 2}},
-    "MeanReversionKalman":{"capital": 100, "enabled": False,
-                           "params": {"warmup_seconds": 300, "z_entry": 2.0,
-                                      "z_exit": 0.0, "z_stop": 3.5,
-                                      "vol_max_pct_per_min": 0.15,
-                                      "max_hold_minutes": 30}},
-    "FundingArbitrage":   {"capital":  50, "enabled": False,
-                           "params": {"funding_entry_threshold_pct_per_hour": 0.03,
-                                      "funding_exit_threshold_pct_per_hour": 0.005,
-                                      "stop_loss_pct": 3.0, "max_hold_cycles": 3}},
+                           "params": {"lookback_bars": 15, "bo_max_pct": 10.0,
+                                      "vr_min": 1.0, "take_profit_pct": 2.5,
+                                      "stop_below_resistance_pct": 1.5,
+                                      "max_hold_hours": 8}},
+    "MeanReversionKalman":{"capital": 100, "enabled": True,
+                           "params": {"warmup_seconds": 60, "z_entry": 1.0,
+                                      "z_exit": 0.2, "z_stop": 4.5,
+                                      "vol_max_pct_per_min": 1.0,
+                                      "max_hold_minutes": 120}},
+    "FundingArbitrage":   {"capital":  50, "enabled": True,
+                           "params": {"funding_entry_threshold_pct_per_hour": 0.005,
+                                      "funding_exit_threshold_pct_per_hour": 0.001,
+                                      "stop_loss_pct": 5.0, "max_hold_cycles": 12}},
 }
 
 _BTN = {"fontWeight": "700", "fontSize": "11px"}
@@ -79,6 +79,63 @@ def _sec(txt):
 def _eid(s): return f"hdr-{s}"          # header div children
 def _dt(s):  return f"dt-{s}"           # DataTable
 def _fb(s):  return f"fb-{s}"           # feedback span
+def _pd(s):  return f"pos-div-{s}"      # positions div
+
+_TH_POS = {"backgroundColor": "#060606", "color": COLORS["accent"],
+           "fontWeight": "bold", "fontSize": "10px",
+           "border": _BDR, "padding": "3px 6px", "letterSpacing": "1px",
+           "textTransform": "uppercase"}
+_TD_POS = {"border": _BDR, "padding": "3px 6px", "fontSize": "11px",
+           "fontFamily": "Consolas, monospace", "color": COLORS["text_light"]}
+
+
+def _render_positions(name: str, positions: list) -> html.Div:
+    header = _sec("Positions ouvertes")
+    if not positions:
+        return html.Div([
+            header,
+            html.Small("— aucune position —",
+                       style={"color": "#444", "fontSize": "11px",
+                              "paddingLeft": "4px", "fontStyle": "italic"}),
+        ])
+    rows = []
+    for p in positions:
+        upnl = p.get("unrealized_pnl", 0.0)
+        uc   = COLORS["success"] if upnl >= 0 else COLORS["danger"]
+        sc   = COLORS["success"] if p["side"] == "BUY" else COLORS["danger"]
+        tp   = p.get("tp_price") or "—"
+        sl   = p.get("stop_price") or "—"
+        tp_s = f"{tp:.5g}" if isinstance(tp, float) else tp
+        sl_s = f"{sl:.5g}" if isinstance(sl, float) else sl
+        rows.append(html.Tr([
+            html.Td(p["symbol"],                      style={**_TD_POS, "color": COLORS["accent"], "fontWeight": "700"}),
+            html.Td(p["side"],                        style={**_TD_POS, "color": sc, "fontWeight": "700"}),
+            html.Td(f"${p['notional_usd']:.0f}",     style=_TD_POS),
+            html.Td(f"{p['entry_price']:.5g}",        style=_TD_POS),
+            html.Td(f"{p.get('current_price', p['entry_price']):.5g}", style=_TD_POS),
+            html.Td(f"${upnl:+.4f}",                  style={**_TD_POS, "color": uc, "fontWeight": "700"}),
+            html.Td(f"{p['hold_s']}s",                style=_TD_POS),
+            html.Td(f"TP {tp_s}",                     style={**_TD_POS, "color": "#888"}),
+            html.Td(f"SL {sl_s}",                     style={**_TD_POS, "color": "#888"}),
+            html.Td(
+                dbc.Button("✕ Close", size="sm", color="danger",
+                           id={"type": "close-pos", "index": f"{name}|{p['pos_id']}"},
+                           style={"padding": "1px 7px", "fontSize": "10px",
+                                  "fontWeight": "700", "lineHeight": "1.4"}),
+                style={**_TD_POS, "padding": "2px 4px"},
+            ),
+        ]))
+    thead = html.Thead(html.Tr([
+        html.Th(h, style=_TH_POS) for h in
+        ["COIN", "SIDE", "NOTIO", "ENTRY", "MID", "PNL", "HOLD", "TP", "SL", ""]
+    ]))
+    return html.Div([
+        header,
+        html.Table(
+            [thead, html.Tbody(rows)],
+            style={"width": "100%", "borderCollapse": "collapse", "marginBottom": "4px"},
+        ),
+    ])
 
 
 def _strat_card(name: str) -> dbc.Card:
@@ -184,6 +241,9 @@ def _strat_card(name: str) -> dbc.Card:
                                    style={**_BTN, "fontWeight": "700"}),
                         width="auto"),
             ], className="g-2 align-items-center"),
+
+            # Live positions (updated every refresh)
+            html.Div(id=_pd(name), style={"marginTop": "6px"}),
         ]),
     ])
 
@@ -301,15 +361,14 @@ def register_callbacks(app) -> None:
         r = engine_ctrl.stop()
         return _ok("✓ Arrêté.") if r["ok"] else _err(f"✗ {r['error']}")
 
-    # ── Refresh ALL DataTables + badges (single callback, N outputs) ──────
+    # ── Refresh badges + capital + positions (DataTable NOT overwritten) ─
+    # The DataTable keeps its local state so user edits survive the auto-refresh.
 
     @app.callback(
-        # 5× DataTable data
-        *[Output(_dt(s), "data")          for s in _ALL],
-        # 5× badge label + color
-        *[Output(f"badge-{s}",   "children")               for s in _ALL],
-        *[Output(f"badge-{s}",   "style")                  for s in _ALL],
-        *[Output(f"cap-disp-{s}", "children")               for s in _ALL],
+        *[Output(f"badge-{s}",    "children")  for s in _ALL],
+        *[Output(f"badge-{s}",    "style")     for s in _ALL],
+        *[Output(f"cap-disp-{s}", "children")  for s in _ALL],
+        *[Output(_pd(s),          "children")  for s in _ALL],
         Input("refresh-interval", "n_intervals"),
     )
     def _refresh_all(_n):
@@ -317,23 +376,13 @@ def register_callbacks(app) -> None:
         live = {s.get("name"): s for s in live_list}
         now  = time.time()
 
-        dt_data, badges, badge_styles, cap_disps = [], [], [], []
+        badges, badge_styles, cap_disps, pos_divs = [], [], [], []
 
         for name in _ALL:
             s    = live.get(name, {})
             dflt = _DEF[name]
 
-            # Params (live or fallback to defaults)
-            raw = (s.get("params", {}) if s
-                   else dflt["params"])
-            params = {k: v for k, v in raw.items()
-                      if isinstance(v, (int, float)) and not isinstance(v, bool)}
-            if not params:
-                params = dflt["params"]
-            dt_data.append([{"param": k, "value": v, "original": v}
-                             for k, v in params.items()])
-
-            # Status
+            # Status badge
             ena  = s.get("enabled", dflt["enabled"]) if s else dflt["enabled"]
             susp = float(s.get("suspended_until", 0) or 0)
             is_s = susp > now
@@ -346,10 +395,14 @@ def register_callbacks(app) -> None:
                                   "padding": "3px 7px"})
 
             # Capital display
-            cap = s.get("capital_allocated_usd", dflt["capital"])
+            cap = s.get("capital_allocated_usd", dflt["capital"]) if s else dflt["capital"]
             cap_disps.append(f"${cap:.0f}")
 
-        return (*dt_data, *badges, *badge_styles, *cap_disps)
+            # Open positions
+            positions = s.get("open_positions", []) if s else []
+            pos_divs.append(_render_positions(name, positions))
+
+        return (*badges, *badge_styles, *cap_disps, *pos_divs)
 
     # ── Action buttons (all 5 strategies × 5 actions = 25 inputs) ────────
 
@@ -446,6 +499,31 @@ def register_callbacks(app) -> None:
                    if r.get("value") != r.get("original")]
         summary = ", ".join(changed) if changed else "aucune modification"
         empty[idx] = _ok(f"✓ {name} — {summary} — ~5s")
+        return empty
+
+    # ── Manual position close (pattern-matched, one callback for all) ────
+
+    @app.callback(
+        *[Output(_fb(s), "children", allow_duplicate=True) for s in _ALL],
+        Input({"type": "close-pos", "index": ALL}, "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def _close_position(n_clicks_list):
+        trig = dash.ctx.triggered_id
+        empty = [""] * len(_ALL)
+        if not trig or not any(c for c in (n_clicks_list or []) if c):
+            return empty
+        # index format: "<strat_name>|<pos_id>"
+        parts     = trig["index"].split("|", 1)
+        strat_name, pos_id = (parts[0], parts[1]) if len(parts) == 2 else ("", trig["index"])
+        try:
+            _api.close_position(pos_id)
+        except Exception as exc:
+            if strat_name in _ALL:
+                empty[_ALL.index(strat_name)] = _err(f"✗ {exc}")
+            return empty
+        if strat_name in _ALL:
+            empty[_ALL.index(strat_name)] = _ok(f"✓ Close {strat_name}/{pos_id[:8]} envoyé — ~5s")
         return empty
 
     # ── Global commands ───────────────────────────────────────────────────

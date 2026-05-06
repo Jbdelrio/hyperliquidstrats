@@ -46,12 +46,15 @@ class EngineController:
 
         try:
             log_fh = open(_LOG, "a", encoding="utf-8")
+            _env = os.environ.copy()
+            _env["PYTHONUTF8"] = "1"
             proc   = subprocess.Popen(
                 cmd,
                 cwd=str(_REPO),
                 stdout=log_fh,
                 stderr=subprocess.STDOUT,
                 creationflags=_WIN_FLAGS,
+                env=_env,
             )
             log_fh.close()   # child has a duplicate handle — safe to close here
             _PID.write_text(str(proc.pid), encoding="utf-8")

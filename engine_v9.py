@@ -341,7 +341,10 @@ class EngineV9:
     async def _dashboard_loop(self) -> None:
         while self._running:
             await asyncio.sleep(self._dashboard_interval)
-            self._print_dashboard()
+            try:
+                self._print_dashboard()
+            except Exception:
+                pass
 
     # ------------------------------------------------------------------
     # Loop G — control file (2s)
@@ -381,6 +384,9 @@ class EngineV9:
                     json.dump({"command_id": cmd_id, "result": result}, f)
                     f.flush()
                     import os as _os; _os.fsync(f.fileno())
+                # Flush status immediately so GUI reflects changes without waiting
+                await self._write_status(status_file, calib_file)
+                last_status_t = ts
             except (json.JSONDecodeError, FileNotFoundError, OSError):
                 pass
 
@@ -512,7 +518,7 @@ class EngineV9:
             bk = self._last_book.get(sym)
             exit_price = (getattr(bk, "mid", None) if bk else None) or pos.entry_price
 
-        net_pnl = self.executor.close_position(pos, exit_price, reason)
+        net_pnl = self.executor.close_position(pos, exit_price, reason, strategy=strat_name)
         hold_s  = meta.get("hold_s", ts - pos.entry_ts)
 
         self.equity += net_pnl
@@ -548,8 +554,33 @@ class EngineV9:
 
     async def _write_status(self, status_file: Path, calib_file: Path) -> None:
         try:
+            status = self.manager.get_status()
+            now = time.time()
+            # Group open positions by strategy, with unrealised PnL
+            pos_by_strat: dict = {}
+            for pos in self.executor.open_positions:
+                sname = self._pos_to_strategy.get(pos.pos_id, "unknown")
+                mid   = getattr(self._last_book.get(pos.symbol), "mid", None) or pos.entry_price
+                if pos.side == "BUY":
+                    upnl = (mid - pos.entry_price) / pos.entry_price * pos.notional_usd
+                else:
+                    upnl = (pos.entry_price - mid) / pos.entry_price * pos.notional_usd
+                pos_by_strat.setdefault(sname, []).append({
+                    "pos_id":         pos.pos_id,
+                    "symbol":         pos.symbol,
+                    "side":           pos.side,
+                    "notional_usd":   round(pos.notional_usd, 2),
+                    "entry_price":    pos.entry_price,
+                    "current_price":  round(mid, 6),
+                    "unrealized_pnl": round(upnl, 4),
+                    "hold_s":         int(now - pos.entry_ts),
+                    "tp_price":       pos.tp_price,
+                    "stop_price":     pos.stop_price,
+                })
+            for s in status:
+                s["open_positions"] = pos_by_strat.get(s["name"], [])
             with open(status_file, "w") as f:
-                json.dump(self.manager.get_status(), f, default=str)
+                json.dump(status, f, default=str)
             with open(calib_file, "w") as f:
                 json.dump(self.manager.get_calibration_data(), f, default=str)
         except Exception as e:
@@ -578,6 +609,9 @@ class EngineV9:
                 else:
                     return self.manager.control(name, action)
 
+            elif command == "close_position":
+                return self._close_position_sync(args.get("pos_id", ""), ts)
+
             elif command == "flatten_strategy":
                 return self._flatten_strategy_sync(args.get("strategy", ""), ts)
 
@@ -604,6 +638,19 @@ class EngineV9:
         except Exception as e:
             return {"ok": False, "error": str(e)}
 
+    def _close_position_sync(self, pos_id: str, ts: float) -> dict:
+        pos = next((p for p in self.executor.open_positions if p.pos_id == pos_id), None)
+        if not pos:
+            return {"ok": False, "error": f"position {pos_id} not found"}
+        mid = getattr(self._last_book.get(pos.symbol), "mid", None) or pos.entry_price
+        sname = self._pos_to_strategy.get(pos.pos_id, "")
+        net = self.executor.close_position(pos, mid, "manual_close", strategy=sname)
+        if sname:
+            strat = self.manager.get(sname)
+            if strat:
+                strat.on_position_closed(pos.symbol, net, "manual_close")
+        return {"ok": True, "net_pnl": round(net, 4), "symbol": pos.symbol}
+
     def _flatten_strategy_sync(self, name: str, ts: float) -> dict:
         strat = self.manager.get(name)
         if strat:
@@ -613,7 +660,7 @@ class EngineV9:
         for pos in list(self.executor.open_positions):
             if self._pos_to_strategy.get(pos.pos_id) == name:
                 mid = getattr(self._last_book.get(pos.symbol), "mid", None) or pos.entry_price
-                net = self.executor.close_position(pos, mid, "flatten_strategy")
+                net = self.executor.close_position(pos, mid, "flatten_strategy", strategy=name)
                 self.equity += net
                 if strat:
                     strat.on_position_closed(pos.symbol, net, "flatten_strategy")
@@ -650,8 +697,11 @@ class EngineV9:
             reconnections=self.obm.reconnections,
             pick_rates=self.adv_mon.get_all_pick_rates(),
         )
-        print(f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}",
-              flush=True)
+        text = f"\n{self.tracker.get_dashboard(snap=snap, ks_status=self.ks.status_dict(), pos_detail=pos_detail, bl_detail=strat_summary)}"
+        try:
+            print(text, flush=True)
+        except UnicodeEncodeError:
+            print(text.encode("utf-8", "replace").decode("utf-8"), flush=True)
 
     # ------------------------------------------------------------------
     # Shutdown
@@ -666,7 +716,10 @@ class EngineV9:
         self.executor.close_all_market(mids, "shutdown")
         self.decision_logger.flush()
         await self.obm.stop()
-        self._print_dashboard()
+        try:
+            self._print_dashboard()
+        except Exception:
+            pass
 
 
 # ---------------------------------------------------------------------------

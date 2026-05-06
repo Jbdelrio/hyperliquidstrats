@@ -230,7 +230,7 @@ class HighFreqExecutor:
         return to_close
 
     def close_position(self, pos: "OpenPosition", exit_price: float,
-                        reason: str) -> float:
+                        reason: str, strategy: str = "") -> float:
         if pos.side == "BUY":
             gross = (exit_price - pos.entry_price) / pos.entry_price * pos.notional_usd
         else:
@@ -246,7 +246,7 @@ class HighFreqExecutor:
                  pos.symbol, pos.side, pos.entry_price, exit_price, net, hold_s, reason)
 
         self._positions.pop(pos.pos_id, None)
-        self._log_trade(pos, exit_price, gross, exit_fee - entry_rebate, net, reason, hold_s)
+        self._log_trade(pos, exit_price, gross, exit_fee - entry_rebate, net, reason, hold_s, strategy)
         return net
 
     # ------------------------------------------------------------------
@@ -288,21 +288,21 @@ class HighFreqExecutor:
 
     def _log_trade(self, pos: "OpenPosition", exit_price: float,
                    gross: float, fee: float, net: float,
-                   reason: str, hold_s: float):
+                   reason: str, hold_s: float, strategy: str = ""):
         try:
             write_hdr = not Path(self.trade_log).exists()
-            with open(self.trade_log, "a", newline="") as f:
+            with open(self.trade_log, "a", newline="", encoding="utf-8") as f:
                 w = csv.writer(f)
                 if write_hdr:
                     w.writerow(["ts", "symbol", "side", "notional",
                                  "entry", "exit", "gross", "fee", "net",
-                                 "hold_s", "reason"])
+                                 "hold_s", "reason", "strategy"])
                 w.writerow([
                     time.strftime("%Y-%m-%dT%H:%M:%S"),
                     pos.symbol, pos.side, round(pos.notional_usd, 2),
                     round(pos.entry_price, 8), round(exit_price, 8),
                     round(gross, 6), round(fee, 6), round(net, 6),
-                    round(hold_s, 1), reason,
+                    round(hold_s, 1), reason, strategy,
                 ])
         except Exception as e:
             log.error("Trade log write failed: %s", e)

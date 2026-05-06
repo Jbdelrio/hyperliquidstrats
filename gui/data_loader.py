@@ -60,6 +60,9 @@ def load_fills() -> pd.DataFrame:
     for col in ("notional", "entry", "exit", "gross", "fee", "net", "hold_s"):
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
+    # Backfill strategy column if missing (old CSV format without strategy column)
+    if "strategy" not in df.columns:
+        df["strategy"] = ""
     return df
 
 

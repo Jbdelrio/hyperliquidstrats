@@ -1,104 +1,142 @@
 """
-trades.py — Tab 3: fills table with filters, net PnL histogram.
+trades.py — Tab 3: fills table (pagination preserved) + PnL histogram.
+
+DataTable is a STATIC component — only its data/columns/style are updated
+on refresh so page_current is never reset.
 """
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from dash import Input, Output, dash_table, dcc, html
+from dash import Input, Output, State, dash_table, dcc, html
 
 from gui.data_loader import load_fills
 from gui.theme import COLORS, apply_dark_theme, no_data
 
-_ALL_COINS   = ["ALL", "BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK",
-                "ARB", "OP", "AAVE", "LTC", "BCH", "XRP"]
-_ALL_REASONS = ["ALL", "take_profit", "stop_loss", "max_hold", "shutdown", "emergency"]
+_ALL_COINS = ["ALL", "BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK",
+              "ARB", "OP", "AAVE", "LTC", "BCH", "XRP"]
+_ALL_REASONS = ["ALL", "take_profit", "stop_loss", "max_hold",
+                "shutdown", "emergency", "flatten_strategy",
+                "flatten_all", "manual_close"]
+_ALL_STRATS  = ["ALL", "S8EMS", "MomentumLS", "BreakoutControlled",
+                "MeanReversionKalman", "FundingArbitrage"]
+
+_HDR = {"backgroundColor": "#1a1a1a", "color": COLORS["accent"], "fontWeight": "bold"}
+_CEL = {"backgroundColor": COLORS["card_bg"], "color": COLORS["text"],
+        "border": f"1px solid {COLORS['grid']}", "padding": "5px",
+        "textAlign": "right", "fontSize": "0.82rem"}
 
 
 def static_layout() -> html.Div:
     return html.Div([
+        # ── Filters ────────────────────────────────────────────────────
         dbc.Row([
             dbc.Col([
-                html.Label("Coin", style={"color": COLORS["text"]}),
-                dcc.Dropdown(
-                    id="trades-coin-filter",
-                    options=[{"label": c, "value": c} for c in _ALL_COINS],
-                    value="ALL",
-                    clearable=False,
-                    style={"backgroundColor": COLORS["card_bg"], "color": "#000"},
-                ),
+                html.Label("Coin", style={"color": COLORS["text"], "fontSize": "11px"}),
+                dcc.Dropdown(id="trades-coin-filter",
+                             options=[{"label": c, "value": c} for c in _ALL_COINS],
+                             value="ALL", clearable=False,
+                             style={"backgroundColor": COLORS["card_bg"], "color": "#000"}),
             ], width=3),
             dbc.Col([
-                html.Label("Exit reason", style={"color": COLORS["text"]}),
-                dcc.Dropdown(
-                    id="trades-reason-filter",
-                    options=[{"label": r, "value": r} for r in _ALL_REASONS],
-                    value="ALL",
-                    clearable=False,
-                    style={"backgroundColor": COLORS["card_bg"], "color": "#000"},
-                ),
+                html.Label("Stratégie", style={"color": COLORS["text"], "fontSize": "11px"}),
+                dcc.Dropdown(id="trades-strat-filter",
+                             options=[{"label": s, "value": s} for s in _ALL_STRATS],
+                             value="ALL", clearable=False,
+                             style={"backgroundColor": COLORS["card_bg"], "color": "#000"}),
             ], width=3),
+            dbc.Col([
+                html.Label("Exit reason", style={"color": COLORS["text"], "fontSize": "11px"}),
+                dcc.Dropdown(id="trades-reason-filter",
+                             options=[{"label": r, "value": r} for r in _ALL_REASONS],
+                             value="ALL", clearable=False,
+                             style={"backgroundColor": COLORS["card_bg"], "color": "#000"}),
+            ], width=3),
+            dbc.Col(
+                html.Div(id="trades-count",
+                         style={"color": COLORS["text"], "fontSize": "11px",
+                                "paddingTop": "22px"}),
+                width=3,
+            ),
         ], style={"marginBottom": "12px"}),
-        html.Div(id="trades-content"),
+
+        # ── Static DataTable — pagination preserved across refreshes ───
+        dash_table.DataTable(
+            id="trades-table",
+            columns=[],
+            data=[],
+            page_size=30,
+            page_action="native",
+            sort_action="native",
+            sort_mode="multi",
+            style_table={"overflowX": "auto"},
+            style_header=_HDR,
+            style_cell=_CEL,
+            style_cell_conditional=[
+                {"if": {"column_id": c}, "textAlign": "left"}
+                for c in ("ts", "symbol", "side", "reason", "strategy")
+            ],
+        ),
+
+        # ── PnL histogram ──────────────────────────────────────────────
+        html.Div(id="trades-hist-div", style={"marginTop": "16px"}),
     ])
 
 
 def register_callbacks(app) -> None:
+
     @app.callback(
-        Output("trades-content", "children"),
+        Output("trades-table", "data"),
+        Output("trades-table", "columns"),
+        Output("trades-table", "style_data_conditional"),
+        Output("trades-hist-div",  "children"),
+        Output("trades-count",     "children"),
         Input("trades-coin-filter",   "value"),
+        Input("trades-strat-filter",  "value"),
         Input("trades-reason-filter", "value"),
         Input("refresh-interval",     "n_intervals"),
     )
-    def update(coin_filter, reason_filter, n):
+    def _update(coin_f, strat_f, reason_f, _n):
         df = load_fills()
         if df.empty:
-            return no_data()
+            return [], [], [], no_data(), ""
 
-        if coin_filter   != "ALL" and "symbol" in df.columns:
-            df = df[df["symbol"] == coin_filter]
-        if reason_filter != "ALL" and "reason" in df.columns:
-            df = df[df["reason"] == reason_filter]
+        if coin_f   != "ALL" and "symbol"   in df.columns:
+            df = df[df["symbol"]   == coin_f]
+        if strat_f  != "ALL" and "strategy" in df.columns:
+            df = df[df["strategy"] == strat_f]
+        if reason_f != "ALL" and "reason"   in df.columns:
+            df = df[df["reason"]   == reason_f]
 
-        df = df.tail(100)
+        df = df.tail(500).iloc[::-1].reset_index(drop=True)   # newest first
 
-        # Style: net_pnl > 0 green, < 0 red
+        _COLS_ORDER = ["ts", "strategy", "symbol", "side", "notional",
+                       "entry", "exit", "gross", "fee", "net", "hold_s", "reason"]
+        display_cols = [c for c in _COLS_ORDER if c in df.columns]
+
+        columns = [{"name": c, "id": c} for c in display_cols]
+        records = df[display_cols].to_dict("records")
+
+        # Row colouring based on net PnL
         style_cond = []
         if "net" in df.columns:
-            for i, (_, row) in enumerate(df.iterrows()):
-                net = row.get("net", 0)
-                bg = "#002200" if net > 0 else "#220000"
-                style_cond.append({"if": {"row_index": i}, "backgroundColor": bg})
+            for i, row in enumerate(records):
+                net = row.get("net", 0) or 0
+                style_cond.append({
+                    "if": {"row_index": i},
+                    "backgroundColor": "#002200" if net > 0 else "#220000",
+                })
 
-        display_cols = [c for c in ["ts", "symbol", "side", "notional",
-                                     "entry", "exit", "gross", "fee", "net",
-                                     "hold_s", "reason"]
-                        if c in df.columns]
-
-        table = dash_table.DataTable(
-            data=df[display_cols].to_dict("records"),
-            columns=[{"name": c, "id": c} for c in display_cols],
-            style_table={"overflowX": "auto"},
-            style_header={"backgroundColor": "#1a1a1a", "color": COLORS["accent"],
-                          "fontWeight": "bold"},
-            style_cell={"backgroundColor": COLORS["card_bg"], "color": COLORS["text"],
-                        "border": f"1px solid {COLORS['grid']}", "padding": "5px",
-                        "textAlign": "right", "fontSize": "0.82rem"},
-            style_cell_conditional=[
-                {"if": {"column_id": c}, "textAlign": "left"}
-                for c in ("ts", "symbol", "side", "reason")
-            ],
-            style_data_conditional=style_cond,
-            page_size=30,
-        )
-
+        # Histogram
         hist = no_data("Aucun trade filtré.")
         if "net" in df.columns and len(df) > 0:
-            fig = px.histogram(
-                df, x="net", nbins=30,
-                title="Distribution PnL net (USD)",
-                color_discrete_sequence=[COLORS["accent"]],
-            )
+            fig = px.histogram(df, x="net", nbins=30,
+                               title="Distribution PnL net (USD)",
+                               color_discrete_sequence=[COLORS["accent"]])
             fig.add_vline(x=0, line_dash="dash", line_color=COLORS["danger"])
             apply_dark_theme(fig)
             hist = dcc.Graph(figure=fig, config={"displayModeBar": False})
 
-        return html.Div([table, html.Div(hist, style={"marginTop": "16px"})])
+        total = len(df)
+        wins  = int((df["net"] > 0).sum()) if "net" in df.columns else 0
+        count_txt = f"{total} trades  |  {wins}W / {total-wins}L"
+
+        return records, columns, style_cond, hist, count_txt
