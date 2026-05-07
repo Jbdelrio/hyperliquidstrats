@@ -751,6 +751,7 @@
 2026-05-03 21:02:25,761 INFO __main__ Engine V9 running. Ctrl+C to stop.
 2026-05-03 21:02:27,195 INFO data.orderbook_manager All subscriptions sent.
 2026-05-03 21:03:25,809 INFO __main__ Shutting down v9...
+<<<<<<< HEAD
 2026-05-03 22:23:21,116 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
 2026-05-03 22:23:21,122 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
 2026-05-03 22:23:21,122 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
@@ -5430,3 +5431,5 @@
 2026-05-05 19:09:29,394 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
 2026-05-05 19:09:33,120 INFO data.orderbook_manager All subscriptions sent.
 2026-05-05 19:09:33,180 INFO __main__ Shutting down v9...
+=======
+>>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d

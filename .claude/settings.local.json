@@ -20,10 +20,14 @@
       "PowerShell(Stop-Process *)",
       "Bash(findstr \"LISTENING\")",
       "Bash(python *)",
+<<<<<<< HEAD
       "Bash(python3)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\" -Recurse -File)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Sort-Object)"
+=======
+      "Bash(python3)"
+>>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
     ]
   }
 }

@@ -145,6 +145,7 @@ def register_callbacks(app) -> None:
                 p["strategy"] = s.get("name", "?")
                 all_pos.append(p)
 
+<<<<<<< HEAD
         # ── Global summary cards ─────────────────────────────────────
         g_cards = dbc.Row([
             dbc.Col(stat_card("Equity",      f"${equity:.2f}", COLORS["accent"])),
@@ -158,6 +159,18 @@ def register_callbacks(app) -> None:
             dbc.Col(stat_card("Win rate",    wr_txt,     COLORS["accent"])),
             dbc.Col(stat_card("Positions",   str(len(all_pos)),
                               COLORS["warning"] if all_pos else COLORS["text"])),
+=======
+        pnl_day_color = COLORS["success"] if pnl_day >= 0 else COLORS["danger"]
+        pnl_1h_color  = COLORS["success"] if pnl_1h  >= 0 else COLORS["danger"]
+
+        cards = dbc.Row([
+            dbc.Col(stat_card("Equity",       f"${equity:.2f}",         COLORS["accent"])),
+            dbc.Col(stat_card("PnL today",    f"${pnl_day:+.2f}",       pnl_day_color)),
+            dbc.Col(stat_card("PnL 1h",       f"${pnl_1h:+.2f}",        pnl_1h_color)),
+            dbc.Col(stat_card("Daily P&L %",  f"{dd_daily:+.2f}%",      dd_color)),
+            dbc.Col(stat_card("Trades",       str(total),               COLORS["text_light"])),
+            dbc.Col(stat_card("Win rate",     wr,                       COLORS["accent"])),
+>>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
         ], className="g-2")
 
         # ── Per-strategy cards ───────────────────────────────────────

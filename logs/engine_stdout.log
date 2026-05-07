@@ -587,6 +587,7 @@ Traceback (most recent call last):
     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: character maps to <undefined>
+<<<<<<< HEAD
 2026-05-03 22:23:21,116 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=3.0% total_dd=6.0%
 2026-05-03 22:23:21,122 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
 2026-05-03 22:23:21,122 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
@@ -12686,3 +12687,5 @@ UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-66: ch
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
+=======
+>>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
