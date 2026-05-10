@@ -16,18 +16,36 @@ from dash import Input, Output, dcc, html
 
 # ── --fresh : wipe all data files before GUI starts ───────────────────────
 if "--fresh" in _sys.argv:
-    _REPO = _Path(__file__).parent.parent
+    _REPO = _Path(__file__).resolve().parents[1]
     _FRESH_FILES = [
         _REPO / "logs"       / "decisions_v9.csv",
         _REPO / "logs"       / "fills_v9.csv",
+        _REPO / "logs"       / "engine_stdout.log",
         _REPO / "metrics_v9" / "metrics_v9.csv",
         _REPO / "runtime"    / "strategy_status.json",
         _REPO / "runtime"    / "calibration_data.json",
         _REPO / "runtime"    / "control.json",
         _REPO / "runtime"    / "control_result.json",
+        _REPO / "runtime"    / "engine.pid",
+        _REPO / "runtime"    / "engine_config.json",
     ]
-    _deleted = [p.name for p in _FRESH_FILES if p.exists() and not p.unlink()]
+    _deleted = []
+    for _p in _FRESH_FILES:
+        if _p.exists():
+            try:
+                _p.unlink()
+                _deleted.append(_p.name)
+                print(f"[--fresh] deleted: {_p}")
+            except OSError as _e:
+                print(f"[--fresh] ERROR deleting {_p}: {_e}")
     print(f"[--fresh] {len(_deleted)} fichier(s) supprimé(s): {', '.join(_deleted) or 'aucun'}")
+    # Clear in-memory CSV/JSON caches so GUI shows empty state immediately
+    try:
+        from gui import data_loader as _dl
+        _dl._cache.clear()
+        _dl._json_cache.clear()
+    except Exception:
+        pass
 
 from gui.control_api import ControlAPI
 from gui.theme import COLORS, THEME

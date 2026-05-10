@@ -11,7 +11,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from dash import Input, Output, dcc, html
 
-from gui.data_loader import load_decisions, load_fills, load_metrics, load_strategy_status
+from gui.data_loader import load_decisions, load_fills, load_strategy_status
 from gui.theme import COLORS, STRAT_COLORS, apply_dark_theme, no_data, stat_card
 
 _REPO = Path(__file__).parent.parent.parent
@@ -54,6 +54,27 @@ def _total_capital(live_list: list) -> float:
         if total > 0:
             return total
     return _DFLT_TOTAL_CAP
+
+def _build_equity_curve(fills: "pd.DataFrame", init_cap: float) -> "pd.DataFrame":
+    """Build equity curve from fills. Returns DataFrame with {dt, equity}."""
+    if fills.empty or "net" not in fills.columns:
+        now = pd.Timestamp.utcnow()
+        return pd.DataFrame({"dt": [now], "equity": [init_cap]})
+    df = fills.copy()
+    df["net"] = pd.to_numeric(df["net"], errors="coerce").fillna(0)
+    if "dt" not in df.columns:
+        df["dt"] = pd.to_datetime(df.get("ts", pd.Series(dtype="float64")), errors="coerce")
+    df = df.dropna(subset=["dt"]).sort_values("dt")
+    if df.empty:
+        now = pd.Timestamp.utcnow()
+        return pd.DataFrame({"dt": [now], "equity": [init_cap]})
+    df["equity"] = init_cap + df["net"].cumsum()
+    start = pd.DataFrame({
+        "dt":     [df["dt"].iloc[0] - pd.Timedelta(seconds=1)],
+        "equity": [init_cap],
+    })
+    return pd.concat([start, df[["dt", "equity"]]], ignore_index=True)
+
 
 _BDR = f"1px solid {COLORS['grid']}"
 _TD  = {"border": _BDR, "padding": "4px 8px", "fontSize": "11px",
@@ -103,10 +124,17 @@ def _warmup_progress(name: str, n_trades: int, engine_start_ts: float, now: floa
     ], style={"marginTop": "5px"})
 
 
-def _strat_card(name, status, cap, cum_pnl, n_trades, wr, n_pos,
+_STATE_COLORS = {
+    "ACTIVE":    COLORS["success"],
+    "SUSPENDED": COLORS["warning"],
+    "DISABLED":  COLORS["danger"],
+    "KILLED":    COLORS["danger"],
+}
+
+
+def _strat_card(name, state, cap, cum_pnl, n_trades, wr, n_pos,
                 engine_start_ts: float = 0.0, now: float = 0.0):
-    sc     = {"ACTIF": COLORS["success"], "INACTIF": COLORS["danger"],
-              "SUSPENDU": COLORS["warning"]}.get(status, COLORS["text"])
+    sc     = _STATE_COLORS.get(state, COLORS["text"])
     accent = STRAT_COLORS.get(name, COLORS["accent"])
     pnl_txt   = f"${cum_pnl:+.2f}" if cum_pnl is not None else "N/A"
     pnl_color = (COLORS["success"] if (cum_pnl or 0) >= 0
@@ -119,8 +147,8 @@ def _strat_card(name, status, cap, cum_pnl, n_trades, wr, n_pos,
         dbc.Row([
             dbc.Col(html.B(name, style={"color": accent, "fontSize": "11px"}),
                     width="auto"),
-            dbc.Col(dbc.Badge(status, style={"backgroundColor": sc, "fontSize": "8px",
-                                              "padding": "2px 5px"}), width="auto"),
+            dbc.Col(dbc.Badge(state, style={"backgroundColor": sc, "fontSize": "8px",
+                                             "padding": "2px 5px"}), width="auto"),
             dbc.Col(width=True),
             dbc.Col(html.Span(f"${cap:.0f}",
                               style={"color": COLORS["text"], "fontSize": "10px",
@@ -224,7 +252,7 @@ def _health_row(live_list: list, decisions_today: int, now: float) -> html.Div:
         feed_txt   = f"Feed stale ({status_age:.0f}s)"
         feed_color = COLORS["danger"]
 
-    n_active = sum(1 for s in live_list if s.get("enabled"))
+    n_active = sum(1 for s in live_list if s.get("state") == "ACTIVE")
     n_total  = len(live_list) or len(_ALL_STRATS)
 
     def _pill(label, val, color):
@@ -253,7 +281,6 @@ def register_callbacks(app) -> None:
     )
     def update(_n):
         fills     = load_fills()
-        metrics   = load_metrics()
         decisions = load_decisions()
         live_list = load_strategy_status()
         live_map  = {s.get("name"): s for s in live_list}
@@ -348,13 +375,12 @@ def register_callbacks(app) -> None:
                 live  = live_map.get(name, {})
                 cap   = float(live.get("capital_allocated_usd",
                                        _DFLT_CAP.get(name, 500)) or _DFLT_CAP.get(name, 500))
-                ena   = live.get("enabled", _DFLT_CAP.get(name, 0) > 0) if live else False
-                susp  = float(live.get("suspended_until", 0) or 0)
-                status = "SUSPENDU" if susp > now else ("ACTIF" if ena else "INACTIF")
-                n_pos  = len(live.get("open_positions", [])) if live else 0
-                st     = strat_stats.get(name, {})
+                # Use canonical state field; fall back to DISABLED when engine is off
+                state = live.get("state", "DISABLED") if live else "DISABLED"
+                n_pos = len(live.get("open_positions", [])) if live else 0
+                st    = strat_stats.get(name, {})
                 cols.append(dbc.Col(_strat_card(
-                    name, status, cap,
+                    name, state, cap,
                     st.get("pnl"), st.get("n", 0), st.get("wr"), n_pos,
                     engine_start_ts=engine_start_ts, now=now,
                 ), width=True))
@@ -386,21 +412,21 @@ def register_callbacks(app) -> None:
 
         # ── Charts ────────────────────────────────────────────────────
         fig_eq = go.Figure()
-        if not metrics.empty and "dt" in metrics.columns and "equity" in metrics.columns:
-            eq_vals = metrics["equity"].tolist()
-            lc = COLORS["success"] if (eq_vals[-1] if eq_vals else 0) >= init_cap else COLORS["danger"]
-            r = int(lc[1:3], 16); g_ = int(lc[3:5], 16); b_ = int(lc[5:7], 16)
-            fill_rgba = f"rgba({r},{g_},{b_},0.08)"
-            fig_eq.add_trace(go.Scatter(
-                x=metrics["dt"], y=metrics["equity"],
-                mode="lines", name="Equity",
-                line=dict(color=lc, width=2),
-                fill="tozeroy", fillcolor=fill_rgba,
-            ))
-            fig_eq.add_hline(y=init_cap, line_dash="dot",
-                             line_color=COLORS["warning"], opacity=0.4,
-                             annotation_text=f"Capital initial ${init_cap:.0f}")
-        fig_eq.update_layout(title="Equity curve", showlegend=False, height=260)
+        eq_df  = _build_equity_curve(fills, init_cap)
+        last_eq = float(eq_df["equity"].iloc[-1]) if not eq_df.empty else init_cap
+        lc = COLORS["success"] if last_eq >= init_cap else COLORS["danger"]
+        r_ = int(lc[1:3], 16); g_ = int(lc[3:5], 16); b_ = int(lc[5:7], 16)
+        fill_rgba = f"rgba({r_},{g_},{b_},0.08)"
+        fig_eq.add_trace(go.Scatter(
+            x=eq_df["dt"], y=eq_df["equity"],
+            mode="lines", name="Equity",
+            line=dict(color=lc, width=2),
+            fill="tozeroy", fillcolor=fill_rgba,
+        ))
+        fig_eq.add_hline(y=init_cap, line_dash="dot",
+                         line_color=COLORS["warning"], opacity=0.4,
+                         annotation_text=f"Capital initial ${init_cap:.0f}")
+        fig_eq.update_layout(title="Equity curve (fills)", showlegend=False, height=260)
         apply_dark_theme(fig_eq)
 
         fig_strat = go.Figure()

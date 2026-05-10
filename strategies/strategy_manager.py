@@ -120,14 +120,20 @@ class StrategyManager:
     # ------------------------------------------------------------------
 
     def get_status(self) -> list:
+        import time
+        now = time.time()
         return [
             {
-                "name":                 s.name,
-                "enabled":              s.enabled,
-                "consecutive_losses":   s._consecutive_losses,
-                "suspended_until":      s._suspended_until,
+                "name":                  s.name,
+                "state":                 s.state(now),
+                "enabled":               s.enabled,
+                "raw_enabled":           s._enabled,
+                "effective_enabled":     s.enabled,
+                "consecutive_losses":    s._consecutive_losses,
+                "suspended_until":       s._suspended_until,
+                "suspended_remaining_s": max(0.0, s._suspended_until - now),
                 "capital_allocated_usd": s.config.capital_allocated_usd,
-                "coins":                s.config.coins,
+                "coins":                 s.config.coins,
                 "params":               s.config.params,
             }
             for s in self.strategies.values()

@@ -56,6 +56,7 @@ class BaseStrategy(ABC):
         self._enabled = config.enabled
         self._consecutive_losses = 0
         self._suspended_until = 0.0
+        self._killed = False
 
     @property
     def name(self) -> str:
@@ -65,8 +66,20 @@ class BaseStrategy(ABC):
     def enabled(self) -> bool:
         return self._enabled and time.time() >= self._suspended_until
 
+    def state(self, now: float = None) -> str:
+        """Return canonical runtime state: ACTIVE | SUSPENDED | DISABLED | KILLED."""
+        now = now or time.time()
+        if self._killed:
+            return "KILLED"
+        if not self._enabled:
+            return "DISABLED"
+        if now < self._suspended_until:
+            return "SUSPENDED"
+        return "ACTIVE"
+
     def enable(self) -> None:
         self._enabled = True
+        self._killed = False
 
     def disable(self) -> None:
         self._enabled = False
@@ -127,11 +140,16 @@ class BaseStrategy(ABC):
         return {}
 
     def get_stats(self) -> dict:
+        now = time.time()
         return {
-            "enabled": self.enabled,
-            "consecutive_losses": self._consecutive_losses,
-            "suspended_until": self._suspended_until,
+            "enabled":               self.enabled,
+            "state":                 self.state(now),
+            "raw_enabled":           self._enabled,
+            "effective_enabled":     self.enabled,
+            "consecutive_losses":    self._consecutive_losses,
+            "suspended_until":       self._suspended_until,
+            "suspended_remaining_s": max(0.0, self._suspended_until - now),
             "capital_allocated_usd": self.config.capital_allocated_usd,
-            "coins": self.config.coins,
-            "params": self.config.params,
+            "coins":                 self.config.coins,
+            "params":                self.config.params,
         }

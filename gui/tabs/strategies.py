@@ -17,16 +17,19 @@ from gui.data_loader import load_strategy_status, _cache, _json_cache
 from gui.engine_controller import engine_ctrl
 from gui.theme import COLORS, STRAT_COLORS
 
-_REPO = Path(__file__).parent.parent
+_REPO = Path(__file__).resolve().parents[2]
 
 _RESET_FILES = [
     _REPO / "logs"       / "decisions_v9.csv",
     _REPO / "logs"       / "fills_v9.csv",
+    _REPO / "logs"       / "engine_stdout.log",
     _REPO / "metrics_v9" / "metrics_v9.csv",
     _REPO / "runtime"    / "strategy_status.json",
     _REPO / "runtime"    / "calibration_data.json",
     _REPO / "runtime"    / "control.json",
     _REPO / "runtime"    / "control_result.json",
+    _REPO / "runtime"    / "engine.pid",
+    _REPO / "runtime"    / "engine_config.json",
 ]
 
 _api = ControlAPI()
@@ -523,7 +526,29 @@ def static_layout() -> html.Div:
                                    color="secondary", size="sm", style=_BTN), width="auto"),
             ], className="g-2 align-items-center mb-2"),
 
-            # Row 2: exchange + LLM + start + stop
+            # Row 2: preset config
+            dbc.Row([
+                dbc.Col(html.Small("PRESET", style={"color": COLORS["warning"],
+                                                     "letterSpacing": "1px",
+                                                     "fontWeight": "700", "fontSize": "10px"}),
+                        width="auto", className="d-flex align-items-center"),
+                dbc.Col(dcc.Dropdown(
+                    id="engine-config-select",
+                    options=[
+                        {"label": "Default (config_v9.json)",
+                         "value": "config_v9.json"},
+                        {"label": "Paper 500 Clean — 5 strats × 500 USD",
+                         "value": "config/presets/paper_500_clean.json"},
+                        {"label": "Paper 500 Per Strategy — 5 actives + 9 inactives",
+                         "value": "config/presets/paper_500_per_strategy.json"},
+                    ],
+                    value="config/presets/paper_500_clean.json",
+                    clearable=False,
+                    className="dropdown-dark",
+                ), width=5),
+            ], className="g-2 align-items-center mb-2"),
+
+            # Row 3: exchange + LLM + start + stop
             dbc.Row([
                 dbc.Col(html.Small("EXCHANGE", style={"color": COLORS["text"],
                                                        "letterSpacing": "1px",
@@ -681,14 +706,20 @@ def register_callbacks(app) -> None:
         Input("engine-stop-btn",  "n_clicks"),
         State("engine-strat-select",   "value"),
         State("engine-exchange-select", "value"),
+        State("engine-config-select",   "value"),
         prevent_initial_call=True,
     )
-    def _engine(_a, _b, strats, exchange):
+    def _engine(_a, _b, strats, exchange, config_path):
         trig = dash.ctx.triggered_id
         if trig == "engine-start-btn":
-            r = engine_ctrl.start(strategies=strats or [], paper=True,
-                                  exchange=exchange or "hyperliquid")
-            return _ok(f"✓ PID {r['pid']} [{exchange}]") if r["ok"] else _err(f"✗ {r['error']}")
+            r = engine_ctrl.start(
+                strategies=strats or [], paper=True,
+                exchange=exchange or "hyperliquid",
+                config=config_path or "config_v9.json",
+            )
+            cfg_short = (config_path or "").split("/")[-1]
+            return (_ok(f"✓ PID {r['pid']} [{exchange}] [{cfg_short}]")
+                    if r["ok"] else _err(f"✗ {r['error']}"))
         r = engine_ctrl.stop()
         return _ok("✓ Arrêté.") if r["ok"] else _err(f"✗ {r['error']}")
 
@@ -750,18 +781,37 @@ def register_callbacks(app) -> None:
         cap_store = cap_store or {}
         live = {s.get("name"): s for s in load_strategy_status()}
         now  = time.time()
+        import datetime as _dt
+        _STATE_COLOR = {
+            "ACTIVE":    COLORS["success"],
+            "SUSPENDED": COLORS["warning"],
+            "DISABLED":  COLORS["danger"],
+            "KILLED":    COLORS["danger"],
+        }
+        # Stale threshold: if engine last updated status >30s ago, mark as ENGINE OFF
+        status_age = None
+        try:
+            _sf = _REPO / "runtime" / "strategy_status.json"
+            if _sf.exists():
+                status_age = now - _sf.stat().st_mtime
+        except Exception:
+            pass
+        stale = status_age is not None and status_age > 30
+
         badges, badge_styles, cap_disps, pos_divs, ldg_divs = [], [], [], [], []
         for name in _ALL:
             s    = live.get(name, {})
             dflt = _DEF[name]
-            ena  = s.get("enabled", dflt["enabled"]) if s else dflt["enabled"]
-            susp = float(s.get("suspended_until", 0) or 0)
-            is_s = susp > now
-            status = "SUSPENDU" if is_s else ("ACTIF" if ena else "INACTIF")
-            sc = {"ACTIF": COLORS["success"],
-                  "INACTIF": COLORS["danger"],
-                  "SUSPENDU": COLORS["warning"]}.get(status, COLORS["text"])
-            badges.append(status)
+
+            if stale and not s:
+                state_str = "ENGINE OFF"
+            elif s:
+                state_str = s.get("state", "DISABLED")
+            else:
+                state_str = "DISABLED"
+
+            sc = _STATE_COLOR.get(state_str, COLORS["text"])
+            badges.append(state_str)
             badge_styles.append({"backgroundColor": sc, "fontSize": "9px",
                                   "padding": "2px 6px"})
             # Priority: user override (store) > engine live > code default
@@ -775,14 +825,16 @@ def register_callbacks(app) -> None:
                 cap = dflt["capital"]
             cap_disps.append(f"${cap:.0f}")
             pos_divs.append(_render_positions(name, s.get("open_positions", []) if s else []))
-            # Ledger panel — enriched with open positions count + pending orders
+            # Ledger panel — enriched with suspension time + pending count
             ldg = dict(s.get("ledger", {})) if s else {}
             if ldg:
                 ldg["pending_orders_count"] = s.get("pending_orders_count", 0)
-                if is_s and susp:
-                    import datetime
-                    ldg.setdefault("suspended_until_readable",
-                                   datetime.datetime.fromtimestamp(susp).strftime("%H:%M:%S"))
+                susp_ts = float(s.get("suspended_until", 0) or 0)
+                if susp_ts > now:
+                    ldg.setdefault(
+                        "suspended_until_readable",
+                        _dt.datetime.fromtimestamp(susp_ts).strftime("%H:%M:%S"),
+                    )
             ldg_divs.append(_render_ledger(ldg))
         return (*badges, *badge_styles, *cap_disps, *pos_divs, *ldg_divs)
 
@@ -981,9 +1033,11 @@ def register_callbacks(app) -> None:
             try:
                 if p.exists():
                     p.unlink()
-                    deleted.append(p.name)
+                    deleted.append(str(p))
+                    print(f"[RESET] deleted: {p}")
             except OSError as e:
                 errors.append(f"{p.name}: {e}")
+                print(f"[RESET] ERROR deleting {p}: {e}")
 
         # 3. Clear data_loader in-memory cache so graphs update within 5s
         _cache.clear()
