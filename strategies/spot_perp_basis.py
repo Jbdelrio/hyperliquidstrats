@@ -164,7 +164,7 @@ class SpotPerpBasisStrategy(BaseStrategy):
         if expected_edge < min_edge_bps:
             return None
 
-        notional  = self.config.max_position_size_usd
+        notional  = self.compute_order_notional()
         max_hold_s = int(p.get("max_hold_minutes", 240) * 60)
 
         if basis_bps > entry_thr:

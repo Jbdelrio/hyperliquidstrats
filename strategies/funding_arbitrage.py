@@ -158,7 +158,7 @@ class FundingArbitrage(BaseStrategy):
                 self.decision_logger.log_skip(symbol, "r24h_too_low", timestamp=ts)
             return None
 
-        notional = self.config.max_position_size_usd
+        notional = self.compute_order_notional()
         max_hold = int(p.get("max_hold_cycles", 3) * 3600)
 
         if self.decision_logger:

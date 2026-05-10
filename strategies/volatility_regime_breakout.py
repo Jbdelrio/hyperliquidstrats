@@ -149,7 +149,7 @@ class VolatilityRegimeBreakoutStrategy(BaseStrategy):
         if ch is None or cl is None:
             return None
 
-        notional   = self.config.max_position_size_usd
+        notional   = self.compute_order_notional()
         max_hold_s = int(p.get("max_hold_hours", 4) * 3600)
 
         if bar.close > ch:

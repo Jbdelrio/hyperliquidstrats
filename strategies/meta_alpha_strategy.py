@@ -154,7 +154,7 @@ class MetaAlphaStrategy(BaseStrategy):
         net_score = sum(votes.values())
         self._score_hist[symbol].append(net_score)
 
-        notional   = self.config.max_position_size_usd
+        notional   = self.compute_order_notional()
         max_hold_s = int(p.get("max_hold_hours", 6) * 3600)
 
         if net_score >= min_agr:
