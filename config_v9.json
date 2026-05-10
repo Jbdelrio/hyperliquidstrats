@@ -1,12 +1,9 @@
 {
   "_comment": "Artemisia v9 — multi-strategy. Capital 500/strat. Paper mode.",
-
-  "capital": 4000,
+  "capital": 7000,
   "paper_mode": true,
-
   "websocket_url": "wss://api.hyperliquid.xyz/ws",
   "subscription_delay_s": 0.15,
-
   "strategies": [
     {
       "name": "S8EMS",
@@ -18,17 +15,21 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 5,
       "suspend_minutes_on_kill": 30,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
       "params": {
-        "base_notional_pct": 0.20,
+        "base_notional_pct": 0.2,
         "max_leverage": 3,
         "min_spread_bps": 8.0,
         "max_spread_bps": 60.0,
         "quote_refresh_s": 5.0,
         "max_hold_s": 600,
         "stop_loss_bps": 120,
-        "kalman_process_noise": 1e-7,
-        "kalman_obs_noise": 1e-5,
+        "kalman_process_noise": 1e-07,
+        "kalman_obs_noise": 1e-05,
         "bouchaud_decay_s": 15,
         "wavelet_threshold": 6.0,
         "wavelet_cooldown_s": 30
@@ -44,7 +45,20 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 6,
       "suspend_minutes_on_kill": 20,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX","LINK","ARB","OP","AAVE","LTC","BCH","XRP"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE",
+        "AVAX",
+        "LINK",
+        "ARB",
+        "OP",
+        "AAVE",
+        "LTC",
+        "BCH",
+        "XRP"
+      ],
       "params": {
         "rerank_seconds": 60,
         "top_k_long": 4,
@@ -68,7 +82,20 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 5,
       "suspend_minutes_on_kill": 20,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX","LINK","ARB","OP","AAVE","LTC","BCH","XRP"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE",
+        "AVAX",
+        "LINK",
+        "ARB",
+        "OP",
+        "AAVE",
+        "LTC",
+        "BCH",
+        "XRP"
+      ],
       "params": {
         "lookback_bars": 12,
         "bo_max_pct": 10.0,
@@ -89,7 +116,13 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 6,
       "suspend_minutes_on_kill": 20,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "AVAX",
+        "LINK"
+      ],
       "params": {
         "warmup_seconds": 60,
         "z_entry": 0.8,
@@ -98,8 +131,8 @@
         "spread_bps_max": 15.0,
         "vol_max_pct_per_min": 1.5,
         "max_hold_minutes": 240,
-        "kalman_process_noise": 1e-6,
-        "kalman_obs_noise": 1e-4
+        "kalman_process_noise": 1e-06,
+        "kalman_obs_noise": 0.0001
       }
     },
     {
@@ -112,7 +145,12 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 5,
       "suspend_minutes_on_kill": 20,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE"
+      ],
       "params": {
         "funding_entry_threshold_pct_per_hour": 0.003,
         "funding_exit_threshold_pct_per_hour": 0.001,
@@ -121,7 +159,6 @@
         "max_hold_cycles": 20
       }
     },
-
     {
       "name": "DonchianTrend",
       "class": "DonchianTrendStrategy",
@@ -132,22 +169,34 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 4,
       "suspend_minutes_on_kill": 45,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX","LINK","ARB","OP","AAVE","XRP"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE",
+        "AVAX",
+        "LINK",
+        "ARB",
+        "OP",
+        "AAVE",
+        "LTC",
+        "BCH",
+        "XRP"
+      ],
       "params": {
-        "donchian_n":       36,
-        "ema_1h_period":    50,
-        "btc_regime_ema":   200,
-        "vol_period":       20,
-        "vol_multiplier":   1.1,
-        "stop_loss_pct":    0.010,
-        "take_profit_pct":  0.020,
-        "trailing_mode":    "mid",
-        "min_cost_ratio":   2.5,
-        "max_hold_hours":   36,
-        "cooldown_s":       60
+        "donchian_n": 36,
+        "ema_1h_period": 50,
+        "btc_regime_ema": 200,
+        "vol_period": 20,
+        "vol_multiplier": 1.1,
+        "stop_loss_pct": 0.01,
+        "take_profit_pct": 0.02,
+        "trailing_mode": "mid",
+        "min_cost_ratio": 2.5,
+        "max_hold_hours": 36,
+        "cooldown_s": 60
       }
     },
-
     {
       "name": "RSIBollingerReversion",
       "class": "RSIBollingerReversionStrategy",
@@ -158,48 +207,65 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 4,
       "suspend_minutes_on_kill": 45,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX","LINK","ARB","XRP"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "AVAX",
+        "HYPE"
+      ],
       "params": {
-        "rsi_period":       14,
-        "rsi_oversold":     35,
-        "zscore_period":    30,
-        "zscore_entry":     -1.5,
-        "bb_period":        20,
-        "bb_k":             2.0,
-        "ema_1h_period":    100,
-        "stop_loss_pct":    0.008,
-        "take_profit_pct":  0.015,
-        "time_stop_bars":   16,
-        "min_cost_ratio":   2.5,
-        "cooldown_s":       60
+        "rsi_period": 14,
+        "rsi_oversold": 35,
+        "zscore_period": 30,
+        "zscore_entry": -1.5,
+        "bb_period": 20,
+        "bb_k": 2.0,
+        "ema_1h_period": 100,
+        "stop_loss_pct": 0.008,
+        "take_profit_pct": 0.015,
+        "time_stop_bars": 16,
+        "min_cost_ratio": 2.5,
+        "cooldown_s": 60
       }
     },
-
     {
       "name": "RotationMomentum",
       "class": "RotationMomentumStrategy",
       "_comment": "Scanner uniquement — pas de capital propre.",
       "enabled": true,
-      "capital_allocated_usd": 0,
+      "capital_allocated_usd": 500,
       "max_positions": 3,
-      "max_position_size_usd": 0,
+      "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 5,
       "suspend_minutes_on_kill": 30,
-      "coins": ["BTC","ETH","SOL","HYPE","AVAX","LINK","ARB","OP","AAVE","LTC","BCH","XRP"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE",
+        "AVAX",
+        "LINK",
+        "ARB",
+        "OP",
+        "AAVE",
+        "LTC",
+        "BCH",
+        "XRP"
+      ],
       "params": {
-        "momentum_lookback":  24,
-        "top_k":              3,
-        "bottom_k":           3,
-        "min_momentum":       0.0,
-        "rebalance_minutes":  60,
-        "autonomous":         false,
-        "stop_loss_pct":      0.04,
-        "take_profit_pct":    0.020,
-        "max_hold_hours":     12,
-        "min_cost_ratio":     2.5
+        "momentum_lookback": 24,
+        "top_k": 3,
+        "bottom_k": 3,
+        "min_momentum": 0.0,
+        "rebalance_minutes": 60,
+        "autonomous": false,
+        "stop_loss_pct": 0.04,
+        "take_profit_pct": 0.02,
+        "max_hold_hours": 12,
+        "min_cost_ratio": 2.5
       }
     },
-
     {
       "name": "RelativeValue",
       "class": "RelativeValueStrategy",
@@ -210,26 +276,197 @@
       "max_position_size_usd": 200,
       "kill_after_consecutive_losses": 3,
       "suspend_minutes_on_kill": 120,
-      "coins": ["BTC","ETH","SOL"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE",
+        "AVAX",
+        "LINK",
+        "ARB",
+        "OP",
+        "AAVE",
+        "LTC",
+        "BCH",
+        "XRP"
+      ],
       "params": {
-        "pairs":                [["ETH","BTC"],["SOL","ETH"],["SOL","BTC"]],
-        "regression_lookback":  500,
-        "zscore_lookback":      200,
-        "entry_z":              -2.0,
-        "exit_z":               0.0,
-        "stop_z":               -3.5,
-        "min_correlation":      0.70,
-        "stop_loss_pct":        0.05,
-        "take_profit_pct":      0.03,
-        "max_hold_hours":       48,
-        "min_cost_ratio":       2.5
+        "pairs": [
+          [
+            "ETH",
+            "BTC"
+          ],
+          [
+            "SOL",
+            "ETH"
+          ],
+          [
+            "SOL",
+            "BTC"
+          ]
+        ],
+        "regression_lookback": 500,
+        "zscore_lookback": 200,
+        "entry_z": -2.0,
+        "exit_z": 0.0,
+        "stop_z": -3.5,
+        "min_correlation": 0.7,
+        "stop_loss_pct": 0.05,
+        "take_profit_pct": 0.03,
+        "max_hold_hours": 48,
+        "min_cost_ratio": 2.5
+      }
+    },
+    {
+      "name": "SpotPerpBasis",
+      "class": "SpotPerpBasisStrategy",
+      "_comment": "Spot/perp basis scanner. Set external_spot_prices to enable trades. Scanner-only by default.",
+      "enabled": false,
+      "capital_allocated_usd": 500,
+      "max_positions": 2,
+      "max_position_size_usd": 200,
+      "kill_after_consecutive_losses": 5,
+      "suspend_minutes_on_kill": 30,
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "params": {
+        "basis_entry_bps": 20.0,
+        "basis_exit_bps": 5.0,
+        "max_basis_abs_bps": 200.0,
+        "min_expected_edge_bps": 8.0,
+        "stop_loss_pct": 0.015,
+        "take_profit_pct": 0.01,
+        "max_hold_minutes": 240,
+        "trade_when_external_spot_missing": false,
+        "external_spot_prices": {}
+      }
+    },
+    {
+      "name": "FundingCarryHedged",
+      "class": "FundingCarryHedgedStrategy",
+      "_comment": "Funding carry net of costs. Scanner by default (allow_unhedged_perp=false).",
+      "enabled": false,
+      "capital_allocated_usd": 500,
+      "max_positions": 2,
+      "max_position_size_usd": 200,
+      "kill_after_consecutive_losses": 5,
+      "suspend_minutes_on_kill": 30,
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "params": {
+        "funding_entry_bps_per_hour": 0.5,
+        "funding_exit_bps_per_hour": 0.1,
+        "taker_fee_bps": 3.5,
+        "slippage_bps": 2.0,
+        "safety_buffer_bps": 2.0,
+        "min_expected_edge_bps": 3.0,
+        "max_abs_return_15m_pct": 2.5,
+        "stop_loss_pct": 0.02,
+        "take_profit_pct": 0.012,
+        "max_hold_hours": 8,
+        "allow_unhedged_perp": false
+      }
+    },
+    {
+      "name": "OBImbalanceScalper",
+      "class": "OrderBookImbalanceScalper",
+      "_comment": "Order-book imbalance scalper. Ultra-short holds (120s). Paper-only recommended.",
+      "enabled": false,
+      "capital_allocated_usd": 500,
+      "max_positions": 1,
+      "max_position_size_usd": 200,
+      "kill_after_consecutive_losses": 5,
+      "suspend_minutes_on_kill": 30,
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "params": {
+        "imbalance_entry_threshold": 0.3,
+        "imbalance_exit_threshold": 0.05,
+        "imbalance_levels": 5,
+        "min_persistence_updates": 3,
+        "stop_loss_pct": 0.004,
+        "take_profit_pct": 0.003,
+        "max_hold_seconds": 120
+      }
+    },
+    {
+      "name": "VolatilityRegimeBreakout",
+      "class": "VolatilityRegimeBreakoutStrategy",
+      "_comment": "Donchian breakout gated by ATR volatility regime. Only trades in high-vol periods.",
+      "enabled": false,
+      "capital_allocated_usd": 500,
+      "max_positions": 2,
+      "max_position_size_usd": 200,
+      "kill_after_consecutive_losses": 5,
+      "suspend_minutes_on_kill": 30,
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE",
+        "AVAX",
+        "LINK",
+        "ARB",
+        "OP",
+        "AAVE",
+        "LTC",
+        "BCH",
+        "XRP"
+      ],
+      "params": {
+        "donchian_period": 20,
+        "atr_period": 14,
+        "high_vol_threshold_bps": 30.0,
+        "low_vol_threshold_bps": 8.0,
+        "stop_loss_pct": 0.015,
+        "take_profit_pct": 0.025,
+        "max_hold_hours": 4
+      }
+    },
+    {
+      "name": "MetaAlpha",
+      "class": "MetaAlphaStrategy",
+      "_comment": "Signal aggregator -- fires when min_agreement_score peers agree. Disabled until peers registered.",
+      "enabled": false,
+      "capital_allocated_usd": 500,
+      "max_positions": 1,
+      "max_position_size_usd": 200,
+      "kill_after_consecutive_losses": 5,
+      "suspend_minutes_on_kill": 30,
+      "coins": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "HYPE",
+        "AVAX",
+        "LINK",
+        "ARB",
+        "OP",
+        "AAVE",
+        "LTC",
+        "BCH",
+        "XRP"
+      ],
+      "params": {
+        "min_agreement_score": 2,
+        "stop_loss_pct": 0.012,
+        "take_profit_pct": 0.018,
+        "max_hold_hours": 6
       }
     }
   ],
-
   "risk": {
-    "max_dd_daily_pct": 0.030,
-    "max_dd_total_pct": 0.060,
+    "max_dd_daily_pct": 0.03,
+    "max_dd_total_pct": 0.06,
     "max_open_positions": 20,
     "max_notional_total": 15000,
     "network_timeout_s": 60,
@@ -241,7 +478,6 @@
     "streak_suspend_s": 300,
     "volguard_suspend_s": 120
   },
-
   "logging": {
     "level": "INFO",
     "file": "logs/engine_v9.log",
@@ -251,7 +487,6 @@
     "decision_log": "logs/decisions_v9.csv",
     "decision_logging_enabled": true
   },
-
   "runtime": {
     "control_file": "runtime/control.json",
     "result_file": "runtime/control_result.json",

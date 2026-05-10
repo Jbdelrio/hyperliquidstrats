@@ -1,16 +1,21 @@
 """
 risk.py — Tab 5: drawdown gauges + time series + loss history.
 """
+import time
+
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
-from dash import Input, Output, dash_table, dcc, html
+from dash import ALL, Input, Output, ctx, dash_table, dcc, html
 
+from gui.control_api import ControlAPI
 from gui.data_loader import load_fills, load_metrics, load_strategy_status
 from gui.theme import COLORS, apply_dark_theme, gauge_fig, no_data, stat_card
 
 DAILY_DD_LIMIT  = 0.030
 TOTAL_DD_LIMIT  = 0.060
-_DFLT_TOTAL_CAP = 4000.0   # 8 strats × $500 (updated dynamically in callback)
+_DFLT_TOTAL_CAP = 7000.0   # 14 strats × $500
+
+_api = ControlAPI()
 
 
 def _get_init_cap() -> float:
@@ -23,7 +28,10 @@ def _get_init_cap() -> float:
 
 
 def static_layout() -> html.Div:
-    return html.Div([html.Div(id="risk-content")])
+    return html.Div([
+        html.Div(id="risk-content"),
+        dcc.Store(id="risk-reactivate-store"),
+    ])
 
 
 def register_callbacks(app) -> None:
@@ -160,12 +168,81 @@ def register_callbacks(app) -> None:
                     table,
                 ])
 
+        # ── Suspended strategies panel ────────────────────────────────
+        susp_section = _suspended_panel(load_strategy_status())
+
         return html.Div([
             kpi_row,
             gauge_row,
             html.Div(dd_chart,      style={"marginTop": "16px"}),
             html.Div(loss_section,  style={"marginTop": "16px"}),
+            html.Div(susp_section,  style={"marginTop": "16px"}),
         ])
+
+    @app.callback(
+        Output("risk-reactivate-store", "data"),
+        Input({"type": "btn-reactivate", "index": ALL}, "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def reactivate_strategy(n_clicks_list):
+        if not any(n for n in n_clicks_list if n):
+            return {}
+        triggered = ctx.triggered_id
+        if not triggered or not isinstance(triggered, dict):
+            return {}
+        name = triggered.get("index")
+        if name:
+            _api.enable_strategy(name)
+        return {"reactivated": name, "ts": time.time()}
+
+
+def _suspended_panel(live_list: list) -> html.Div:
+    """Panel listing currently suspended strategies with a Réactiver button each."""
+    if not live_list:
+        return html.Div()
+
+    now = time.time()
+    suspended = [s for s in live_list
+                 if float(s.get("suspended_until", 0) or 0) > now]
+
+    if not suspended:
+        return html.Div()
+
+    rows = []
+    for s in suspended:
+        name  = s.get("name", "?")
+        until = float(s.get("suspended_until", 0) or 0)
+        remaining_s = max(0, until - now)
+        if remaining_s > 3600:
+            eta = f"{remaining_s/3600:.1f}h"
+        elif remaining_s > 60:
+            eta = f"{int(remaining_s/60)}min"
+        else:
+            eta = f"{int(remaining_s)}s"
+
+        rows.append(dbc.Row([
+            dbc.Col(html.Span(name,  style={"color": COLORS["text"],
+                                            "fontFamily": "Consolas, monospace",
+                                            "fontSize": "12px"}), width=6),
+            dbc.Col(html.Span(f"reprend dans {eta}",
+                              style={"color": COLORS["warning"], "fontSize": "11px"}),
+                    width=4),
+            dbc.Col(dbc.Button("Réactiver",
+                               id={"type": "btn-reactivate", "index": name},
+                               size="sm", color="warning", outline=True,
+                               style={"fontSize": "10px", "padding": "2px 8px"}),
+                    width=2),
+        ], className="g-1 align-items-center", style={"marginBottom": "4px"}))
+
+    return html.Div([
+        html.H6("Stratégies suspendues",
+                style={"color": COLORS["warning"], "fontSize": "11px",
+                       "letterSpacing": "1px", "marginBottom": "8px"}),
+        html.Div(rows,
+                 style={"backgroundColor": "#1a1200", "borderRadius": "4px",
+                        "padding": "8px 12px",
+                        "border": f"1px solid {COLORS['warning']}33"}),
+    ])
 
 
 def _equity_diff_chart(metrics):

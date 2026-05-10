@@ -31,6 +31,12 @@ STRAT_COLORS = {
     "RSIBollingerReversion": "#F39C12",   # amber
     "RotationMomentum":      "#8E44AD",   # violet
     "RelativeValue":         "#95A5A6",   # grey (paper only)
+    # Phase-2 strategies
+    "SpotPerpBasis":         "#00D4AA",   # cyan-green
+    "FundingCarryHedged":    "#FFD700",   # gold
+    "OBImbalanceScalper":    "#FF6B6B",   # coral
+    "VolatilityRegimeBreakout": "#7B68EE", # slate-blue
+    "MetaAlpha":             "#FFFFFF",   # white (aggregator)
 }
 
 

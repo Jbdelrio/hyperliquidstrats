@@ -31,7 +31,8 @@ def _cached_csv(path: str) -> pd.DataFrame:
             return _cache[path][1]
         df = pd.read_csv(p, low_memory=False, on_bad_lines="skip")
         # Drop duplicate columns that appear when CSV is read mid-write
-        df = df.loc[:, ~df.columns.duplicated()].reset_index(drop=True)
+        # .copy() is required: loc slicing leaves internal block indices inconsistent
+        df = df.loc[:, ~df.columns.duplicated()].copy().reset_index(drop=True)
         _cache[path] = (mtime, df)
         return df
     except Exception:
