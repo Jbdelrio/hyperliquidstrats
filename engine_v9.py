@@ -1310,11 +1310,21 @@ async def _main(args: argparse.Namespace) -> None:
     enable_strategies = [s.strip()        for s in args.strategy.split(",")]  if args.strategy  else None
     paper             = not args.live
 
-    # Write selected exchange to runtime for GUI status display
+    # Write runtime config for GUI status display
     _rt = Path("runtime")
     _rt.mkdir(parents=True, exist_ok=True)
+    import os as _os_pid
     with open(_rt / "engine_config.json", "w") as _f:
-        json.dump({"exchange": args.exchange, "paper": paper, "started_at": time.time()}, _f)
+        json.dump({
+            "exchange":            args.exchange,
+            "paper":               paper,
+            "started_at":          time.time(),
+            "config_path":         args.config,
+            "selected_strategies": enable_strategies or [],
+            "pid":                 _os_pid.getpid(),
+        }, _f)
+    log.info("[ENGINE] started — exchange=%s paper=%s config=%s selected_strategies=%s",
+             args.exchange, paper, args.config, enable_strategies)
 
     engine = EngineV9(config_path=args.config, paper=paper,
                       symbols=symbols, enable_strategies=enable_strategies,

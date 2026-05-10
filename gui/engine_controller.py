@@ -26,13 +26,15 @@ class EngineController:
     # ── Start ─────────────────────────────────────────────────────────────
 
     def start(self, strategies: list = None, paper: bool = True,
-              exchange: str = "hyperliquid") -> dict:
+              exchange: str = "hyperliquid", config: str = None) -> dict:
         if self.is_running():
             return {"ok": False, "error": f"Moteur déjà en cours (PID {self.pid})"}
 
         cmd = [sys.executable, str(_REPO / "engine_v9.py"), "--paper"]
         if not paper:
             cmd[-1] = "--live"
+        if config:
+            cmd += ["--config", config]
         if strategies:
             cmd += ["--strategy", ",".join(s.strip() for s in strategies)]
         cmd += ["--exchange", exchange]

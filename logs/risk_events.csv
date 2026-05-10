@@ -1,0 +1,2 @@
+ts,strategy,symbol,action,requested_notional,allowed,block_reason,strat_open_notional,strat_reserved_notional,strat_available_capital,global_open_notional,global_equity
+2026-05-11T00:05:47,OBImbalanceScalper,BTC,PLACE_SELL,0.0,1,,0.0,0.0,0.0,0,2500.0

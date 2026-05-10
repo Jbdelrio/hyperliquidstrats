@@ -1,0 +1,9 @@
+ts,symbol,side,notional,entry,exit,gross,fee,net,hold_s,reason,strategy
+2026-05-11T00:05:47,BTC,SELL,0.0,80997.0,80754.009,0.0,-0.0,0.0,0.2,take_profit,OBImbalanceScalper
+2026-05-11T00:21:27,BTC,SELL,200.0,81234.0,81234.5,-0.001231,0.054,-0.055231,0.6,imbalance_reversed,OBImbalanceScalper
+2026-05-11T00:21:28,ETH,BUY,200.0,2349.9,2349.85,-0.004256,0.054,-0.058256,0.7,z_reversion,MeanReversionKalman
+2026-05-11T00:21:28,SOL,BUY,200.0,95.568,95.5675,-0.001046,0.054,-0.055046,0.7,z_reversion,MeanReversionKalman
+2026-05-11T00:21:30,LINK,BUY,200.0,10.66,10.6585,-0.028143,0.054,-0.082143,1.2,z_reversion,MeanReversionKalman
+2026-05-11T00:21:35,ETH,BUY,200.0,2349.6,2349.55,-0.004256,0.054,-0.058256,0.0,imbalance_reversed,OBImbalanceScalper
+2026-05-11T00:21:35,SOL,BUY,200.0,95.547,95.5465,-0.001047,0.054,-0.055047,0.0,imbalance_reversed,OBImbalanceScalper
+2026-05-11T00:21:44,BTC,SELL,200.0,81231.0,81231.5,-0.001231,0.054,-0.055231,7.9,imbalance_reversed,OBImbalanceScalper
