@@ -19698,3 +19698,2780 @@ UnicodeDecodeError: 'utf-8' codec can't decode byte 0x97 in position 10946: inva
 2026-05-10 20:31:10,199 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
 2026-05-10 20:31:12,625 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
 2026-05-10 20:31:12,625 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'DonchianTrend', 'RSIBollingerReversion']
+2026-05-10 20:31:17,614 INFO risk.kill_switch KillSwitch init: capital=7000 daily_dd=3.0% total_dd=6.0%
+2026-05-10 20:31:17,617 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-10 20:31:17,617 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-10 20:31:17,617 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-10 20:31:17,618 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-10 20:31:17,618 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-10 20:31:17,618 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-10 20:31:17,618 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'LINK'])
+2026-05-10 20:31:17,618 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-10 20:31:17,619 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-10 20:31:17,619 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-10 20:31:17,619 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-10 20:31:17,619 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-10 20:31:17,619 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-10 20:31:17,619 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-10 20:31:17,619 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-10 20:31:17,620 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-10 20:31:17,620 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-10 20:31:17,625 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=7000.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'VolatilityRegimeBreakout', 'MetaAlpha']
+2026-05-10 20:31:18,149 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-10 20:31:20,624 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-10 20:31:20,624 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'VolatilityRegimeBreakout', 'MetaAlpha']
+2026-05-10 20:31:21,925 INFO data.orderbook_manager All subscriptions sent.
+2026-05-10 20:31:21,943 INFO execution.high_freq_executor [FILL] BTC BUY @ 81331.000000 notional=$200
+2026-05-10 20:31:29,545 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=81331.000000 exit=81367.500000 net=$0.0358 hold=8s imbalance_reversed
+2026-05-10 20:31:29,547 INFO __main__ [CLOSE] OBImbalanceScalper BTC BUY @ 81367.500000 | net=$0.0358 | imbalance_reversed
+2026-05-10 20:31:30,032 INFO execution.high_freq_executor [FILL] SOL BUY @ 96.931000 notional=$200
+2026-05-10 20:31:30,602 INFO execution.high_freq_executor [FILL] ETH BUY @ 2362.300000 notional=$200
+2026-05-10 20:31:35,027 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=96.931000 exit=96.957500 net=$0.0007 hold=5s imbalance_reversed
+2026-05-10 20:31:35,027 INFO __main__ [CLOSE] OBImbalanceScalper SOL BUY @ 96.957500 | net=$0.0007 | imbalance_reversed
+2026-05-10 20:31:49,035 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2362.300000 exit=2362.350000 net=$-0.0498 hold=18s imbalance_reversed
+2026-05-10 20:31:49,040 INFO __main__ [CLOSE] OBImbalanceScalper ETH BUY @ 2362.350000 | net=$-0.0498 | imbalance_reversed
+2026-05-10 20:31:50,084 INFO execution.high_freq_executor [FILL] BTC SELL @ 81347.000000 notional=$200
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.99  │  Quotes: 0     │  Pos: 1            │
+│ PnL today: $    -0.01  │  Trades: 3     │  WR: 66.7%       │
+│ PnL 1h:   $    -0.01  │  TP:0    Stop:0    Hold:3   13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: BTC(S)$200@8.135e+04+31s                                 │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 20:32:38,345 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81347.000000 exit=81300.500000 net=$0.0603 hold=48s imbalance_reversed
+2026-05-10 20:32:38,346 INFO __main__ [CLOSE] OBImbalanceScalper BTC SELL @ 81300.500000 | net=$0.0603 | imbalance_reversed
+2026-05-10 20:32:38,937 INFO execution.high_freq_executor [FILL] ETH BUY @ 2359.900000 notional=$200
+2026-05-10 20:32:41,059 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2359.900000 exit=2360.050000 net=$-0.0413 hold=2s imbalance_reversed
+2026-05-10 20:32:41,060 INFO __main__ [CLOSE] OBImbalanceScalper ETH BUY @ 2360.050000 | net=$-0.0413 | imbalance_reversed
+2026-05-10 20:32:45,341 INFO execution.high_freq_executor [FILL] BTC SELL @ 81300.000000 notional=$200
+2026-05-10 20:32:45,341 INFO execution.high_freq_executor [FILL] ETH SELL @ 2359.800000 notional=$200
+2026-05-10 20:33:00,902 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2359.800000 exit=2359.450000 net=$-0.0243 hold=16s imbalance_reversed
+2026-05-10 20:33:00,902 INFO __main__ [CLOSE] OBImbalanceScalper ETH SELL @ 2359.450000 | net=$-0.0243 | imbalance_reversed
+2026-05-10 20:33:07,963 INFO execution.high_freq_executor [FILL] ETH SELL @ 2358.900000 notional=$200
+2026-05-10 20:33:08,543 INFO execution.high_freq_executor [FILL] LINK SELL @ 10.806000 notional=$200
+2026-05-10 20:33:08,980 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81300.000000 exit=81278.500000 net=$-0.0011 hold=24s imbalance_reversed
+2026-05-10 20:33:08,980 INFO __main__ [CLOSE] OBImbalanceScalper BTC SELL @ 81278.500000 | net=$-0.0011 | imbalance_reversed
+2026-05-10 20:33:08,991 INFO execution.high_freq_executor [FILL] BTC BUY @ 81279.000000 notional=$200
+2026-05-10 20:33:09,511 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2358.900000 exit=2358.950000 net=$-0.0582 hold=2s z_reversion
+2026-05-10 20:33:09,511 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2358.950000 | net=$-0.0582 | z_reversion
+2026-05-10 20:33:09,571 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=81279.000000 exit=81278.500000 net=$-0.0552 hold=1s z_reversion
+2026-05-10 20:33:09,572 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 81278.500000 | net=$-0.0552 | z_reversion
+2026-05-10 20:33:09,573 INFO execution.high_freq_executor [FILL] ETH BUY @ 2359.000000 notional=$200
+2026-05-10 20:33:10,107 INFO execution.high_freq_executor [FILL] SOL BUY @ 96.779000 notional=$200
+2026-05-10 20:33:10,522 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=10.806000 exit=10.807000 net=$-0.0725 hold=2s z_reversion
+2026-05-10 20:33:10,524 INFO __main__ [CLOSE] MeanReversionKalman LINK SELL @ 10.807000 | net=$-0.0725 | z_reversion
+2026-05-10 20:33:10,626 INFO execution.high_freq_executor [FILL] BTC SELL @ 81278.000000 notional=$200
+2026-05-10 20:33:11,629 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=96.779000 exit=96.778500 net=$-0.0550 hold=2s z_reversion
+2026-05-10 20:33:11,631 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 96.778500 | net=$-0.0550 | z_reversion
+2026-05-10 20:33:12,165 INFO execution.high_freq_executor [FILL] AVAX SELL @ 10.404000 notional=$200
+2026-05-10 20:33:12,722 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=10.404000 exit=10.405000 net=$-0.0732 hold=1s z_reversion
+2026-05-10 20:33:12,723 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-10 20:33:12,723 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2359.000000 exit=2358.950000 net=$-0.0582 hold=3s loss_streak
+2026-05-10 20:33:12,724 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81278.000000 exit=81278.500000 net=$-0.0552 hold=2s loss_streak
+2026-05-10 20:33:12,725 WARNING risk.kill_switch Loss streak 8 reached -> 30 min suspend
+2026-05-10 20:33:12,725 INFO __main__ [CLOSE] MeanReversionKalman AVAX SELL @ 10.405000 | net=$-0.0732 | z_reversion
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1791s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1728s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1668s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1607s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1545s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1484s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1423s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1362s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1302s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1239s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1179s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1118s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1057s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 996s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 933s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 872s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 810s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 750s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 688s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 628s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 567s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 503s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 443s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 382s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 322s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 259s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 198s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 136s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 76s                                            │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.67  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.33  │  Trades: 12    │  WR: 25.0%       │
+│ PnL 1h:   $    -0.33  │  TP:0    Stop:0    Hold:12  13s  │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 14s                                            │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 21:03:13,602 INFO execution.high_freq_executor [FILL] AVAX SELL @ 10.356000 notional=$200
+2026-05-10 21:03:13,616 INFO execution.high_freq_executor [FILL] ETH SELL @ 2351.900000 notional=$200
+2026-05-10 21:03:13,618 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2351.900000 exit=2351.950000 net=$-0.0583 hold=0s max_hold
+2026-05-10 21:03:13,619 INFO __main__ [CLOSE] OBImbalanceScalper ETH SELL @ 2351.950000 | net=$-0.0583 | max_hold
+2026-05-10 21:03:13,685 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=10.356000 exit=10.357000 net=$-0.0733 hold=0s z_reversion
+2026-05-10 21:03:13,685 INFO __main__ [CLOSE] MeanReversionKalman AVAX SELL @ 10.357000 | net=$-0.0733 | z_reversion
+2026-05-10 21:03:14,151 INFO execution.high_freq_executor [FILL] SOL BUY @ 95.921000 notional=$200
+2026-05-10 21:03:14,718 INFO execution.high_freq_executor [FILL] ETH BUY @ 2352.000000 notional=$200
+2026-05-10 21:03:14,718 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=95.921000 exit=95.945500 net=$-0.0029 hold=1s imbalance_reversed
+2026-05-10 21:03:14,720 INFO __main__ [CLOSE] OBImbalanceScalper SOL BUY @ 95.945500 | net=$-0.0029 | imbalance_reversed
+2026-05-10 21:03:15,168 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2352.000000 exit=2351.950000 net=$-0.0583 hold=0s z_reversion
+2026-05-10 21:03:15,168 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2351.950000 | net=$-0.0583 | z_reversion
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.53  │  Trades: 16    │  WR: 18.8%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:16  123s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.53  │  Trades: 16    │  WR: 18.8%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:16  123s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.53  │  Trades: 16    │  WR: 18.8%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:16  123s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -0.53  │  Trades: 16    │  WR: 18.8%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:16  123s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 21:07:03,323 INFO execution.high_freq_executor [FILL] SOL SELL @ 96.111000 notional=$200
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 0     │  Pos: 1            │
+│ PnL today: $    -0.53  │  Trades: 16    │  WR: 18.8%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:16  123s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+61s                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 0     │  Pos: 1            │
+│ PnL today: $    -0.53  │  Trades: 16    │  WR: 18.8%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:16  123s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+121s                                    │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 0     │  Pos: 1            │
+│ PnL today: $    -0.53  │  Trades: 16    │  WR: 18.8%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:16  123s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+183s                                    │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 21:10:06,362 INFO execution.high_freq_executor [FILL] BTC BUY @ 81268.000000 notional=$200
+2026-05-10 21:10:06,861 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=81268.000000 exit=81267.500000 net=$-0.0552 hold=0s z_reversion
+2026-05-10 21:10:06,863 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 81267.500000 | net=$-0.0552 | z_reversion
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 1            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+243s                                    │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 21:11:07,726 INFO execution.high_freq_executor [FILL] AVAX BUY @ 10.430000 notional=$200
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 2            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+306s, AVAX(B)$200@10.43+61s             │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 21:12:09,133 INFO execution.high_freq_executor [FILL] AAVE BUY @ 101.630000 notional=$200
+2026-05-10 21:12:09,133 INFO execution.high_freq_executor [FILL] BCH BUY @ 462.130000 notional=$200
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+367s, AVAX(B)$200@10.43+122s, AAVE(B)$200@101.6+61s, BCH(B)$200@462.1+61s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+428s, AVAX(B)$200@10.43+184s, AAVE(B)$200@101.6+122s, BCH(B)$200@462.1+122s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+489s, AVAX(B)$200@10.43+245s, AAVE(B)$200@101.6+183s, BCH(B)$200@462.1+183s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+550s, AVAX(B)$200@10.43+306s, AAVE(B)$200@101.6+245s, BCH(B)$200@462.1+245s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+612s, AVAX(B)$200@10.43+367s, AAVE(B)$200@101.6+306s, BCH(B)$200@462.1+306s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+673s, AVAX(B)$200@10.43+429s, AAVE(B)$200@101.6+367s, BCH(B)$200@462.1+367s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+735s, AVAX(B)$200@10.43+490s, AAVE(B)$200@101.6+429s, BCH(B)$200@462.1+429s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+796s, AVAX(B)$200@10.43+551s, AAVE(B)$200@101.6+490s, BCH(B)$200@462.1+490s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+857s, AVAX(B)$200@10.43+613s, AAVE(B)$200@101.6+551s, BCH(B)$200@462.1+551s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.42  │  Quotes: 0     │  Pos: 4            │
+│ PnL today: $    -0.58  │  Trades: 17    │  WR: 17.6%       │
+│ PnL 1h:   $    -0.58  │  TP:0    Stop:0    Hold:17  246s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: SOL(S)$200@96.11+919s, AVAX(B)$200@10.43+674s, AAVE(B)$200@101.6+613s, BCH(B)$200@462.1+613s│
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 21:23:14,630 INFO execution.high_freq_executor [FILL] AVAX SELL @ 10.465000 notional=$200
+2026-05-10 21:23:14,631 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=10.465000 exit=10.465500 net=$-0.0636 hold=0s stop_z
+2026-05-10 21:23:14,632 INFO __main__ [CLOSE] MeanReversionKalman AVAX SELL @ 10.465500 | net=$-0.0636 | stop_z
+2026-05-10 21:23:14,632 INFO execution.high_freq_executor [FILL] BTC SELL @ 81409.000000 notional=$200
+2026-05-10 21:23:14,632 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81409.000000 exit=81409.500000 net=$-0.0552 hold=0s stop_z
+2026-05-10 21:23:14,633 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 81409.500000 | net=$-0.0552 | stop_z
+2026-05-10 21:23:14,634 INFO execution.high_freq_executor [FILL] ETH SELL @ 2361.800000 notional=$200
+2026-05-10 21:23:14,634 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2361.800000 exit=2361.850000 net=$-0.0582 hold=0s stop_z
+2026-05-10 21:23:14,635 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-10 21:23:14,635 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=96.111000 exit=96.479500 net=$-0.8208 hold=971s loss_streak
+2026-05-10 21:23:14,635 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=10.430000 exit=10.465500 net=$0.6267 hold=727s loss_streak
+2026-05-10 21:23:14,636 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=101.630000 exit=101.905000 net=$0.4872 hold=666s loss_streak
+2026-05-10 21:23:14,636 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=462.130000 exit=461.810000 net=$-0.1925 hold=666s loss_streak
+2026-05-10 21:23:14,637 WARNING risk.kill_switch Loss streak 8 reached -> 30 min suspend
+2026-05-10 21:23:14,637 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2361.850000 | net=$-0.0582 | stop_z
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1791s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1731s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1668s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1608s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1547s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1485s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1424s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1362s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1301s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1239s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1178s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1117s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.76  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1056s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.75  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 994s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 933s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 871s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 810s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 749s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 688s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 628s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 566s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 505s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 444s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 382s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 321s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 259s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 198s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 137s                                           │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 77s                                            │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.24  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.76  │  Trades: 20    │  WR: 15.0%       │
+│ PnL 1h:   $    -0.42  │  TP:0    Stop:0    Hold:20  209s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 15s                                            │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 21:53:15,438 INFO execution.high_freq_executor [FILL] LINK SELL @ 10.833000 notional=$200
+2026-05-10 21:53:15,952 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=10.833000 exit=10.832500 net=$-0.0448 hold=1s z_reversion
+2026-05-10 21:53:15,953 INFO __main__ [CLOSE] MeanReversionKalman LINK SELL @ 10.832500 | net=$-0.0448 | z_reversion
+2026-05-10 21:53:16,520 INFO execution.high_freq_executor [FILL] AVAX BUY @ 10.413000 notional=$200
+2026-05-10 21:53:18,195 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=10.413000 exit=10.412500 net=$-0.0636 hold=2s z_reversion
+2026-05-10 21:53:18,196 INFO __main__ [CLOSE] MeanReversionKalman AVAX BUY @ 10.412500 | net=$-0.0636 | z_reversion
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.53  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.34  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.34  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.34  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.34  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.34  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.13  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.87  │  Trades: 22    │  WR: 13.6%       │
+│ PnL 1h:   $    -0.34  │  TP:0    Stop:0    Hold:22  191s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 22:13:17,037 INFO execution.high_freq_executor [FILL] AVAX SELL @ 10.417000 notional=$200
+2026-05-10 22:13:17,039 INFO execution.high_freq_executor [FILL] BTC BUY @ 81253.000000 notional=$200
+2026-05-10 22:13:17,040 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=81253.000000 exit=81252.500000 net=$-0.0552 hold=0s stop_z
+2026-05-10 22:13:17,042 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 81252.500000 | net=$-0.0552 | stop_z
+2026-05-10 22:13:17,042 INFO execution.high_freq_executor [FILL] ETH BUY @ 2360.200000 notional=$200
+2026-05-10 22:13:17,042 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2360.200000 exit=2360.150000 net=$0.0078 hold=0s take_profit
+2026-05-10 22:13:17,043 INFO __main__ [CLOSE] OBImbalanceScalper ETH BUY @ 2360.150000 | net=$0.0078 | take_profit
+2026-05-10 22:13:17,043 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.827000 notional=$200
+2026-05-10 22:13:17,044 INFO execution.high_freq_executor [FILL] SOL BUY @ 96.277000 notional=$200
+2026-05-10 22:13:17,576 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=10.417000 exit=10.418000 net=$-0.0732 hold=1s z_reversion
+2026-05-10 22:13:17,577 INFO __main__ [CLOSE] MeanReversionKalman AVAX SELL @ 10.418000 | net=$-0.0732 | z_reversion
+2026-05-10 22:13:17,578 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.827000 exit=10.826500 net=$-0.0632 hold=1s z_reversion
+2026-05-10 22:13:17,579 INFO __main__ [CLOSE] MeanReversionKalman LINK BUY @ 10.826500 | net=$-0.0632 | z_reversion
+2026-05-10 22:13:17,579 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=96.277000 exit=96.276500 net=$-0.0550 hold=1s z_reversion
+2026-05-10 22:13:17,580 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 96.276500 | net=$-0.0550 | z_reversion
+2026-05-10 22:13:17,594 INFO execution.high_freq_executor [FILL] SOL BUY @ 96.285000 notional=$200
+2026-05-10 22:13:18,154 INFO execution.high_freq_executor [FILL] LINK SELL @ 10.826000 notional=$200
+2026-05-10 22:13:18,682 INFO execution.high_freq_executor [FILL] AVAX BUY @ 10.418000 notional=$200
+2026-05-10 22:13:18,684 INFO execution.high_freq_executor [FILL] BTC SELL @ 81250.000000 notional=$200
+2026-05-10 22:13:18,685 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=10.826000 exit=10.824500 net=$-0.0263 hold=1s z_reversion
+2026-05-10 22:13:18,686 INFO __main__ [CLOSE] MeanReversionKalman LINK SELL @ 10.824500 | net=$-0.0263 | z_reversion
+2026-05-10 22:13:18,687 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=96.285000 exit=96.260500 net=$-0.1049 hold=1s imbalance_reversed
+2026-05-10 22:13:18,688 INFO __main__ [CLOSE] OBImbalanceScalper SOL BUY @ 96.260500 | net=$-0.1049 | imbalance_reversed
+2026-05-10 22:13:19,711 INFO execution.high_freq_executor [FILL] BTC SELL @ 81248.000000 notional=$200
+2026-05-10 22:13:19,712 INFO execution.high_freq_executor [FILL] ETH SELL @ 2360.100000 notional=$200
+2026-05-10 22:13:20,624 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2360.100000 exit=2359.450000 net=$0.0011 hold=1s stop_z
+2026-05-10 22:13:20,625 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2359.450000 | net=$0.0011 | stop_z
+2026-05-10 22:13:21,124 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81250.000000 exit=81214.500000 net=$0.0334 hold=2s stop_z
+2026-05-10 22:13:21,126 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 81214.500000 | net=$0.0334 | stop_z
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.80  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -1.20  │  Trades: 31    │  WR: 19.4%       │
+│ PnL 1h:   $    -0.62  │  TP:1    Stop:0    Hold:30  271s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: AVAX(B)$200@10.42+3s, BTC(S)$200@8.125e+04+2s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 22:13:23,078 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81248.000000 exit=81201.500000 net=$0.0605 hold=3s imbalance_reversed
+2026-05-10 22:13:23,080 INFO __main__ [CLOSE] OBImbalanceScalper BTC SELL @ 81201.500000 | net=$0.0605 | imbalance_reversed
+2026-05-10 22:13:23,333 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=10.418000 exit=10.410500 net=$-0.1980 hold=5s z_reversion
+2026-05-10 22:13:23,335 INFO __main__ [CLOSE] MeanReversionKalman AVAX BUY @ 10.410500 | net=$-0.1980 | z_reversion
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.76  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.66  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.34  │  Trades: 33    │  WR: 21.2%       │
+│ PnL 1h:   $    -0.58  │  TP:1    Stop:0    Hold:32  255s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate:  0.0%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.02% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.02% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 22:33:19,625 INFO execution.high_freq_executor [FILL] AVAX BUY @ 10.259000 notional=$200
+2026-05-10 22:33:19,626 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=10.259000 exit=10.258500 net=$-0.0637 hold=0s invalidation
+2026-05-10 22:33:19,628 INFO __main__ [CLOSE] BreakoutControlled AVAX BUY @ 10.258500 | net=$-0.0637 | invalidation
+2026-05-10 22:33:19,629 INFO execution.high_freq_executor [FILL] BTC BUY @ 80902.000000 notional=$200
+2026-05-10 22:33:19,630 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80902.000000 exit=80901.500000 net=$-0.0552 hold=0s stop_z
+2026-05-10 22:33:19,632 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80901.500000 | net=$-0.0552 | stop_z
+2026-05-10 22:33:19,632 INFO execution.high_freq_executor [FILL] ETH BUY @ 2345.400000 notional=$200
+2026-05-10 22:33:19,633 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2345.400000 exit=2345.350000 net=$-0.0583 hold=0s stop_z
+2026-05-10 22:33:19,635 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2345.350000 | net=$-0.0583 | stop_z
+2026-05-10 22:33:19,636 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.674000 notional=$200
+2026-05-10 22:33:19,636 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.674000 exit=10.673500 net=$-0.0634 hold=0s stop_z
+2026-05-10 22:33:19,638 INFO __main__ [CLOSE] MeanReversionKalman LINK BUY @ 10.673500 | net=$-0.0634 | stop_z
+2026-05-10 22:33:20,668 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.671000 notional=$200
+2026-05-10 22:33:20,670 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.671000 exit=10.670500 net=$-0.0634 hold=0s z_reversion
+2026-05-10 22:33:20,671 INFO __main__ [CLOSE] MeanReversionKalman LINK BUY @ 10.670500 | net=$-0.0634 | z_reversion
+2026-05-10 22:33:21,306 INFO execution.high_freq_executor [FILL] BTC SELL @ 80901.000000 notional=$200
+2026-05-10 22:33:21,309 INFO execution.high_freq_executor [FILL] ETH SELL @ 2344.600000 notional=$200
+2026-05-10 22:33:21,310 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2344.600000 exit=2344.650000 net=$0.0077 hold=0s take_profit
+2026-05-10 22:33:21,311 INFO __main__ [CLOSE] OBImbalanceScalper ETH SELL @ 2344.650000 | net=$0.0077 | take_profit
+2026-05-10 22:33:22,444 INFO execution.high_freq_executor [FILL] BTC SELL @ 80901.000000 notional=$200
+2026-05-10 22:33:23,703 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80901.000000 exit=80901.500000 net=$-0.0552 hold=2s z_reversion
+2026-05-10 22:33:23,705 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 80901.500000 | net=$-0.0552 | z_reversion
+2026-05-10 22:33:25,697 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80901.000000 exit=80885.000000 net=$-0.0144 hold=3s imbalance_reversed
+2026-05-10 22:33:25,699 INFO __main__ [CLOSE] OBImbalanceScalper BTC SELL @ 80885.000000 | net=$-0.0144 | imbalance_reversed
+2026-05-10 22:33:27,312 INFO execution.high_freq_executor [FILL] BTC BUY @ 80892.000000 notional=$200
+2026-05-10 22:33:27,312 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80892.000000 exit=80891.500000 net=$-0.0552 hold=0s imbalance_reversed
+2026-05-10 22:33:27,316 INFO __main__ [CLOSE] OBImbalanceScalper BTC BUY @ 80891.500000 | net=$-0.0552 | imbalance_reversed
+2026-05-10 22:33:30,991 INFO execution.high_freq_executor [FILL] BTC SELL @ 80883.000000 notional=$200
+2026-05-10 22:33:33,392 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80883.000000 exit=80883.500000 net=$-0.0552 hold=2s imbalance_reversed
+2026-05-10 22:33:33,394 INFO __main__ [CLOSE] OBImbalanceScalper BTC SELL @ 80883.500000 | net=$-0.0552 | imbalance_reversed
+2026-05-10 22:33:34,902 INFO execution.high_freq_executor [FILL] BTC BUY @ 80885.000000 notional=$200
+2026-05-10 22:33:37,102 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80885.000000 exit=80892.500000 net=$-0.0355 hold=2s imbalance_reversed
+2026-05-10 22:33:37,103 INFO __main__ [CLOSE] OBImbalanceScalper BTC BUY @ 80892.500000 | net=$-0.0355 | imbalance_reversed
+2026-05-10 22:33:39,257 INFO execution.high_freq_executor [FILL] BTC BUY @ 80893.000000 notional=$200
+2026-05-10 22:33:40,247 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80893.000000 exit=80902.500000 net=$-0.0305 hold=1s imbalance_reversed
+2026-05-10 22:33:40,249 INFO __main__ [CLOSE] OBImbalanceScalper BTC BUY @ 80902.500000 | net=$-0.0305 | imbalance_reversed
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 22:33:48,374 INFO execution.high_freq_executor [FILL] AAVE SELL @ 101.590000 notional=$200
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+60s                                    │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+120s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+182s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+243s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+305s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+365s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+427s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+488s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+548s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6998.12  │  Quotes: 2     │  Pos: 1            │
+│ PnL today: $    -1.88  │  Trades: 45    │  WR: 17.8%       │
+│ PnL 1h:   $    -1.12  │  TP:2    Stop:0    Hold:43  325s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 29.5%                         │
+│ Open: AAVE(S)$200@101.6+611s                                   │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.03% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.03% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 22:44:33,035 INFO execution.high_freq_executor [CLOSE] AAVE SELL entry=101.590000 exit=100.580000 net=$1.9344 hold=645s invalidation
+2026-05-10 22:44:33,035 INFO __main__ [CLOSE] BreakoutControlled AAVE SELL @ 100.580000 | net=$1.9344 | invalidation
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 7000.05  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    +0.05  │  Trades: 46    │  WR: 19.6%       │
+│ PnL 1h:   $    +0.81  │  TP:2    Stop:0    Hold:44  438s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 7000.05  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    +0.05  │  Trades: 46    │  WR: 19.6%       │
+│ PnL 1h:   $    +0.81  │  TP:2    Stop:0    Hold:44  438s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 7000.05  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    +0.05  │  Trades: 46    │  WR: 19.6%       │
+│ PnL 1h:   $    +0.81  │  TP:2    Stop:0    Hold:44  438s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 7000.05  │  Quotes: 2     │  Pos: 0            │
+│ PnL today: $    +0.05  │  Trades: 46    │  WR: 19.6%       │
+│ PnL 1h:   $    +0.81  │  TP:2    Stop:0    Hold:44  438s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 7000.05  │  Quotes: 4     │  Pos: 0            │
+│ PnL today: $    +0.05  │  Trades: 46    │  WR: 19.6%       │
+│ PnL 1h:   $    +0.81  │  TP:2    Stop:0    Hold:44  438s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 7000.05  │  Quotes: 8     │  Pos: 0            │
+│ PnL today: $    +0.05  │  Trades: 46    │  WR: 19.6%       │
+│ PnL 1h:   $    +0.81  │  TP:2    Stop:0    Hold:44  438s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 22:50:05,680 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.139220 notional=$200
+2026-05-10 22:50:05,681 INFO execution.high_freq_executor [FILL] AVAX SELL @ 9.987200 notional=$200
+2026-05-10 22:50:07,164 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=9.987200 exit=9.992250 net=$-0.1551 hold=1s z_reversion
+2026-05-10 22:50:07,164 INFO __main__ [CLOSE] MeanReversionKalman AVAX SELL @ 9.992250 | net=$-0.1551 | z_reversion
+2026-05-10 22:51:00,538 INFO execution.high_freq_executor [FILL] OP SELL @ 0.159070 notional=$200
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.90  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.10  │  Trades: 47    │  WR: 19.1%       │
+│ PnL 1h:   $    +0.66  │  TP:2    Stop:0    Hold:45  450s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: ARB(S)$200@0.1392+61s, OP(S)$200@0.1591+6s               │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.90  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.10  │  Trades: 47    │  WR: 19.1%       │
+│ PnL 1h:   $    +0.66  │  TP:2    Stop:0    Hold:45  450s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: ARB(S)$200@0.1392+123s, OP(S)$200@0.1591+68s             │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.90  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.10  │  Trades: 47    │  WR: 19.1%       │
+│ PnL 1h:   $    +0.66  │  TP:2    Stop:0    Hold:45  450s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 24.6%                         │
+│ Open: ARB(S)$200@0.1392+184s, OP(S)$200@0.1591+129s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 22:53:24,744 INFO execution.high_freq_executor [FILL] AVAX SELL @ 10.069000 notional=$200
+2026-05-10 22:53:24,744 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=10.069000 exit=10.070000 net=$-0.0739 hold=0s stop_z
+2026-05-10 22:53:24,744 INFO __main__ [CLOSE] MeanReversionKalman AVAX SELL @ 10.070000 | net=$-0.0739 | stop_z
+2026-05-10 22:53:24,744 INFO execution.high_freq_executor [FILL] BTC BUY @ 80561.000000 notional=$200
+2026-05-10 22:53:24,744 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80561.000000 exit=80560.500000 net=$-0.0552 hold=0s stop_z
+2026-05-10 22:53:24,756 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80560.500000 | net=$-0.0552 | stop_z
+2026-05-10 22:53:24,756 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.539000 notional=$200
+2026-05-10 22:53:24,875 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.539000 exit=10.538500 net=$-0.0635 hold=0s z_reversion
+2026-05-10 22:53:24,876 INFO __main__ [CLOSE] MeanReversionKalman LINK BUY @ 10.538500 | net=$-0.0635 | z_reversion
+2026-05-10 22:53:25,761 INFO execution.high_freq_executor [FILL] LINK SELL @ 10.538000 notional=$200
+2026-05-10 22:53:26,315 INFO execution.high_freq_executor [FILL] AVAX BUY @ 10.071000 notional=$200
+2026-05-10 22:53:26,318 INFO execution.high_freq_executor [FILL] BTC SELL @ 80560.000000 notional=$200
+2026-05-10 22:53:27,911 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=10.538000 exit=10.539000 net=$-0.0730 hold=2s z_reversion
+2026-05-10 22:53:27,911 INFO __main__ [CLOSE] MeanReversionKalman LINK SELL @ 10.539000 | net=$-0.0730 | z_reversion
+2026-05-10 22:53:28,407 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80560.000000 exit=80560.500000 net=$-0.0552 hold=2s z_reversion
+2026-05-10 22:53:28,407 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 80560.500000 | net=$-0.0552 | z_reversion
+2026-05-10 22:53:28,901 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=10.071000 exit=10.068500 net=$-0.1036 hold=3s z_reversion
+2026-05-10 22:53:28,902 WARNING risk.adverse_selection_monitor [AVAX] Adverse selection: pick_rate=100% > 85% → suspend 1200s
+2026-05-10 22:53:28,902 INFO __main__ [CLOSE] MeanReversionKalman AVAX BUY @ 10.068500 | net=$-0.1036 | z_reversion
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.23  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+244s, OP(S)$200@0.1591+189s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.34  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+305s, OP(S)$200@0.1591+250s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.34  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+367s, OP(S)$200@0.1591+312s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.34  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+428s, OP(S)$200@0.1591+373s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.34  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+490s, OP(S)$200@0.1591+435s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.34  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+551s, OP(S)$200@0.1591+496s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.34  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+613s, OP(S)$200@0.1591+558s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.47  │  Quotes: 2     │  Pos: 2            │
+│ PnL today: $    -0.53  │  Trades: 53    │  WR: 17.0%       │
+│ PnL 1h:   $    +0.34  │  TP:2    Stop:0    Hold:51  400s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 41.8%                         │
+│ Open: ARB(S)$200@0.1392+674s, OP(S)$200@0.1591+619s            │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: none                                                  │
+└───────────────────────────────────────────────────────────────┘
+2026-05-10 23:01:19,529 INFO execution.high_freq_executor [FILL] AAVE BUY @ 99.591000 notional=$200
+2026-05-10 23:01:19,533 INFO execution.high_freq_executor [FILL] ETH BUY @ 2329.100000 notional=$200
+2026-05-10 23:01:20,011 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2329.100000 exit=2329.050000 net=$-0.0583 hold=0s z_reversion
+2026-05-10 23:01:20,013 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-10 23:01:20,013 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.139220 exit=0.140695 net=$-2.1729 hold=674s loss_streak
+2026-05-10 23:01:20,015 INFO execution.high_freq_executor [CLOSE] OP SELL entry=0.159070 exit=0.159805 net=$-0.9781 hold=619s loss_streak
+2026-05-10 23:01:20,016 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=99.591000 exit=99.552000 net=$-0.1323 hold=0s loss_streak
+2026-05-10 23:01:20,018 WARNING risk.kill_switch Loss streak 8 reached -> 30 min suspend
+2026-05-10 23:01:20,018 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2329.050000 | net=$-0.0583 | z_reversion
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.41  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.59  │  Trades: 54    │  WR: 16.7%       │
+│ PnL 1h:   $    +0.28  │  TP:2    Stop:0    Hold:52  423s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 42.1%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1739s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.41  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.59  │  Trades: 54    │  WR: 16.7%       │
+│ PnL 1h:   $    +0.28  │  TP:2    Stop:0    Hold:52  423s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 42.1%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1678s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.41  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.59  │  Trades: 54    │  WR: 16.7%       │
+│ PnL 1h:   $    +0.28  │  TP:2    Stop:0    Hold:52  423s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 42.1%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1618s                                          │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
+│ S8EMS(ON) | MomentumLS(ON) | BreakoutControlled(ON) | MeanRev │
+├───────────────────────────────────────────────────────────────┤
+│ Equity: $ 6999.41  │  Quotes: 0     │  Pos: 0            │
+│ PnL today: $    -0.59  │  Trades: 54    │  WR: 16.7%       │
+│ PnL 1h:   $    +0.28  │  TP:2    Stop:0    Hold:52  423s │
+├───────────────────────────────────────────────────────────────┤
+│ Wavelet alerts: 0     Pick rate: 42.1%                         │
+│ Open: none                                                     │
+├───────────────────────────────────────────────────────────────┤
+│ Daily DD:  ░░░░░░░░░░  0.01% / 3.0%                        │
+│ Total DD:  ░░░░░░░░░░  0.01% / 6.0%                        │
+├───────────────────────────────────────────────────────────────┤
+│ Suspend: STREAK 1555s                                          │
+└───────────────────────────────────────────────────────────────┘

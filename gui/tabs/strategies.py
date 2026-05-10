@@ -215,6 +215,81 @@ def _render_positions(name: str, positions: list) -> html.Div:
     ])
 
 
+def _render_ledger(ldg: dict) -> html.Div:
+    if not ldg:
+        return html.Div()
+
+    state = ldg.get("state", "unknown")
+    state_color = {
+        "active":    COLORS["success"],
+        "suspended": COLORS["warning"],
+        "killed":    COLORS["danger"],
+        "disabled":  "#555",
+    }.get(state, COLORS["text"])
+
+    def _fmt_usd(v):
+        if v is None: return "—"
+        return f"${v:+.2f}" if v != 0 else "$0.00"
+
+    def _cell(label, value, color=None):
+        return html.Div([
+            html.Span(label, style={"color": "#555", "fontSize": "10px",
+                                    "letterSpacing": "1px", "textTransform": "uppercase"}),
+            html.Span(value, style={"color": color or COLORS["text_light"],
+                                    "fontSize": "11px", "fontFamily": "Consolas,monospace",
+                                    "marginLeft": "4px", "fontWeight": "600"}),
+        ], style={"display": "inline-block", "marginRight": "12px", "marginBottom": "2px"})
+
+    eq    = ldg.get("equity")
+    rpnl  = ldg.get("realized_pnl", 0.0)
+    upnl  = ldg.get("unrealized_pnl", 0.0)
+    avail = ldg.get("available_capital")
+    dd    = ldg.get("drawdown_pct")
+    init  = ldg.get("initial_capital_usd")
+    onot  = ldg.get("open_notional", 0.0)
+    rnot  = ldg.get("reserved_notional", 0.0)
+    pend  = ldg.get("pending_orders_count", 0)
+    susp  = ldg.get("suspended_until_readable", "")
+
+    rpnl_c = COLORS["success"] if (rpnl or 0) >= 0 else COLORS["danger"]
+    upnl_c = COLORS["success"] if (upnl or 0) >= 0 else COLORS["danger"]
+    dd_c   = COLORS["danger"] if (dd or 0) > 3 else COLORS["warning"] if (dd or 0) > 1 else "#888"
+
+    state_badge = dbc.Badge(
+        state.upper(), color=None,
+        style={"backgroundColor": state_color, "fontSize": "9px",
+               "padding": "2px 6px", "marginRight": "8px", "verticalAlign": "middle"},
+    )
+
+    susp_note = (html.Span(f"(jusqu'à {susp})", style={"color": COLORS["warning"],
+                 "fontSize": "10px", "marginLeft": "4px"})
+                 if susp else None)
+
+    row1 = html.Div([
+        state_badge,
+        *([] if susp_note is None else [susp_note]),
+        _cell("Capital", f"${init:.0f}" if init is not None else "—"),
+        _cell("Equity",  f"${eq:.2f}"   if eq  is not None else "—"),
+        _cell("Avail",   f"${avail:.2f}" if avail is not None else "—"),
+        _cell("DD",      f"{dd:.2f}%"    if dd   is not None else "—", dd_c),
+    ], style={"marginBottom": "2px"})
+
+    row2 = html.Div([
+        _cell("Real PnL",  _fmt_usd(rpnl), rpnl_c),
+        _cell("Unreal PnL", _fmt_usd(upnl), upnl_c),
+        _cell("Open Not.", f"${onot:.2f}"),
+        _cell("Res. Not.", f"${rnot:.2f}"),
+        _cell("Pending",   str(pend),
+              COLORS["warning"] if pend else COLORS["text_light"]),
+    ])
+
+    return html.Div([row1, row2],
+                    style={"backgroundColor": "#080808",
+                           "border": f"1px solid {COLORS['grid']}",
+                           "borderRadius": "3px", "padding": "5px 8px",
+                           "marginTop": "4px"})
+
+
 def _strat_card(name: str) -> dbc.Card:
     dflt      = _DEF[name]
     params    = dflt["params"]
@@ -258,15 +333,25 @@ def _strat_card(name: str) -> dbc.Card:
                 style={"backgroundColor": "#0a0a0a", "padding": "9px 14px"},
                 children=[
                     dbc.Row([
-                        dbc.Col(dbc.Button("▶ Activer",   id=f"en-{name}",  color="success",
+                        dbc.Col(dbc.Button("▶ Activer",    id=f"en-{name}",  color="success",
                                            size="sm", style=_BTN), width="auto"),
-                        dbc.Col(dbc.Button("⏸ Désact.",   id=f"dis-{name}", color="secondary",
+                        dbc.Col(dbc.Button("⏸ Seulement",  id=f"dis-{name}", color="secondary",
+                                           size="sm", style=_BTN,
+                                           title="Disable only — garde les positions ouvertes"),
+                                width="auto"),
+                        dbc.Col(dbc.Button("⏸+✗ Cancel",   id=f"dco-{name}", color="warning",
+                                           size="sm", style=_BTN,
+                                           title="Disable + annuler les ordres en attente"),
+                                width="auto"),
+                        dbc.Col(dbc.Button("⏸+⚡ Flatten",  id=f"dfl-{name}", color="danger",
+                                           size="sm", style=_BTN,
+                                           title="Disable + cancel + fermer les positions"),
+                                width="auto"),
+                        dbc.Col(dbc.Button("▶ Reprendre",  id=f"res-{name}", color="info",
                                            size="sm", style=_BTN), width="auto"),
-                        dbc.Col(dbc.Button("▶ Reprendre", id=f"res-{name}", color="warning",
+                        dbc.Col(dbc.Button("↺ Reset",      id=f"rst-{name}", color="info",
                                            size="sm", style=_BTN), width="auto"),
-                        dbc.Col(dbc.Button("↺ Reset",     id=f"rst-{name}", color="info",
-                                           size="sm", style=_BTN), width="auto"),
-                        dbc.Col(dbc.Button("⚡ Flatten",  id=f"flt-{name}", color="danger",
+                        dbc.Col(dbc.Button("⚡ Flatten",   id=f"flt-{name}", color="danger",
                                            size="sm", style=_BTN), width="auto"),
                         dbc.Col(html.Div(id=_fb(name), style={"fontSize": "12px"}),
                                 className="d-flex align-items-center"),
@@ -319,6 +404,7 @@ def _strat_card(name: str) -> dbc.Card:
                     ], className="g-2 align-items-center"),
 
                     html.Div(id=_pd(name), style={"marginTop": "6px"}),
+                    html.Div(id=f"ldg-{name}", style={"marginTop": "4px"}),
                 ],
             ),
         ],
@@ -656,6 +742,7 @@ def register_callbacks(app) -> None:
         *[Output(f"badge-{s}",    "style")    for s in _ALL],
         *[Output(f"cap-disp-{s}", "children") for s in _ALL],
         *[Output(_pd(s),           "children") for s in _ALL],
+        *[Output(f"ldg-{s}",      "children") for s in _ALL],
         Input("refresh-interval", "n_intervals"),
         State("cap-store", "data"),
     )
@@ -663,7 +750,7 @@ def register_callbacks(app) -> None:
         cap_store = cap_store or {}
         live = {s.get("name"): s for s in load_strategy_status()}
         now  = time.time()
-        badges, badge_styles, cap_disps, pos_divs = [], [], [], []
+        badges, badge_styles, cap_disps, pos_divs, ldg_divs = [], [], [], [], []
         for name in _ALL:
             s    = live.get(name, {})
             dflt = _DEF[name]
@@ -688,14 +775,25 @@ def register_callbacks(app) -> None:
                 cap = dflt["capital"]
             cap_disps.append(f"${cap:.0f}")
             pos_divs.append(_render_positions(name, s.get("open_positions", []) if s else []))
-        return (*badges, *badge_styles, *cap_disps, *pos_divs)
+            # Ledger panel — enriched with open positions count + pending orders
+            ldg = dict(s.get("ledger", {})) if s else {}
+            if ldg:
+                ldg["pending_orders_count"] = s.get("pending_orders_count", 0)
+                if is_s and susp:
+                    import datetime
+                    ldg.setdefault("suspended_until_readable",
+                                   datetime.datetime.fromtimestamp(susp).strftime("%H:%M:%S"))
+            ldg_divs.append(_render_ledger(ldg))
+        return (*badges, *badge_styles, *cap_disps, *pos_divs, *ldg_divs)
 
-    # ── Action buttons (9 strategies × 5 actions = 45 inputs) ────────────
+    # ── Action buttons (14 strategies × 7 actions = 98 inputs) ──────────
 
     @app.callback(
         *[Output(_fb(s), "children") for s in _ALL],
         *[Input(f"en-{s}",  "n_clicks") for s in _ALL],
         *[Input(f"dis-{s}", "n_clicks") for s in _ALL],
+        *[Input(f"dco-{s}", "n_clicks") for s in _ALL],
+        *[Input(f"dfl-{s}", "n_clicks") for s in _ALL],
         *[Input(f"res-{s}", "n_clicks") for s in _ALL],
         *[Input(f"rst-{s}", "n_clicks") for s in _ALL],
         *[Input(f"flt-{s}", "n_clicks") for s in _ALL],
@@ -707,11 +805,13 @@ def register_callbacks(app) -> None:
         if not trig:
             return empty
         for prefix, label_fn, api_fn in [
-            ("en-",  lambda n: f"▶ {n} activé",                _api.enable_strategy),
-            ("dis-", lambda n: f"⏸ {n} désactivé",             _api.disable_strategy),
-            ("res-", lambda n: f"▶ {n} suspension levée",      _api.reset_strategy),
-            ("rst-", lambda n: f"↺ {n} streak à zéro",         _api.reset_strategy),
-            ("flt-", lambda n: f"⚡ {n} flatten",               _api.flatten_strategy),
+            ("en-",  lambda n: f"▶ {n} activé",                  _api.enable_strategy),
+            ("dis-", lambda n: f"⏸ {n} désactivé",               _api.disable_strategy),
+            ("dco-", lambda n: f"⏸+✗ {n} cancel pending",        _api.disable_strategy_cancel),
+            ("dfl-", lambda n: f"⏸+⚡ {n} flatten",               _api.disable_strategy_flatten),
+            ("res-", lambda n: f"▶ {n} suspension levée",        _api.reset_strategy),
+            ("rst-", lambda n: f"↺ {n} streak à zéro",           _api.reset_strategy),
+            ("flt-", lambda n: f"⚡ {n} flatten",                 _api.flatten_strategy),
         ]:
             if trig.startswith(prefix):
                 name = trig[len(prefix):]

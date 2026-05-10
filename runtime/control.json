@@ -1,1 +1,1 @@
-{"command_id": "0a1f9212", "timestamp": 1778445582.1059508, "command": "set_trading", "args": {"enabled": true}}
+{"command_id": "8ad7bcac", "timestamp": 1778449142.4784513, "command": "set_llm", "args": {"enabled": false}}

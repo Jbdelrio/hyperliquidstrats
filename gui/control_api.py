@@ -51,7 +51,22 @@ class ControlAPI:
         self.send_nowait("update_strategy", {"strategy": name, "action": "enable"})
 
     def disable_strategy(self, name: str) -> None:
-        self.send_nowait("update_strategy", {"strategy": name, "action": "disable"})
+        """Disable only — keeps open positions running."""
+        self.send_nowait("update_strategy",
+                         {"strategy": name, "action": "disable",
+                          "mode": "disable_only"})
+
+    def disable_strategy_cancel(self, name: str) -> None:
+        """Disable + cancel pending orders (keeps open positions)."""
+        self.send_nowait("update_strategy",
+                         {"strategy": name, "action": "disable",
+                          "mode": "disable_cancel"})
+
+    def disable_strategy_flatten(self, name: str) -> None:
+        """Disable + cancel pending + close all open positions."""
+        self.send_nowait("update_strategy",
+                         {"strategy": name, "action": "disable",
+                          "mode": "disable_flatten"})
 
     def reset_strategy(self, name: str)   -> None:
         self.send_nowait("update_strategy", {"strategy": name, "action": "reset"})

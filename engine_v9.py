@@ -46,6 +46,7 @@ from strategies.meta_alpha_strategy import MetaAlphaStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from risk.kill_switch import KillSwitch
 from risk.adverse_selection_monitor import AdverseSelectionMonitor
+from risk.strategy_capital_ledger import StrategyCapitalLedger
 from monitoring.pnl_tracker import PnLTracker
 from monitoring.decision_logger import DecisionLogger
 
@@ -180,9 +181,22 @@ class EngineV9:
             strat = cls(strat_cfg, decision_logger=self.decision_logger)
             self.manager.register(strat)
 
+        # ── Per-strategy capital ledger (first risk gate) ──────────────
+        self.ledger = StrategyCapitalLedger(
+            risk_log_path=log_cfg.get("risk_events_log",
+                                      "logs/risk_events.csv")
+        )
+        for sc in strategies_cfg:
+            name = sc.get("name", "")
+            cap  = float(sc.get("capital_allocated_usd", 100.0))
+            if name:
+                self.ledger.register_strategy(name, cap)
+
         # ── Multi-strategy position tracking ──────────────────────────
-        self._pair_to_strategy: dict[str, str] = {}   # pair_id  → strat_name
-        self._pos_to_strategy:  dict[str, str] = {}   # pos_id   → strat_name
+        self._pair_to_strategy: dict[str, str] = {}    # pair_id  → strat_name
+        self._pos_to_strategy:  dict[str, str] = {}    # pos_id   → strat_name
+        # pair_id → (strat_name, reserved_notional) — cleared on fill or cancel
+        self._pair_to_reserved: dict[str, tuple[str, float]] = {}
 
         # ── OHLCV bar accumulator (reset each minute) ──────────────────
         self._bar_acc: dict[str, dict] = {
@@ -398,12 +412,16 @@ class EngineV9:
                         sym, book.mid, book.best_bid or book.mid,
                         book.best_ask or book.mid):
                     sname   = self._pos_to_strategy.get(pos.pos_id, "")
-                    net_pnl = self.executor.close_position(pos, exit_price, ex_reason, strategy=sname)
+                    net_pnl = self.executor.close_position(pos, exit_price,
+                                                           ex_reason, strategy=sname)
                     hold_s  = ts - pos.entry_ts
                     self.equity += net_pnl
                     self.ks.update_equity(self.equity)
                     self.ks.register_close(pos.notional_usd)
                     self.ks.record_trade(net_pnl)
+                    if sname:
+                        self.ledger.register_close(sname, pos.notional_usd, net_pnl)
+                    self._pos_to_strategy.pop(pos.pos_id, None)
                     self.adv_mon.record_close(sym, net_pnl < 0)
                     self.adv_mon.check_and_suspend(sym, ts)
                     self.tracker.record_trade(net_pnl, hold_s, ex_reason)
@@ -500,7 +518,6 @@ class EngineV9:
 
     def _on_fill(self, fill, pos: OpenPosition) -> None:
         ts = time.time()
-        # order_id format: "b_<pair_id>" or "s_<pair_id>"
         order_id   = fill.order_id
         pair_id    = order_id[2:] if len(order_id) > 2 else order_id
         strat_name = self._pair_to_strategy.get(pair_id)
@@ -508,6 +525,15 @@ class EngineV9:
         self.ks.register_open(pos.notional_usd)
 
         if strat_name:
+            # Promote reserved → open in the ledger
+            if pair_id in self._pair_to_reserved:
+                _, rnotional = self._pair_to_reserved.pop(pair_id)
+                self.ledger.register_open(strat_name, rnotional)
+            else:
+                log.warning("[LEDGER] fill without reserved: pair=%s strat=%s sym=%s",
+                            pair_id, strat_name, fill.symbol)
+                self.ledger.register_open(strat_name, fill.notional_usd)
+
             strat = self.manager.get(strat_name)
             if strat:
                 result = strat.on_fill(
@@ -522,7 +548,10 @@ class EngineV9:
                         result.get("stop_price"),
                         ts + max_hold_s,
                     )
-                self._pos_to_strategy[pos.pos_id] = strat_name
+            self._pos_to_strategy[pos.pos_id] = strat_name
+        else:
+            log.warning("[LEDGER] CRITICAL: fill without strategy pair=%s sym=%s",
+                        pair_id, fill.symbol)
 
     # ------------------------------------------------------------------
     # Execute strategy decision
@@ -534,78 +563,129 @@ class EngineV9:
         sym    = decision.symbol
         book   = self._last_book.get(sym)
 
-        # Gate: only PLACE actions are blocked by trading controls / KS
+        # ── PLACE actions: ledger gate → KS gate → LLM → execute ──────
         if action in ("PLACE_QUOTES", "PLACE_BUY", "PLACE_SELL"):
             if not self._trading_enabled or ts < self._pause_until:
                 return
-            ok, _ = self.ks.can_open()
-            if not ok:
+
+            strat = self.manager.get(strat_name)
+            requested_notional = decision.notional_usd or (
+                strat.config.max_position_size_usd if strat else 50.0
+            )
+
+            # Gate 1: per-strategy ledger (budget + state)
+            ok_ledger, ledger_reason = self.ledger.can_open(strat_name,
+                                                            requested_notional)
+            if not ok_ledger:
+                log.info("[LEDGER] BLOCK %s %s $%.0f → %s",
+                         strat_name, sym, requested_notional, ledger_reason)
+                self._log_risk_event(strat_name, sym, action,
+                                     requested_notional, False,
+                                     f"strategy_budget_blocked:{ledger_reason}")
+                return
+            self.ledger.reserve_notional(strat_name, requested_notional)
+
+            # Gate 2: global KillSwitch
+            ok_ks, _ = self.ks.can_open()
+            if not ok_ks:
+                self.ledger.release_reserved(strat_name, requested_notional)
                 return
 
-            # ── LLM Overlay (optional, disabled by default) ──────────────
+            # Gate 3: LLM overlay (optional)
             if self._llm_overlay is not None:
                 import random as _random
                 if _random.random() < self._llm_sample_rate:
                     try:
                         decision = await asyncio.to_thread(
-                            self._apply_llm_overlay_sync, strat_name, decision, ts, book
-                        )
+                            self._apply_llm_overlay_sync,
+                            strat_name, decision, ts, book)
                         if decision.action == "SKIP":
+                            self.ledger.release_reserved(strat_name,
+                                                         requested_notional)
                             return
-                        # Update action/notional from (possibly modified) decision
                         action = decision.action
                     except Exception as _llm_exc:
-                        log.debug("LLM overlay error (ignored, proceeding): %s", _llm_exc)
+                        log.debug("LLM overlay error (ignored): %s", _llm_exc)
 
-        if action == "PLACE_QUOTES":
-            pair_id = self.executor.place_quotes(
-                sym,
-                decision.buy_price, decision.sell_price,
-                decision.size, decision.notional_usd,
-            )
-            if pair_id:
-                self._pair_to_strategy[pair_id] = strat_name
-                strat = self.manager.get(strat_name)
-                if strat and hasattr(strat, "register_pending"):
-                    strat.register_pending(sym, [f"b_{pair_id}", f"s_{pair_id}"])
-                log.debug("[QUOTE] %s %s buy=%.6f sell=%.6f notional=$%.0f",
-                          strat_name, sym,
-                          decision.buy_price, decision.sell_price,
-                          decision.notional_usd)
+            self._log_risk_event(strat_name, sym, action,
+                                 requested_notional, True, "")
 
-        elif action == "CANCEL_QUOTES":
+            # ── Place ──────────────────────────────────────────────────
+            if action == "PLACE_QUOTES":
+                notional_for_order = decision.notional_usd or requested_notional
+                pair_id = self.executor.place_quotes(
+                    sym, decision.buy_price, decision.sell_price,
+                    decision.size, notional_for_order)
+                if pair_id:
+                    self._pair_to_strategy[pair_id] = strat_name
+                    self._pair_to_reserved[pair_id] = (strat_name,
+                                                        requested_notional)
+                    st = self.manager.get(strat_name)
+                    if st and hasattr(st, "register_pending"):
+                        st.register_pending(sym, [f"b_{pair_id}",
+                                                   f"s_{pair_id}"])
+                    log.debug("[QUOTE] %s %s buy=%.6f sell=%.6f notional=$%.0f",
+                              strat_name, sym, decision.buy_price,
+                              decision.sell_price, notional_for_order)
+                else:
+                    # Symbol already has pending — release reserve
+                    self.ledger.release_reserved(strat_name, requested_notional)
+
+            elif action in ("PLACE_BUY", "PLACE_SELL"):
+                if book is None:
+                    self.ledger.release_reserved(strat_name, requested_notional)
+                    return
+                strat2   = self.manager.get(strat_name)
+                notional = decision.notional_usd or (
+                    strat2.config.max_position_size_usd if strat2 else 50.0)
+                if action == "PLACE_BUY":
+                    ask = book.best_ask or book.mid
+                    if not ask:
+                        self.ledger.release_reserved(strat_name,
+                                                     requested_notional)
+                        return
+                    buy_p  = ask * 1.0001
+                    sell_p = 9_999_999.0
+                    size   = decision.size or (notional / max(buy_p, 1e-9))
+                else:
+                    bid = book.best_bid or book.mid
+                    if not bid:
+                        self.ledger.release_reserved(strat_name,
+                                                     requested_notional)
+                        return
+                    buy_p  = 0.000_001
+                    sell_p = bid * 0.9999
+                    size   = decision.size or (notional / max(sell_p, 1e-9))
+                pair_id = self.executor.place_quotes(sym, buy_p, sell_p,
+                                                     size, notional)
+                if pair_id:
+                    self._pair_to_strategy[pair_id] = strat_name
+                    self._pair_to_reserved[pair_id] = (strat_name, notional)
+                    log.debug("[%s] %s %s notional=$%.0f",
+                              action, strat_name, sym, notional)
+                else:
+                    self.ledger.release_reserved(strat_name, requested_notional)
+            return   # done with PLACE actions
+
+        # ── Non-PLACE actions ──────────────────────────────────────────
+        if action == "CANCEL_QUOTES":
+            # Release reserved notional for this strategy's pending on sym
+            seen_pairs: set[str] = set()
+            for order in list(self.executor.pending_orders):
+                if order.symbol != sym:
+                    continue
+                pid = order.pair_id
+                if pid in seen_pairs:
+                    continue
+                if self._pair_to_strategy.get(pid) == strat_name:
+                    seen_pairs.add(pid)
+                    if pid in self._pair_to_reserved:
+                        _, rn = self._pair_to_reserved.pop(pid)
+                        self.ledger.release_reserved(strat_name, rn)
             self.executor.cancel_quotes(sym)
-            strat = self.manager.get(strat_name)
-            if strat and hasattr(strat, "clear_pending"):
-                strat.clear_pending(sym)
-
-        elif action in ("PLACE_BUY", "PLACE_SELL"):
-            if book is None:
-                return
-            strat    = self.manager.get(strat_name)
-            notional = decision.notional_usd or (
-                strat.config.max_position_size_usd if strat else 50.0
-            )
-            if action == "PLACE_BUY":
-                ask   = book.best_ask or book.mid
-                if not ask:
-                    return
-                buy_p = ask * 1.0001       # fills immediately (best_ask <= buy_p)
-                sell_p = 9_999_999.0       # never fills
-                size   = decision.size or (notional / max(buy_p, 1e-9))
-            else:
-                bid   = book.best_bid or book.mid
-                if not bid:
-                    return
-                buy_p  = 0.000_001         # never fills
-                sell_p = bid * 0.9999      # fills immediately (best_bid >= sell_p)
-                size   = decision.size or (notional / max(sell_p, 1e-9))
-
-            pair_id = self.executor.place_quotes(sym, buy_p, sell_p, size, notional)
-            if pair_id:
-                self._pair_to_strategy[pair_id] = strat_name
-                log.debug("[%s] %s %s notional=$%.0f",
-                          action, strat_name, sym, notional)
+            st = self.manager.get(strat_name)
+            if st and hasattr(st, "clear_pending"):
+                st.clear_pending(sym)
 
         elif action == "CLOSE":
             self._apply_close_action(strat_name, decision, ts)
@@ -621,21 +701,31 @@ class EngineV9:
         meta   = decision.metadata
         pos_id = meta.get("pos_id")
 
-        # Locate executor position
+        # Locate position — prefer by pos_id, then by strategy ownership on sym
         pos = None
         if pos_id:
             pos = next((p for p in self.executor.open_positions
                         if p.pos_id == pos_id), None)
+
         if pos is None:
-            pos = next((p for p in self.executor.open_positions
-                        if p.symbol == sym), None)
+            # Find positions owned by this strategy on this symbol
+            strat_pos = [p for p in self.executor.open_positions
+                         if p.symbol == sym
+                         and self._pos_to_strategy.get(p.pos_id) == strat_name]
+            if len(strat_pos) > 1:
+                log.error("ambiguous_close_without_pos_id: %s %s has %d positions",
+                          strat_name, sym, len(strat_pos))
+                return
+            elif strat_pos:
+                pos = strat_pos[0]
+
         if pos is None:
             return
 
-        # Minimum hold time guard: don't close positions younger than 60s
-        # unless it's a genuine stop-loss, manual close, or emergency.
-        _reason_l = (reason or "").lower()
-        _is_protective = any(k in _reason_l for k in ("stop", "manual", "emergency", "flatten", "shutdown"))
+        # Minimum hold time guard (skip non-protective closes < 60s)
+        _reason_l     = (reason or "").lower()
+        _is_protective = any(k in _reason_l for k in
+                             ("stop", "manual", "emergency", "flatten", "shutdown"))
         if not _is_protective and (ts - pos.entry_ts) < 60.0:
             log.debug("Skip early close %s %s after %.1fs (min_hold=60s)",
                       strat_name, sym, ts - pos.entry_ts)
@@ -646,13 +736,17 @@ class EngineV9:
             bk = self._last_book.get(sym)
             exit_price = (getattr(bk, "mid", None) if bk else None) or pos.entry_price
 
-        net_pnl = self.executor.close_position(pos, exit_price, reason, strategy=strat_name)
+        net_pnl = self.executor.close_position(pos, exit_price, reason,
+                                               strategy=strat_name)
         hold_s  = meta.get("hold_s", ts - pos.entry_ts)
 
         self.equity += net_pnl
         self.ks.update_equity(self.equity)
         self.ks.register_close(pos.notional_usd)
         self.ks.record_trade(net_pnl)
+
+        self.ledger.register_close(strat_name, pos.notional_usd, net_pnl)
+        self._pos_to_strategy.pop(pos.pos_id, None)
 
         self.adv_mon.record_close(sym, net_pnl < 0)
         self.adv_mon.check_and_suspend(sym, ts)
@@ -868,15 +962,19 @@ class EngineV9:
         try:
             status = self.manager.get_status()
             now = time.time()
-            # Group open positions by strategy, with unrealised PnL
+
+            # Group open positions by strategy with unrealised PnL
             pos_by_strat: dict = {}
+            upnl_by_strat: dict[str, float] = {}
             for pos in self.executor.open_positions:
                 sname = self._pos_to_strategy.get(pos.pos_id, "unknown")
-                mid   = getattr(self._last_book.get(pos.symbol), "mid", None) or pos.entry_price
+                mid   = (getattr(self._last_book.get(pos.symbol), "mid", None)
+                         or pos.entry_price)
                 if pos.side == "BUY":
                     upnl = (mid - pos.entry_price) / pos.entry_price * pos.notional_usd
                 else:
                     upnl = (pos.entry_price - mid) / pos.entry_price * pos.notional_usd
+                upnl_by_strat[sname] = upnl_by_strat.get(sname, 0.0) + upnl
                 pos_by_strat.setdefault(sname, []).append({
                     "pos_id":         pos.pos_id,
                     "symbol":         pos.symbol,
@@ -889,9 +987,27 @@ class EngineV9:
                     "tp_price":       pos.tp_price,
                     "stop_price":     pos.stop_price,
                 })
+
+            # Count pending orders per strategy
+            pending_by_strat: dict[str, int] = {}
+            seen_pairs_p: set[str] = set()
+            for order in self.executor.pending_orders:
+                pid = order.pair_id
+                if pid not in seen_pairs_p:
+                    seen_pairs_p.add(pid)
+                    sn = self._pair_to_strategy.get(pid, "unknown")
+                    pending_by_strat[sn] = pending_by_strat.get(sn, 0) + 1
+
             for s in status:
-                s["open_positions"] = pos_by_strat.get(s["name"], [])
-            # Atomic write: temp file → rename so GUI never reads a partial file
+                name = s["name"]
+                s["open_positions"]       = pos_by_strat.get(name, [])
+                s["pending_orders_count"] = pending_by_strat.get(name, 0)
+                # Update ledger unrealized PnL then embed ledger snapshot
+                total_upnl = upnl_by_strat.get(name, 0.0)
+                self.ledger.update_unrealized(name, total_upnl)
+                s["ledger"] = self.ledger.get_strategy_status(name)
+
+            # Atomic write
             _tmp_s = status_file.with_suffix(".tmp")
             with open(_tmp_s, "w", encoding="utf-8") as f:
                 json.dump(status, f, default=str)
@@ -919,11 +1035,28 @@ class EngineV9:
                     return self.manager.control(name, "update_params",
                                                 params=args.get("params", {}))
                 elif action == "set_capital":
-                    return self.manager.control(name, "set_capital",
-                                                capital_usd=args.get("capital_usd"))
+                    r = self.manager.control(name, "set_capital",
+                                             capital_usd=args.get("capital_usd"))
+                    if r.get("ok"):
+                        self.ledger.set_capital(name,
+                                                float(args.get("capital_usd", 500)))
+                    return r
                 elif action == "set_coins":
                     return self.manager.control(name, "set_coins",
                                                 coins=args.get("coins", []))
+                elif action == "disable":
+                    mode = args.get("mode", "disable_only")
+                    return self._disable_strategy(name, mode)
+                elif action == "enable":
+                    r = self.manager.control(name, "enable")
+                    if r.get("ok"):
+                        self.ledger.enable_strategy(name)
+                    return r
+                elif action == "reset":
+                    r = self.manager.control(name, "reset")
+                    if r.get("ok"):
+                        self.ledger.reset_strategy(name)
+                    return r
                 else:
                     return self.manager.control(name, action)
 
@@ -984,28 +1117,104 @@ class EngineV9:
         return {"ok": True, "net_pnl": round(net, 4), "symbol": pos.symbol}
 
     def _flatten_strategy_sync(self, name: str, ts: float) -> dict:
-        strat = self.manager.get(name)
-        if strat:
-            for coin in strat.config.coins:
-                self.executor.cancel_quotes(coin)
-        closed = 0
-        for pos in list(self.executor.open_positions):
-            if self._pos_to_strategy.get(pos.pos_id) == name:
-                mid = getattr(self._last_book.get(pos.symbol), "mid", None) or pos.entry_price
-                net = self.executor.close_position(pos, mid, "flatten_strategy", strategy=name)
-                self.equity += net
-                if strat:
-                    strat.on_position_closed(pos.symbol, net, "flatten_strategy")
-                closed += 1
-        return {"ok": True, "closed": closed}
+        cancelled = self._cancel_pending_for_strategy(name)
+        closed    = self._flatten_strategy(name, "flatten_strategy")
+        return {"ok": True, "cancelled": cancelled, "closed": closed}
 
     def _flatten_all_sync(self, ts: float) -> dict:
         self.executor.cancel_all()
+        # Release all reserved notional
+        for pid, (sname, rn) in list(self._pair_to_reserved.items()):
+            self.ledger.release_reserved(sname, rn)
+        self._pair_to_reserved.clear()
         mids  = {s: (getattr(self._last_book.get(s), "mid", None) or 0.0)
                  for s in self.symbols}
         total = self.executor.close_all_market(mids, "flatten_all")
         self.equity += total
         return {"ok": True, "total_pnl": round(total, 4)}
+
+    # ------------------------------------------------------------------
+    # Strategy lifecycle helpers (cancel / flatten / disable with mode)
+    # ------------------------------------------------------------------
+
+    def _cancel_pending_for_strategy(self, strategy_name: str) -> int:
+        """Cancel all pending orders for a strategy; release reserved notional."""
+        cancelled = 0
+        seen_pairs: set[str] = set()
+        for order in list(self.executor.pending_orders):
+            pid = order.pair_id
+            if pid in seen_pairs:
+                continue
+            if self._pair_to_strategy.get(pid) == strategy_name:
+                seen_pairs.add(pid)
+                if pid in self._pair_to_reserved:
+                    _, rn = self._pair_to_reserved.pop(pid)
+                    self.ledger.release_reserved(strategy_name, rn)
+                self.executor.cancel_quotes(order.symbol)
+                cancelled += 1
+        return cancelled
+
+    def _flatten_strategy(self, strategy_name: str,
+                          reason: str = "manual_flatten") -> int:
+        """Close all open positions belonging to strategy_name."""
+        strat   = self.manager.get(strategy_name)
+        closed  = 0
+        ts      = time.time()
+        for pos in list(self.executor.open_positions):
+            if self._pos_to_strategy.get(pos.pos_id) != strategy_name:
+                continue
+            mid = (getattr(self._last_book.get(pos.symbol), "mid", None)
+                   or pos.entry_price)
+            net = self.executor.close_position(pos, mid, reason,
+                                               strategy=strategy_name)
+            self.equity += net
+            self.ks.update_equity(self.equity)
+            self.ks.register_close(pos.notional_usd)
+            self.ks.record_trade(net)
+            self.ledger.register_close(strategy_name, pos.notional_usd, net)
+            self._pos_to_strategy.pop(pos.pos_id, None)
+            hold_s = ts - pos.entry_ts
+            self.tracker.record_trade(net, hold_s, reason)
+            if strat:
+                strat.on_position_closed(pos.symbol, net, reason)
+            closed += 1
+        return closed
+
+    def _disable_strategy(self, name: str, mode: str) -> dict:
+        """
+        Disable a strategy with explicit cleanup:
+          disable_only    — just disable, positions keep running
+          disable_cancel  — disable + cancel pending orders
+          disable_flatten — disable + cancel pending + close positions
+        """
+        res = self.manager.control(name, "disable")
+        if not res.get("ok"):
+            return res
+        self.ledger.disable_strategy(name)
+        details = {"ok": True, "mode": mode, "cancelled": 0, "closed": 0}
+        if mode in ("disable_cancel", "disable_flatten"):
+            details["cancelled"] = self._cancel_pending_for_strategy(name)
+        if mode == "disable_flatten":
+            details["closed"] = self._flatten_strategy(name,
+                                                        "disable_flatten")
+        log.info("[ENGINE] disable_strategy %s mode=%s → %s", name, mode, details)
+        return details
+
+    # ------------------------------------------------------------------
+    # Risk event logger (delegates to ledger)
+    # ------------------------------------------------------------------
+
+    def _log_risk_event(self, strategy: str, symbol: str, action: str,
+                         requested_notional: float, allowed: bool,
+                         block_reason: str) -> None:
+        global_open = sum(p.notional_usd for p in self.executor.open_positions)
+        self.ledger.log_risk_event(
+            strategy=strategy, symbol=symbol, action=action,
+            requested_notional=requested_notional, allowed=allowed,
+            block_reason=block_reason,
+            global_open_notional=global_open,
+            global_equity=self.equity,
+        )
 
     # ------------------------------------------------------------------
     # Dashboard

@@ -198,7 +198,7 @@ class FundingCarryHedgedStrategy(BaseStrategy):
         if not allow_unhedged:
             return None  # scanner mode
 
-        notional  = self.config.max_position_size_usd
+        notional  = self.compute_order_notional()
         max_hold_s = int(p.get("max_hold_hours", 8) * 3600)
 
         if funding_bps_per_h > 0:

@@ -120,7 +120,7 @@ class MeanReversionKalman(BaseStrategy):
             return None
 
         side = "BUY" if z_t < 0 else "SELL"
-        notional = self.config.max_position_size_usd
+        notional = self.compute_order_notional()
         size     = notional / max(mid, 1e-9)
         max_hold = int(p.get("max_hold_minutes", 30) * 60)
 

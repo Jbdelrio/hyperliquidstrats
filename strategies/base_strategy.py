@@ -107,6 +107,21 @@ class BaseStrategy(ABC):
         else:
             self._consecutive_losses = 0
 
+    def compute_order_notional(self,
+                               desired_notional: Optional[float] = None
+                               ) -> float:
+        """
+        Return the notional to use for one position slot.
+        Rule: min(capital_per_slot, max_position_size_usd).
+        If desired_notional is given, also cap at that value.
+        """
+        per_slot = (self.config.capital_allocated_usd
+                    / max(self.config.max_positions, 1))
+        hard_cap = self.config.max_position_size_usd
+        if desired_notional is None:
+            return min(per_slot, hard_cap)
+        return min(desired_notional, per_slot, hard_cap)
+
     def get_calibration_data(self, symbol: str) -> dict:
         """Live feature values for the Calibration tab."""
         return {}

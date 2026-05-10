@@ -301,7 +301,9 @@ class S8EconophysicsMakerScalping(BaseStrategy):
 
         base_notional = self.config.capital_allocated_usd * p.get("base_notional_pct", 0.04)
         size_mult     = hurst_mult * har_mult
-        notional_usd  = base_notional * size_mult * p.get("max_leverage", 5)
+        notional_usd  = self.compute_order_notional(
+            base_notional * size_mult * p.get("max_leverage", 5)
+        )
 
         if notional_usd < 10:
             if self.decision_logger:
