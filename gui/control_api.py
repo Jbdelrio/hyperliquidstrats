@@ -69,12 +69,9 @@ class ControlAPI:
     def flatten_strategy(self, name: str) -> None:
         self.send_nowait("flatten_strategy", {"strategy": name})
 
-<<<<<<< HEAD
     def close_position(self, pos_id: str) -> None:
         self.send_nowait("close_position", {"pos_id": pos_id})
 
-=======
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
     # ------------------------------------------------------------------
     # Global controls
     # ------------------------------------------------------------------

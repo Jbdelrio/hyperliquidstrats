@@ -5,7 +5,7 @@ DataTable is a STATIC component — only its data/columns/style are updated
 on refresh so page_current is never reset.
 """
 import dash_bootstrap_components as dbc
-import plotly.express as px
+import plotly.graph_objects as go
 from dash import Input, Output, State, dash_table, dcc, html
 
 from gui.data_loader import load_fills
@@ -128,10 +128,14 @@ def register_callbacks(app) -> None:
         # Histogram
         hist = no_data("Aucun trade filtré.")
         if "net" in df.columns and len(df) > 0:
-            fig = px.histogram(df, x="net", nbins=30,
-                               title="Distribution PnL net (USD)",
-                               color_discrete_sequence=[COLORS["accent"]])
-            fig.add_vline(x=0, line_dash="dash", line_color=COLORS["danger"])
+            net_vals = df["net"].dropna().tolist()
+            fig = go.Figure(go.Histogram(
+                x=net_vals, nbinsx=30,
+                marker_color=COLORS["accent"], opacity=0.8,
+            ))
+            fig.add_vline(x=0, line_dash="dash", line_color=COLORS["danger"], opacity=0.7)
+            fig.update_layout(title="Distribution PnL net (USD)",
+                              bargap=0.05, height=220)
             apply_dark_theme(fig)
             hist = dcc.Graph(figure=fig, config={"displayModeBar": False})
 

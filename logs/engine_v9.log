@@ -5433,3 +5433,323 @@
 2026-05-05 19:09:33,180 INFO __main__ Shutting down v9...
 =======
 >>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
+2026-05-08 00:01:40,626 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=5.0% total_dd=10.0%
+2026-05-08 00:01:40,635 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,638 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,638 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,640 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,640 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,640 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,640 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,640 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,643 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,643 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,643 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,643 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'XRP'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:40,643 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-08 00:01:40,643 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue']
+2026-05-08 00:01:41,351 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-08 00:01:43,636 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-08 00:01:43,636 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-08 00:01:45,041 INFO data.orderbook_manager All subscriptions sent.
+2026-05-08 00:01:48,202 INFO execution.high_freq_executor [FILL] HYPE BUY @ 42.524000 notional=$10
+2026-05-08 00:01:57,093 INFO execution.high_freq_executor [FILL] BCH BUY @ 449.570000 notional=$10
+2026-05-08 00:01:57,634 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.125770 notional=$10
+2026-05-08 00:01:58,148 INFO execution.high_freq_executor [FILL] AAVE BUY @ 91.928000 notional=$10
+2026-05-08 00:01:58,267 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=5.0% total_dd=10.0%
+2026-05-08 00:01:58,267 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,267 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,272 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,280 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,280 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,280 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'XRP'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:01:58,280 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-08 00:01:58,280 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue']
+2026-05-08 00:01:58,869 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-08 00:02:01,265 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-08 00:02:01,265 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-08 00:02:02,600 INFO data.orderbook_manager All subscriptions sent.
+2026-05-08 00:02:03,458 INFO execution.high_freq_executor [FILL] AAVE SELL @ 91.902000 notional=$10
+2026-05-08 00:02:08,491 INFO execution.high_freq_executor [FILL] OP BUY @ 0.147100 notional=$10
+2026-05-08 00:02:09,014 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.125700 notional=$10
+2026-05-08 00:02:10,046 INFO execution.high_freq_executor [FILL] AVAX SELL @ 9.438400 notional=$10
+2026-05-08 00:02:10,364 INFO execution.high_freq_executor [FILL] AVAX SELL @ 9.438400 notional=$10
+2026-05-08 00:02:23,139 INFO execution.high_freq_executor [FILL] BCH BUY @ 449.420000 notional=$10
+2026-05-08 00:02:31,334 INFO execution.high_freq_executor [FILL] OP BUY @ 0.147010 notional=$10
+2026-05-08 00:02:34,378 INFO execution.high_freq_executor [FILL] SOL SELL @ 87.825000 notional=$10
+2026-05-08 00:02:34,401 INFO execution.high_freq_executor [FILL] SOL SELL @ 87.825000 notional=$10
+2026-05-08 00:02:47,315 INFO execution.high_freq_executor [FILL] LINK SELL @ 9.834800 notional=$12
+2026-05-08 00:02:47,337 INFO execution.high_freq_executor [FILL] LINK SELL @ 9.834800 notional=$10
+2026-05-08 00:02:53,862 INFO execution.high_freq_executor [FILL] XRP SELL @ 1.381700 notional=$28
+2026-05-08 00:02:53,870 INFO execution.high_freq_executor [FILL] XRP SELL @ 1.381700 notional=$10
+2026-05-08 00:03:03,481 INFO execution.high_freq_executor [FILL] LTC BUY @ 56.258000 notional=$20
+2026-05-08 00:03:28,905 INFO __main__ Shutting down v9...
+2026-05-08 00:03:28,905 INFO execution.high_freq_executor [CLOSE] AAVE SELL entry=91.902000 exit=91.909000 net=$-0.0035 hold=85s shutdown
+2026-05-08 00:03:28,905 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.125700 exit=0.125510 net=$-0.0178 hold=80s shutdown
+2026-05-08 00:03:28,905 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=9.438400 exit=9.434250 net=$0.0017 hold=79s shutdown
+2026-05-08 00:03:28,905 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=449.420000 exit=449.590000 net=$0.0011 hold=66s shutdown
+2026-05-08 00:03:28,905 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.147010 exit=0.146680 net=$-0.0251 hold=58s shutdown
+2026-05-08 00:03:28,912 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=87.825000 exit=87.796000 net=$0.0006 hold=55s shutdown
+2026-05-08 00:03:28,912 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=9.834800 exit=9.831250 net=$0.0009 hold=42s shutdown
+2026-05-08 00:03:28,912 INFO execution.high_freq_executor [CLOSE] XRP SELL entry=1.381700 exit=1.381950 net=$-0.0045 hold=35s shutdown
+2026-05-08 00:03:28,912 INFO execution.high_freq_executor [CLOSE] LTC BUY entry=56.258000 exit=56.268000 net=$-0.0018 hold=25s shutdown
+2026-05-08 00:03:37,170 INFO execution.high_freq_executor [FILL] SOL SELL @ 87.791000 notional=$60
+2026-05-08 00:03:37,571 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=87.791000 exit=87.791500 net=$-0.0165 hold=0s z_reversion
+2026-05-08 00:03:37,573 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 87.791500 | net=$-0.0165 | z_reversion
+2026-05-08 00:03:37,667 INFO execution.high_freq_executor [FILL] ETH BUY @ 2286.200000 notional=$60
+2026-05-08 00:03:38,077 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2286.200000 exit=2286.150000 net=$-0.0175 hold=0s z_reversion
+2026-05-08 00:03:38,079 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2286.150000 | net=$-0.0175 | z_reversion
+2026-05-08 00:03:39,829 INFO execution.high_freq_executor [FILL] SOL BUY @ 87.784000 notional=$60
+2026-05-08 00:03:40,425 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=87.784000 exit=87.783500 net=$-0.0165 hold=1s z_reversion
+2026-05-08 00:03:40,425 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 87.783500 | net=$-0.0165 | z_reversion
+2026-05-08 00:03:41,413 INFO execution.high_freq_executor [FILL] BTC BUY @ 79664.000000 notional=$60
+2026-05-08 00:03:41,982 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79664.000000 exit=79663.500000 net=$-0.0166 hold=1s z_reversion
+2026-05-08 00:03:41,982 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 79663.500000 | net=$-0.0166 | z_reversion
+2026-05-08 00:03:48,018 INFO execution.high_freq_executor [FILL] SOL SELL @ 87.794000 notional=$60
+2026-05-08 00:03:48,448 INFO execution.high_freq_executor [FILL] BTC SELL @ 79684.000000 notional=$60
+2026-05-08 00:03:48,450 INFO execution.high_freq_executor [FILL] ETH SELL @ 2286.100000 notional=$60
+2026-05-08 00:03:48,454 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=87.794000 exit=87.797500 net=$-0.0186 hold=0s z_reversion
+2026-05-08 00:03:48,455 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 87.797500 | net=$-0.0186 | z_reversion
+2026-05-08 00:03:48,685 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2286.100000 exit=2286.150000 net=$-0.0175 hold=0s z_reversion
+2026-05-08 00:03:48,688 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2286.150000 | net=$-0.0175 | z_reversion
+2026-05-08 00:03:49,049 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79684.000000 exit=79684.500000 net=$-0.0166 hold=1s z_reversion
+2026-05-08 00:03:49,049 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 79684.500000 | net=$-0.0166 | z_reversion
+2026-05-08 00:03:49,559 INFO execution.high_freq_executor [FILL] ETH SELL @ 2286.400000 notional=$60
+2026-05-08 00:03:49,691 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2286.400000 exit=2286.450000 net=$-0.0175 hold=0s z_reversion
+2026-05-08 00:03:49,691 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2286.450000 | net=$-0.0175 | z_reversion
+2026-05-08 00:04:48,423 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=42.524000 exit=42.448500 net=$-0.0205 hold=180s max_hold
+2026-05-08 00:04:48,423 INFO __main__ [CLOSE] S8EMS HYPE BUY @ 42.448500 | net=$-0.0205 | max_hold
+2026-05-08 00:04:57,545 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=449.570000 exit=449.370000 net=$-0.0071 hold=180s max_hold
+2026-05-08 00:04:57,554 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-08 00:04:57,554 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.125770 exit=0.125465 net=$-0.0270 hold=180s loss_streak
+2026-05-08 00:04:57,554 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=91.928000 exit=91.913500 net=$-0.0043 hold=179s loss_streak
+2026-05-08 00:04:57,554 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.147100 exit=0.146495 net=$-0.0438 hold=169s loss_streak
+2026-05-08 00:04:57,562 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=9.438400 exit=9.431600 net=$0.0045 hold=167s loss_streak
+2026-05-08 00:04:57,565 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=87.825000 exit=87.740500 net=$0.0069 hold=143s loss_streak
+2026-05-08 00:04:57,568 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=9.834800 exit=9.825650 net=$0.0079 hold=130s loss_streak
+2026-05-08 00:04:57,570 INFO execution.high_freq_executor [CLOSE] XRP SELL entry=1.381700 exit=1.381150 net=$0.0036 hold=124s loss_streak
+2026-05-08 00:04:57,572 WARNING risk.kill_switch Loss streak 10 reached -> 30 min suspend
+2026-05-08 00:04:57,572 INFO __main__ [CLOSE] S8EMS BCH BUY @ 449.370000 | net=$-0.0071 | max_hold
+2026-05-08 00:14:02,312 INFO __main__ Shutting down v9...
+2026-05-08 00:34:54,882 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=5.0% total_dd=10.0%
+2026-05-08 00:34:54,884 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,884 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,884 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,885 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,885 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,885 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,885 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,886 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,886 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,887 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,887 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,887 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-08 00:34:54,887 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'XRP'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-08 00:34:54,888 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-08 00:34:54,888 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue']
+2026-05-08 00:34:55,415 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-08 00:34:57,898 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-08 00:34:57,898 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-08 00:34:59,076 INFO data.orderbook_manager All subscriptions sent.
+2026-05-08 00:34:59,107 INFO execution.high_freq_executor [FILL] LINK BUY @ 9.817200 notional=$10
+2026-05-08 00:35:01,372 INFO execution.high_freq_executor [FILL] LTC SELL @ 56.261000 notional=$10
+2026-05-08 00:35:01,373 INFO execution.high_freq_executor [FILL] XRP SELL @ 1.381600 notional=$10
+2026-05-08 00:35:05,639 INFO execution.high_freq_executor [FILL] AAVE SELL @ 91.829000 notional=$10
+2026-05-08 00:35:09,166 INFO execution.high_freq_executor [FILL] HYPE BUY @ 42.452000 notional=$10
+2026-05-08 00:35:18,040 INFO execution.high_freq_executor [FILL] OP SELL @ 0.145370 notional=$10
+2026-05-08 00:35:18,593 INFO execution.high_freq_executor [FILL] SOL SELL @ 87.803000 notional=$10
+2026-05-08 00:35:20,195 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.125800 notional=$10
+2026-05-08 00:35:20,196 INFO execution.high_freq_executor [FILL] BCH SELL @ 449.270000 notional=$10
+2026-05-09 16:48:07,033 INFO risk.kill_switch KillSwitch init: capital=500 daily_dd=5.0% total_dd=10.0%
+2026-05-09 16:48:07,048 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,049 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,049 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,050 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,050 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,050 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,051 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,051 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,051 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,051 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,052 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,052 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'XRP'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-09 16:48:07,052 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-09 16:48:07,053 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=500.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue']
+2026-05-09 16:48:07,626 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-09 16:48:10,069 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-09 16:48:10,069 INFO __main__ Engine V9 running. Ctrl+C to stop.
+2026-05-09 16:48:11,351 INFO data.orderbook_manager All subscriptions sent.
+2026-05-09 16:48:11,383 INFO execution.high_freq_executor [FILL] AAVE BUY @ 95.129000 notional=$10
+2026-05-09 16:48:14,012 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.141810 notional=$10
+2026-05-09 16:48:15,559 INFO execution.high_freq_executor [FILL] LTC SELL @ 57.842000 notional=$10
+2026-05-09 16:48:16,691 INFO execution.high_freq_executor [FILL] HYPE BUY @ 43.265000 notional=$10
+2026-05-09 16:48:20,481 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.865600 notional=$10
+2026-05-09 16:48:29,490 INFO execution.high_freq_executor [FILL] BCH BUY @ 450.050000 notional=$10
+2026-05-09 16:48:35,963 INFO execution.high_freq_executor [FILL] OP BUY @ 0.166010 notional=$10
+2026-05-09 16:49:56,920 INFO execution.high_freq_executor [FILL] ETH BUY @ 2308.400000 notional=$60
+2026-05-09 16:49:56,994 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2308.400000 exit=2308.350000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 16:49:56,997 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2308.350000 | net=$-0.0175 | z_reversion
+2026-05-09 16:50:01,800 INFO execution.high_freq_executor [FILL] ETH BUY @ 2308.300000 notional=$60
+2026-05-09 16:50:02,069 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2308.300000 exit=2308.250000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 16:50:02,072 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2308.250000 | net=$-0.0175 | z_reversion
+2026-05-09 16:50:02,360 INFO execution.high_freq_executor [FILL] SOL BUY @ 93.021000 notional=$60
+2026-05-09 16:50:02,582 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=93.021000 exit=93.020500 net=$-0.0165 hold=0s z_reversion
+2026-05-09 16:50:02,582 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 93.020500 | net=$-0.0165 | z_reversion
+2026-05-09 16:50:07,866 INFO execution.high_freq_executor [FILL] SOL SELL @ 93.024000 notional=$60
+2026-05-09 16:50:08,129 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=93.024000 exit=93.025500 net=$-0.0172 hold=0s z_reversion
+2026-05-09 16:50:08,129 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 93.025500 | net=$-0.0172 | z_reversion
+2026-05-09 16:50:11,661 INFO execution.high_freq_executor [FILL] ETH BUY @ 2308.200000 notional=$60
+2026-05-09 16:50:11,663 INFO execution.high_freq_executor [FILL] SOL BUY @ 93.018000 notional=$60
+2026-05-09 16:50:12,246 INFO execution.high_freq_executor [FILL] BTC BUY @ 80311.000000 notional=$60
+2026-05-09 16:50:12,246 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2308.200000 exit=2307.550000 net=$-0.0331 hold=1s stop_z
+2026-05-09 16:50:12,246 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2307.550000 | net=$-0.0331 | stop_z
+2026-05-09 16:50:12,594 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80311.000000 exit=80310.500000 net=$-0.0166 hold=0s z_reversion
+2026-05-09 16:50:12,596 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80310.500000 | net=$-0.0166 | z_reversion
+2026-05-09 16:50:12,753 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=93.018000 exit=93.010500 net=$-0.0210 hold=1s z_reversion
+2026-05-09 16:50:12,755 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 93.010500 | net=$-0.0210 | z_reversion
+2026-05-09 16:50:13,302 INFO execution.high_freq_executor [FILL] BTC BUY @ 80302.000000 notional=$60
+2026-05-09 16:50:13,302 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80302.000000 exit=80301.500000 net=$-0.0166 hold=0s stop_z
+2026-05-09 16:50:13,302 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80301.500000 | net=$-0.0166 | stop_z
+2026-05-09 16:50:13,308 INFO execution.high_freq_executor [FILL] ETH BUY @ 2307.600000 notional=$60
+2026-05-09 16:50:13,613 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2307.600000 exit=2307.550000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 16:50:13,613 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2307.550000 | net=$-0.0175 | z_reversion
+2026-05-09 16:51:11,844 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=95.129000 exit=94.931000 net=$-0.0235 hold=180s max_hold
+2026-05-09 16:51:11,844 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-09 16:51:11,844 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.141810 exit=0.141480 net=$-0.0260 hold=178s loss_streak
+2026-05-09 16:51:11,844 INFO execution.high_freq_executor [CLOSE] LTC SELL entry=57.842000 exit=57.815500 net=$0.0019 hold=176s loss_streak
+2026-05-09 16:51:11,844 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=43.265000 exit=43.210500 net=$-0.0153 hold=175s loss_streak
+2026-05-09 16:51:11,844 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.865600 exit=9.850150 net=$-0.0184 hold=171s loss_streak
+2026-05-09 16:51:11,844 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=450.050000 exit=449.715000 net=$-0.0101 hold=162s loss_streak
+2026-05-09 16:51:11,844 INFO execution.high_freq_executor [CLOSE] OP BUY entry=0.166010 exit=0.165980 net=$-0.0045 hold=156s loss_streak
+2026-05-09 16:51:11,844 WARNING risk.kill_switch Loss streak 10 reached -> 30 min suspend
+2026-05-09 16:51:11,844 INFO __main__ [CLOSE] S8EMS AAVE BUY @ 94.931000 | net=$-0.0235 | max_hold
+2026-05-09 17:21:12,940 INFO execution.high_freq_executor [FILL] ETH SELL @ 2306.300000 notional=$60
+2026-05-09 17:21:13,450 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2306.300000 exit=2306.350000 net=$-0.0175 hold=1s z_reversion
+2026-05-09 17:21:13,452 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2306.350000 | net=$-0.0175 | z_reversion
+2026-05-09 17:21:15,576 INFO execution.high_freq_executor [FILL] BTC SELL @ 80350.000000 notional=$60
+2026-05-09 17:21:16,217 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80350.000000 exit=80350.500000 net=$-0.0166 hold=1s z_reversion
+2026-05-09 17:21:16,217 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 80350.500000 | net=$-0.0166 | z_reversion
+2026-05-09 17:21:16,634 INFO execution.high_freq_executor [FILL] SOL SELL @ 92.752000 notional=$60
+2026-05-09 17:21:17,000 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=92.752000 exit=92.752500 net=$-0.0165 hold=0s z_reversion
+2026-05-09 17:21:17,002 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 92.752500 | net=$-0.0165 | z_reversion
+2026-05-09 17:21:17,234 INFO execution.high_freq_executor [FILL] BTC BUY @ 80351.000000 notional=$60
+2026-05-09 17:21:17,768 INFO execution.high_freq_executor [FILL] ETH SELL @ 2306.500000 notional=$60
+2026-05-09 17:21:18,267 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2306.500000 exit=2306.550000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 17:21:18,267 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2306.550000 | net=$-0.0175 | z_reversion
+2026-05-09 17:21:19,016 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80351.000000 exit=80350.500000 net=$-0.0166 hold=2s z_reversion
+2026-05-09 17:21:19,017 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80350.500000 | net=$-0.0166 | z_reversion
+2026-05-09 17:21:19,369 INFO execution.high_freq_executor [FILL] ETH SELL @ 2306.600000 notional=$60
+2026-05-09 17:21:19,369 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2306.600000 exit=2306.650000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 17:21:19,369 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2306.650000 | net=$-0.0175 | z_reversion
+2026-05-09 17:21:20,386 INFO execution.high_freq_executor [FILL] ETH BUY @ 2306.700000 notional=$60
+2026-05-09 17:21:20,386 INFO execution.high_freq_executor [FILL] SOL SELL @ 92.766000 notional=$60
+2026-05-09 17:21:20,517 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=92.766000 exit=92.766500 net=$-0.0165 hold=0s z_reversion
+2026-05-09 17:21:20,518 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 92.766500 | net=$-0.0165 | z_reversion
+2026-05-09 17:21:23,553 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2306.700000 exit=2306.650000 net=$-0.0175 hold=3s z_reversion
+2026-05-09 17:21:23,554 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2306.650000 | net=$-0.0175 | z_reversion
+2026-05-09 17:21:33,434 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.839700 notional=$60
+2026-05-09 17:21:33,434 INFO execution.high_freq_executor [FILL] BTC BUY @ 80366.000000 notional=$60
+2026-05-09 17:21:33,434 INFO execution.high_freq_executor [FILL] ETH BUY @ 2306.700000 notional=$60
+2026-05-09 17:21:33,766 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.839700 exit=9.839100 net=$-0.0199 hold=0s max_hold
+2026-05-09 17:21:33,767 INFO __main__ [CLOSE] S8EMS AVAX BUY @ 9.839100 | net=$-0.0199 | max_hold
+2026-05-09 17:31:20,963 INFO execution.high_freq_executor [FILL] SOL SELL @ 92.933000 notional=$60
+2026-05-09 17:31:20,964 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=92.933000 exit=92.933500 net=$-0.0165 hold=0s stop_z
+2026-05-09 17:31:20,966 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-09 17:31:20,966 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80366.000000 exit=80415.500000 net=$0.0208 hold=588s loss_streak
+2026-05-09 17:31:20,967 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2306.700000 exit=2310.050000 net=$0.0709 hold=588s loss_streak
+2026-05-09 17:31:20,967 WARNING risk.kill_switch Loss streak 10 reached -> 30 min suspend
+2026-05-09 17:31:20,968 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 92.933500 | net=$-0.0165 | stop_z
+2026-05-09 18:01:22,785 INFO execution.high_freq_executor [FILL] SOL SELL @ 92.879000 notional=$60
+2026-05-09 18:01:24,799 INFO execution.high_freq_executor [FILL] BTC BUY @ 80457.000000 notional=$60
+2026-05-09 18:01:24,799 INFO execution.high_freq_executor [FILL] ETH BUY @ 2314.500000 notional=$60
+2026-05-09 18:01:24,801 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=92.879000 exit=92.879500 net=$-0.0165 hold=2s z_reversion
+2026-05-09 18:01:24,803 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 92.879500 | net=$-0.0165 | z_reversion
+2026-05-09 18:01:25,183 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2314.500000 exit=2314.450000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 18:01:25,185 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2314.450000 | net=$-0.0175 | z_reversion
+2026-05-09 18:01:25,302 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80457.000000 exit=80456.500000 net=$-0.0166 hold=1s z_reversion
+2026-05-09 18:01:25,304 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80456.500000 | net=$-0.0166 | z_reversion
+2026-05-09 18:01:31,246 INFO execution.high_freq_executor [FILL] ETH BUY @ 2314.400000 notional=$60
+2026-05-09 18:01:31,744 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2314.400000 exit=2314.350000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 18:01:31,746 WARNING risk.adverse_selection_monitor [ETH] Adverse selection: pick_rate=100% > 85% → suspend 1200s
+2026-05-09 18:01:31,747 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2314.350000 | net=$-0.0175 | z_reversion
+2026-05-09 18:01:34,401 INFO execution.high_freq_executor [FILL] SOL SELL @ 92.906000 notional=$60
+2026-05-09 18:01:35,229 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=92.906000 exit=92.917500 net=$-0.0236 hold=1s z_reversion
+2026-05-09 18:01:35,231 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 92.917500 | net=$-0.0236 | z_reversion
+2026-05-09 18:01:36,596 INFO execution.high_freq_executor [FILL] SOL BUY @ 92.923000 notional=$60
+2026-05-09 18:01:38,313 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=92.923000 exit=92.922500 net=$-0.0165 hold=2s z_reversion
+2026-05-09 18:01:38,313 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 92.922500 | net=$-0.0165 | z_reversion
+2026-05-09 18:11:38,951 INFO execution.high_freq_executor [FILL] BTC SELL @ 80533.000000 notional=$60
+2026-05-09 18:11:38,951 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80533.000000 exit=80533.500000 net=$-0.0166 hold=0s stop_z
+2026-05-09 18:11:38,990 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 80533.500000 | net=$-0.0166 | stop_z
+2026-05-09 18:11:38,990 INFO execution.high_freq_executor [FILL] SOL SELL @ 93.071000 notional=$60
+2026-05-09 18:11:38,990 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=93.071000 exit=93.071500 net=$-0.0165 hold=0s stop_z
+2026-05-09 18:11:38,990 WARNING risk.adverse_selection_monitor [SOL] Adverse selection: pick_rate=100% > 85% → suspend 1200s
+2026-05-09 18:11:38,990 INFO __main__ [CLOSE] MeanReversionKalman SOL SELL @ 93.071500 | net=$-0.0165 | stop_z
+2026-05-09 18:11:40,528 INFO execution.high_freq_executor [FILL] BTC BUY @ 80534.000000 notional=$60
+2026-05-09 18:11:42,598 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80534.000000 exit=80533.500000 net=$-0.0166 hold=2s z_reversion
+2026-05-09 18:11:42,598 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80533.500000 | net=$-0.0166 | z_reversion
+2026-05-09 18:12:34,088 INFO execution.high_freq_executor [FILL] BTC BUY @ 80525.000000 notional=$60
+2026-05-09 18:12:34,120 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80525.000000 exit=80524.500000 net=$-0.0166 hold=0s z_reversion
+2026-05-09 18:12:34,179 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-09 18:12:34,270 WARNING risk.kill_switch Loss streak 10 reached -> 30 min suspend
+2026-05-09 18:12:34,270 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80524.500000 | net=$-0.0166 | z_reversion
+2026-05-09 18:42:44,070 INFO execution.high_freq_executor [FILL] SOL BUY @ 92.778000 notional=$60
+2026-05-09 18:42:44,278 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=92.778000 exit=92.777500 net=$-0.0165 hold=0s z_reversion
+2026-05-09 18:42:44,283 WARNING risk.adverse_selection_monitor [SOL] Adverse selection: pick_rate=100% > 85% → suspend 1200s
+2026-05-09 18:42:44,284 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 92.777500 | net=$-0.0165 | z_reversion
+2026-05-09 18:42:46,612 INFO execution.high_freq_executor [FILL] ETH BUY @ 2317.400000 notional=$60
+2026-05-09 18:42:46,828 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2317.400000 exit=2317.350000 net=$-0.0175 hold=0s z_reversion
+2026-05-09 18:42:46,829 WARNING risk.adverse_selection_monitor [ETH] Adverse selection: pick_rate=100% > 85% → suspend 1200s
+2026-05-09 18:42:46,829 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2317.350000 | net=$-0.0175 | z_reversion
+2026-05-09 18:43:06,162 INFO execution.high_freq_executor [FILL] BTC SELL @ 80584.000000 notional=$60
+2026-05-09 18:43:06,630 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80584.000000 exit=80584.500000 net=$-0.0166 hold=0s z_reversion
+2026-05-09 18:43:06,633 INFO __main__ [CLOSE] MeanReversionKalman BTC SELL @ 80584.500000 | net=$-0.0166 | z_reversion
+2026-05-09 18:43:07,706 INFO execution.high_freq_executor [FILL] BTC BUY @ 80585.000000 notional=$60
+2026-05-09 18:43:09,343 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=80585.000000 exit=80584.500000 net=$-0.0166 hold=2s z_reversion
+2026-05-09 18:43:09,352 WARNING risk.adverse_selection_monitor [BTC] Adverse selection: pick_rate=100% > 85% → suspend 1200s
+2026-05-09 18:43:09,353 INFO __main__ [CLOSE] MeanReversionKalman BTC BUY @ 80584.500000 | net=$-0.0166 | z_reversion
+2026-05-09 20:47:18,296 CRITICAL risk.kill_switch HARD KILL: network_timeout=7148s
+2026-05-09 20:47:18,297 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=7148s
+2026-05-09 20:47:18,297 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-09 20:47:19,317 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-05-09 20:47:23,710 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-09 20:47:27,434 INFO data.orderbook_manager All subscriptions sent.
+2026-05-09 21:27:42,284 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 2s (attempt 2)
+2026-05-09 21:27:42,325 INFO __main__ Shutting down v9...

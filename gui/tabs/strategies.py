@@ -1,101 +1,113 @@
 """
-strategies.py — Tab Stratégies.
+strategies.py — Tab Stratégies (9 stratégies).
 
-Chaque stratégie = une carte avec :
-  • En-tête  : nom, badge statut, capital, coins
-  • Boutons  : Activer / Désactiver / Reprendre / Reset / Flatten
-  • DataTable éditable en ligne (une par stratégie, ID fixe)
-  • Pied     : champ Capital + Appliquer les paramètres
-
-IDs fixes, zéro pattern-matching, zéro dynamic component.
+Chaque stratégie = carte avec badge statut, boutons contrôle,
+DataTable éditable, champ capital, positions ouvertes.
+IDs totalement fixes — zéro pattern-matching, zéro dynamic component.
 """
 import time
+from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
-<<<<<<< HEAD
 from dash import ALL, Input, Output, State, dash_table, dcc, html
-=======
-from dash import Input, Output, State, dash_table, dcc, html
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
 
 from gui.control_api import ControlAPI
-from gui.data_loader import load_strategy_status
+from gui.data_loader import load_strategy_status, _cache, _json_cache
 from gui.engine_controller import engine_ctrl
-from gui.theme import COLORS
+from gui.theme import COLORS, STRAT_COLORS
+
+_REPO = Path(__file__).parent.parent
+
+_RESET_FILES = [
+    _REPO / "logs"       / "decisions_v9.csv",
+    _REPO / "logs"       / "fills_v9.csv",
+    _REPO / "metrics_v9" / "metrics_v9.csv",
+    _REPO / "runtime"    / "strategy_status.json",
+    _REPO / "runtime"    / "calibration_data.json",
+    _REPO / "runtime"    / "control.json",
+    _REPO / "runtime"    / "control_result.json",
+]
 
 _api = ControlAPI()
 
-_ALL = ["S8EMS", "MomentumLS", "BreakoutControlled",
-        "MeanReversionKalman", "FundingArbitrage"]
+# All 9 strategies in display order
+_ALL = [
+    "S8EMS", "MomentumLS", "BreakoutControlled",
+    "MeanReversionKalman", "FundingArbitrage",
+    "DonchianTrend", "RSIBollingerReversion",
+    "RotationMomentum", "RelativeValue",
+]
 
 _DEF = {
-<<<<<<< HEAD
-    "S8EMS":              {"capital": 100, "enabled": True,
-                           "params": {"min_spread_bps": 1.5, "max_hold_s": 180,
-                                      "stop_loss_bps": 50, "max_leverage": 5,
-                                      "quote_refresh_s": 2.0, "bouchaud_decay_s": 15,
-                                      "wavelet_threshold": 6.0}},
-    "MomentumLS":         {"capital": 150, "enabled": True,
-                           "params": {"rerank_seconds": 60, "top_k_long": 6,
-                                      "bottom_k_short": 6, "score_threshold": 20,
-                                      "stop_loss_pct": 4.0, "take_profit_pct": 1.5,
-                                      "trailing_stop_pct": 2.0, "max_hold_hours": 12}},
-    "BreakoutControlled": {"capital": 100, "enabled": True,
-                           "params": {"lookback_bars": 15, "bo_max_pct": 10.0,
-                                      "vr_min": 1.0, "take_profit_pct": 2.5,
-                                      "stop_below_resistance_pct": 1.5,
-                                      "max_hold_hours": 8}},
-    "MeanReversionKalman":{"capital": 100, "enabled": True,
-                           "params": {"warmup_seconds": 60, "z_entry": 1.0,
-                                      "z_exit": 0.2, "z_stop": 4.5,
-                                      "vol_max_pct_per_min": 1.0,
-                                      "max_hold_minutes": 120}},
-    "FundingArbitrage":   {"capital":  50, "enabled": True,
-                           "params": {"funding_entry_threshold_pct_per_hour": 0.005,
-                                      "funding_exit_threshold_pct_per_hour": 0.001,
-                                      "stop_loss_pct": 5.0, "max_hold_cycles": 12}},
-=======
-    "S8EMS":              {"capital": 100, "enabled": False,
-                           "params": {"min_spread_bps": 4.0, "max_hold_s": 60,
-                                      "stop_loss_bps": 30, "max_leverage": 5,
-                                      "quote_refresh_s": 5.0, "bouchaud_decay_s": 30,
-                                      "wavelet_threshold": 3.0}},
-    "MomentumLS":         {"capital": 150, "enabled": True,
-                           "params": {"rerank_seconds": 300, "top_k_long": 4,
-                                      "bottom_k_short": 4, "score_threshold": 75,
-                                      "stop_loss_pct": 2.5, "take_profit_pct": 3.0,
-                                      "trailing_stop_pct": 1.5, "max_hold_hours": 4}},
-    "BreakoutControlled": {"capital": 100, "enabled": True,
-                           "params": {"lookback_bars": 60, "bo_max_pct": 4.0,
-                                      "vr_min": 1.5, "take_profit_pct": 5.0,
-                                      "stop_below_resistance_pct": 0.5,
-                                      "max_hold_hours": 2}},
-    "MeanReversionKalman":{"capital": 100, "enabled": False,
-                           "params": {"warmup_seconds": 300, "z_entry": 2.0,
-                                      "z_exit": 0.0, "z_stop": 3.5,
-                                      "vol_max_pct_per_min": 0.15,
-                                      "max_hold_minutes": 30}},
-    "FundingArbitrage":   {"capital":  50, "enabled": False,
-                           "params": {"funding_entry_threshold_pct_per_hour": 0.03,
-                                      "funding_exit_threshold_pct_per_hour": 0.005,
-                                      "stop_loss_pct": 3.0, "max_hold_cycles": 3}},
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
+    "S8EMS": {"capital": 500, "enabled": True,
+              "params": {"min_spread_bps": 8.0, "max_hold_s": 600,
+                         "stop_loss_bps": 120, "max_leverage": 3,
+                         "base_notional_pct": 0.20, "quote_refresh_s": 5.0,
+                         "bouchaud_decay_s": 15, "wavelet_threshold": 6.0}},
+    "MomentumLS": {"capital": 500, "enabled": True,
+                   "params": {"rerank_seconds": 60, "top_k_long": 4,
+                              "bottom_k_short": 4, "score_threshold": 8,
+                              "stop_loss_pct": 3.0, "take_profit_pct": 3.0,
+                              "trailing_stop_pct": 1.5, "max_hold_hours": 24}},
+    "BreakoutControlled": {"capital": 500, "enabled": True,
+                           "params": {"lookback_bars": 12, "bo_max_pct": 10.0,
+                                      "vr_min": 0.8, "take_profit_pct": 4.0,
+                                      "stop_below_resistance_pct": 2.0,
+                                      "max_hold_hours": 20}},
+    "MeanReversionKalman": {"capital": 500, "enabled": True,
+                            "params": {"warmup_seconds": 60, "z_entry": 0.8,
+                                       "z_exit": 0.0, "z_stop": 4.5,
+                                       "vol_max_pct_per_min": 1.5,
+                                       "max_hold_minutes": 240}},
+    "FundingArbitrage": {"capital": 500, "enabled": True,
+                         "params": {"funding_entry_threshold_pct_per_hour": 0.003,
+                                    "funding_exit_threshold_pct_per_hour": 0.001,
+                                    "stop_loss_pct": 4.0, "max_hold_cycles": 20}},
+    # ── Nouvelles stratégies ───────────────────────────────────────────
+    "DonchianTrend": {"capital": 500, "enabled": True,
+                      "params": {"donchian_n": 36, "ema_1h_period": 50,
+                                 "btc_regime_ema": 200, "vol_period": 20,
+                                 "vol_multiplier": 1.1, "stop_loss_pct": 0.010,
+                                 "take_profit_pct": 0.020, "min_cost_ratio": 2.5,
+                                 "max_hold_hours": 36}},
+    "RSIBollingerReversion": {"capital": 500, "enabled": True,
+                              "params": {"rsi_period": 14, "rsi_oversold": 35,
+                                         "zscore_period": 30, "zscore_entry": -1.5,
+                                         "bb_period": 20, "bb_k": 2.0,
+                                         "ema_1h_period": 100, "stop_loss_pct": 0.008,
+                                         "take_profit_pct": 0.015,
+                                         "time_stop_bars": 16, "min_cost_ratio": 2.5}},
+    "RotationMomentum": {"capital": 0, "enabled": True,
+                         "params": {"momentum_lookback": 24, "top_k": 3,
+                                    "bottom_k": 3, "min_momentum": 0.0,
+                                    "rebalance_minutes": 60, "autonomous": 0,
+                                    "stop_loss_pct": 0.04, "take_profit_pct": 0.020,
+                                    "max_hold_hours": 12, "min_cost_ratio": 2.5}},
+    "RelativeValue": {"capital": 500, "enabled": False,
+                      "params": {"regression_lookback": 500, "zscore_lookback": 200,
+                                 "entry_z": -2.0, "exit_z": 0.0, "stop_z": -3.5,
+                                 "min_correlation": 0.70, "stop_loss_pct": 0.05,
+                                 "take_profit_pct": 0.03, "max_hold_hours": 48,
+                                 "min_cost_ratio": 2.5}},
 }
 
 _BTN = {"fontWeight": "700", "fontSize": "11px"}
 _BDR = f"1px solid {COLORS['grid']}"
 
 _TH = {"backgroundColor": "#060606", "color": COLORS["accent"],
-       "fontWeight": "bold", "fontSize": "11px",
-       "border": _BDR, "padding": "4px 8px"}
-_TD = {"backgroundColor": "#111111", "color": COLORS["text_light"],
-       "border": _BDR, "fontSize": "12px",
-       "padding": "4px 8px", "textAlign": "left",
-       "fontFamily": "Consolas, monospace"}
+       "fontWeight": "bold", "fontSize": "11px", "border": _BDR, "padding": "4px 8px"}
+_TD_DT = {"backgroundColor": "#111111", "color": COLORS["text_light"],
+          "border": _BDR, "fontSize": "12px", "padding": "4px 8px",
+          "textAlign": "left", "fontFamily": "Consolas, monospace"}
 
+_TH_POS = {"backgroundColor": "#060606", "color": COLORS["accent"],
+           "fontWeight": "bold", "fontSize": "10px",
+           "border": _BDR, "padding": "3px 6px", "letterSpacing": "1px",
+           "textTransform": "uppercase"}
+_TD_POS = {"border": _BDR, "padding": "3px 6px", "fontSize": "11px",
+           "fontFamily": "Consolas, monospace", "color": COLORS["text_light"]}
 
-# ── tiny helpers ──────────────────────────────────────────────────────────
 
 def _ok(m):   return html.Span(m, style={"color": COLORS["success"], "fontSize": "12px"})
 def _err(m):  return html.Span(m, style={"color": COLORS["danger"],  "fontSize": "12px"})
@@ -106,19 +118,18 @@ def _sec(txt):
                                "fontSize": "10px", "textTransform": "uppercase",
                                "marginBottom": "4px", "marginTop": "10px"})
 
-# ID builders (one per strategy, totally fixed)
-def _eid(s): return f"hdr-{s}"          # header div children
-def _dt(s):  return f"dt-{s}"           # DataTable
-def _fb(s):  return f"fb-{s}"           # feedback span
-<<<<<<< HEAD
-def _pd(s):  return f"pos-div-{s}"      # positions div
+def _grp_hdr(txt, color=None):
+    return html.P(txt, style={"color": color or COLORS["accent"], "fontSize": "9px",
+                               "letterSpacing": "2px", "textTransform": "uppercase",
+                               "fontWeight": "700", "marginTop": "14px",
+                               "marginBottom": "4px",
+                               "borderBottom": f"1px solid {COLORS['grid']}",
+                               "paddingBottom": "4px"})
 
-_TH_POS = {"backgroundColor": "#060606", "color": COLORS["accent"],
-           "fontWeight": "bold", "fontSize": "10px",
-           "border": _BDR, "padding": "3px 6px", "letterSpacing": "1px",
-           "textTransform": "uppercase"}
-_TD_POS = {"border": _BDR, "padding": "3px 6px", "fontSize": "11px",
-           "fontFamily": "Consolas, monospace", "color": COLORS["text_light"]}
+# ID builders — one per strategy, totally fixed
+def _dt(s):  return f"dt-{s}"
+def _fb(s):  return f"fb-{s}"
+def _pd(s):  return f"pos-div-{s}"
 
 
 def _render_positions(name: str, positions: list) -> html.Div:
@@ -140,177 +151,204 @@ def _render_positions(name: str, positions: list) -> html.Div:
         tp_s = f"{tp:.5g}" if isinstance(tp, float) else tp
         sl_s = f"{sl:.5g}" if isinstance(sl, float) else sl
         rows.append(html.Tr([
-            html.Td(p["symbol"],                      style={**_TD_POS, "color": COLORS["accent"], "fontWeight": "700"}),
-            html.Td(p["side"],                        style={**_TD_POS, "color": sc, "fontWeight": "700"}),
-            html.Td(f"${p['notional_usd']:.0f}",     style=_TD_POS),
-            html.Td(f"{p['entry_price']:.5g}",        style=_TD_POS),
+            html.Td(p["symbol"], style={**_TD_POS, "color": COLORS["accent"], "fontWeight": "700"}),
+            html.Td(p["side"],   style={**_TD_POS, "color": sc, "fontWeight": "700"}),
+            html.Td(f"${p['notional_usd']:.0f}", style=_TD_POS),
+            html.Td(f"{p['entry_price']:.5g}",   style=_TD_POS),
             html.Td(f"{p.get('current_price', p['entry_price']):.5g}", style=_TD_POS),
-            html.Td(f"${upnl:+.4f}",                  style={**_TD_POS, "color": uc, "fontWeight": "700"}),
-            html.Td(f"{p['hold_s']}s",                style=_TD_POS),
-            html.Td(f"TP {tp_s}",                     style={**_TD_POS, "color": "#888"}),
-            html.Td(f"SL {sl_s}",                     style={**_TD_POS, "color": "#888"}),
+            html.Td(f"${upnl:+.4f}", style={**_TD_POS, "color": uc, "fontWeight": "700"}),
+            html.Td(f"{p['hold_s']}s", style=_TD_POS),
+            html.Td(f"TP {tp_s}", style={**_TD_POS, "color": "#888"}),
+            html.Td(f"SL {sl_s}", style={**_TD_POS, "color": "#888"}),
             html.Td(
-                dbc.Button("✕ Close", size="sm", color="danger",
+                dbc.Button("✕", size="sm", color="danger",
                            id={"type": "close-pos", "index": f"{name}|{p['pos_id']}"},
-                           style={"padding": "1px 7px", "fontSize": "10px",
-                                  "fontWeight": "700", "lineHeight": "1.4"}),
+                           style={"padding": "0 5px", "fontSize": "10px",
+                                  "lineHeight": "1.4"}),
                 style={**_TD_POS, "padding": "2px 4px"},
             ),
         ]))
     thead = html.Thead(html.Tr([
-        html.Th(h, style=_TH_POS) for h in
-        ["COIN", "SIDE", "NOTIO", "ENTRY", "MID", "PNL", "HOLD", "TP", "SL", ""]
+        html.Th(h, style=_TH_POS)
+        for h in ["COIN", "SIDE", "NOTIO", "ENTRY", "MID", "PNL", "HOLD", "TP", "SL", ""]
     ]))
     return html.Div([
         header,
-        html.Table(
-            [thead, html.Tbody(rows)],
-            style={"width": "100%", "borderCollapse": "collapse", "marginBottom": "4px"},
-        ),
+        html.Table([thead, html.Tbody(rows)],
+                   style={"width": "100%", "borderCollapse": "collapse",
+                           "marginBottom": "4px"}),
     ])
-=======
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
 
 
 def _strat_card(name: str) -> dbc.Card:
-    """Static skeleton — data filled by callbacks."""
-    dflt = _DEF[name]
-    params = dflt["params"]
+    dflt      = _DEF[name]
+    params    = dflt["params"]
     init_data = [{"param": k, "value": v, "original": v}
                  for k, v in params.items()]
-    status = "ACTIF" if dflt["enabled"] else "INACTIF"
-    sc = COLORS["success"] if dflt["enabled"] else COLORS["danger"]
+    status    = "ACTIF" if dflt["enabled"] else "INACTIF"
+    sc        = COLORS["success"] if dflt["enabled"] else COLORS["danger"]
+    accent    = STRAT_COLORS.get(name, COLORS["accent"])
 
-    return dbc.Card(style={"marginBottom": "10px",
-                            "border": _BDR, "borderRadius": "4px"},
-                    children=[
-        # ── header ─────────────────────────────────────────────────────
-        dbc.CardHeader(
-            id=_eid(name),
-            style={"backgroundColor": "#0d0d0d", "padding": "8px 14px"},
-            children=dbc.Row([
-                dbc.Col(html.B(name,
-                               style={"color": COLORS["accent"], "fontSize": "13px"}),
-                        width="auto"),
-                dbc.Col(dbc.Badge(status,
-                                  id=f"badge-{name}",
-                                  style={"backgroundColor": sc,
-                                         "fontSize": "10px", "padding": "3px 7px"}),
-                        width="auto"),
-                dbc.Col(width=True),
-                dbc.Col(html.Span(f"${dflt['capital']:.0f}",
-                                  id=f"cap-disp-{name}",
-                                  style={"color": COLORS["text_light"],
-                                         "fontSize": "12px",
-                                         "fontFamily": "Consolas, monospace"}),
-                        width="auto"),
-            ], className="g-2 align-items-center"),
-        ),
+    # Special label for paper/scanner strategies
+    extra = ""
+    if name == "RelativeValue":
+        extra = " [PAPER ONLY]"
+    elif name == "RotationMomentum":
+        extra = " [SCANNER]"
 
-        # ── body ───────────────────────────────────────────────────────
-        dbc.CardBody(style={"backgroundColor": "#0a0a0a", "padding": "10px 14px"},
-                     children=[
-
-            # Action buttons
-            dbc.Row([
-                dbc.Col(dbc.Button("▶ Activer",   id=f"en-{name}",
-                                   color="success",  size="sm", style=_BTN),  width="auto"),
-                dbc.Col(dbc.Button("⏸ Désact.",   id=f"dis-{name}",
-                                   color="secondary",size="sm", style=_BTN),  width="auto"),
-                dbc.Col(dbc.Button("▶ Reprendre", id=f"res-{name}",
-                                   color="warning",  size="sm", style=_BTN),  width="auto"),
-                dbc.Col(dbc.Button("↺ Reset",     id=f"rst-{name}",
-                                   color="info",     size="sm", style=_BTN),  width="auto"),
-                dbc.Col(dbc.Button("⚡ Flatten",  id=f"flt-{name}",
-                                   color="danger",   size="sm", style=_BTN),  width="auto"),
-                dbc.Col(html.Div(id=_fb(name), style={"fontSize": "12px"}),
-                        className="d-flex align-items-center"),
-            ], className="g-1 align-items-center mb-2"),
-
-            # Editable param DataTable
-            dash_table.DataTable(
-                id=_dt(name),
-                columns=[
-                    {"name": "Paramètre",      "id": "param",
-                     "editable": False, "type": "text"},
-                    {"name": "Valeur  ✎",      "id": "value",
-                     "editable": True,  "type": "numeric"},
-                    {"name": "Défaut",         "id": "original",
-                     "editable": False, "type": "numeric"},
-                ],
-                data=init_data,
-                editable=True,
-                style_as_list_view=True,
-                style_header=_TH,
-                style_cell=_TD,
-                style_data_conditional=[
-                    {"if": {"state": "active"},
-                     "backgroundColor": "#155a7a", "color": "#fff"},
-                    {"if": {"column_id": "param"},
-                     "color": COLORS["accent"], "fontWeight": "600"},
-                    {"if": {"column_id": "original"},
-                     "color": "#555", "fontStyle": "italic"},
-                ],
-                style_table={"marginBottom": "10px"},
+    return dbc.Card(
+        style={"marginBottom": "8px", "border": _BDR, "borderRadius": "4px",
+               "borderLeft": f"3px solid {accent}"},
+        className="card-glow",
+        children=[
+            dbc.CardHeader(
+                style={"backgroundColor": "#0d0d0d", "padding": "7px 14px"},
+                children=dbc.Row([
+                    dbc.Col(html.B(f"{name}{extra}",
+                                   style={"color": accent, "fontSize": "12px"}),
+                            width="auto"),
+                    dbc.Col(dbc.Badge(status, id=f"badge-{name}",
+                                      style={"backgroundColor": sc,
+                                             "fontSize": "9px", "padding": "2px 6px"}),
+                            width="auto"),
+                    dbc.Col(width=True),
+                    dbc.Col(html.Span(f"${dflt['capital']:.0f}", id=f"cap-disp-{name}",
+                                      style={"color": COLORS["text_light"],
+                                             "fontSize": "11px",
+                                             "fontFamily": "Consolas, monospace"}),
+                            width="auto"),
+                ], className="g-2 align-items-center"),
             ),
+            dbc.CardBody(
+                style={"backgroundColor": "#0a0a0a", "padding": "9px 14px"},
+                children=[
+                    dbc.Row([
+                        dbc.Col(dbc.Button("▶ Activer",   id=f"en-{name}",  color="success",
+                                           size="sm", style=_BTN), width="auto"),
+                        dbc.Col(dbc.Button("⏸ Désact.",   id=f"dis-{name}", color="secondary",
+                                           size="sm", style=_BTN), width="auto"),
+                        dbc.Col(dbc.Button("▶ Reprendre", id=f"res-{name}", color="warning",
+                                           size="sm", style=_BTN), width="auto"),
+                        dbc.Col(dbc.Button("↺ Reset",     id=f"rst-{name}", color="info",
+                                           size="sm", style=_BTN), width="auto"),
+                        dbc.Col(dbc.Button("⚡ Flatten",  id=f"flt-{name}", color="danger",
+                                           size="sm", style=_BTN), width="auto"),
+                        dbc.Col(html.Div(id=_fb(name), style={"fontSize": "12px"}),
+                                className="d-flex align-items-center"),
+                    ], className="g-1 align-items-center mb-2"),
 
-            # Capital + Apply row
-            dbc.Row([
-                dbc.Col(html.Small("Capital USD :", style={"color": COLORS["text"],
-                                                            "fontSize": "11px"}),
-                        width="auto", className="d-flex align-items-center"),
-                dbc.Col(dbc.Input(id=f"cap-in-{name}", type="number",
-                                  min=0, step=10, placeholder="$",
-                                  className="dark-input",
-                                  style={"fontSize": "12px", "height": "30px",
-                                         "width": "90px"}),
-                        width="auto"),
-                dbc.Col(dbc.Button("Set $", id=f"setcap-{name}",
-                                   color="info", size="sm", style=_BTN),
-                        width="auto"),
-                dbc.Col(width=True),
-                dbc.Col(dbc.Button("✓ Appliquer les paramètres",
-                                   id=f"apply-{name}",
-                                   color="success", size="sm",
-                                   style={**_BTN, "fontWeight": "700"}),
-                        width="auto"),
-            ], className="g-2 align-items-center"),
-<<<<<<< HEAD
+                    dash_table.DataTable(
+                        id=_dt(name),
+                        columns=[
+                            {"name": "Paramètre", "id": "param",
+                             "editable": False, "type": "text"},
+                            {"name": "Valeur  ✎", "id": "value",
+                             "editable": True,  "type": "numeric"},
+                            {"name": "Défaut",    "id": "original",
+                             "editable": False, "type": "numeric"},
+                        ],
+                        data=init_data,
+                        editable=True,
+                        style_as_list_view=True,
+                        style_header=_TH,
+                        style_cell=_TD_DT,
+                        style_data_conditional=[
+                            {"if": {"state": "active"},
+                             "backgroundColor": "#155a7a", "color": "#fff"},
+                            {"if": {"column_id": "param"},
+                             "color": accent, "fontWeight": "600"},
+                            {"if": {"column_id": "original"},
+                             "color": "#555", "fontStyle": "italic"},
+                        ],
+                        style_table={"marginBottom": "8px"},
+                    ),
 
-            # Live positions (updated every refresh)
-            html.Div(id=_pd(name), style={"marginTop": "6px"}),
-=======
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
-        ]),
-    ])
+                    dbc.Row([
+                        dbc.Col(html.Small("Capital USD :",
+                                           style={"color": COLORS["text"], "fontSize": "11px"}),
+                                width="auto", className="d-flex align-items-center"),
+                        dbc.Col(dbc.Input(id=f"cap-in-{name}", type="number",
+                                          min=0, step=10, placeholder="$",
+                                          className="dark-input",
+                                          style={"fontSize": "12px", "height": "28px",
+                                                 "width": "80px"}),
+                                width="auto"),
+                        dbc.Col(dbc.Button("Set $", id=f"setcap-{name}",
+                                           color="info", size="sm", style=_BTN),
+                                width="auto"),
+                        dbc.Col(width=True),
+                        dbc.Col(dbc.Button("✓ Appliquer", id=f"apply-{name}",
+                                           color="success", size="sm",
+                                           style={**_BTN, "fontWeight": "700"}),
+                                width="auto"),
+                    ], className="g-2 align-items-center"),
+
+                    html.Div(id=_pd(name), style={"marginTop": "6px"}),
+                ],
+            ),
+        ],
+    )
 
 
-# ── layout ────────────────────────────────────────────────────────────────
+# ── Layout ────────────────────────────────────────────────────────────────
 
 def static_layout() -> html.Div:
     strat_opts = [{"label": s, "value": s} for s in _ALL]
 
-    return html.Div(style={"maxWidth": "1000px"}, children=[
+    reset_modal = dbc.Modal([
+        dbc.ModalHeader(dbc.ModalTitle("RESET COMPLET — Confirmer ?",
+                                        style={"color": COLORS["danger"],
+                                               "fontSize": "14px", "fontWeight": "700"})),
+        dbc.ModalBody([
+            html.P("Cette action va :", style={"color": COLORS["text"], "fontSize": "12px"}),
+            html.Ul([
+                html.Li("Arrêter le moteur si actif"),
+                html.Li("Supprimer tous les trades, décisions et métriques"),
+                html.Li("Remettre à zéro l'état de toutes les stratégies"),
+                html.Li("Effacer les fichiers runtime"),
+            ], style={"color": COLORS["warning"], "fontSize": "12px"}),
+            html.P("Cette action est irréversible.", style={"color": COLORS["danger"],
+                                                             "fontWeight": "700",
+                                                             "fontSize": "12px",
+                                                             "marginTop": "8px"}),
+        ]),
+        dbc.ModalFooter([
+            dbc.Button("✗ Annuler",       id="reset-cancel-btn",  color="secondary",
+                       size="sm", className="me-2"),
+            dbc.Button("✓ CONFIRMER RESET", id="reset-confirm-btn", color="danger",
+                       size="sm"),
+        ]),
+    ], id="reset-confirm-modal", is_open=False, centered=True)
 
-        # 1. Connection status
+    return html.Div(style={"maxWidth": "1020px"}, children=[
+
+        reset_modal,
+
+        # Capital overrides stored in browser session (survives auto-refresh)
+        dcc.Store(id="cap-store", storage_type="session", data={}),
+
+        # Connection status (local, detailed)
         html.Div(id="conn-status-bar",
                  style={"padding": "7px 14px", "borderRadius": "4px",
                         "border": _BDR, "marginBottom": "10px",
                         "backgroundColor": "#0d0d0d"}),
 
-        # 2. Engine start / stop
+        # Engine start / stop
         dbc.Row([
             dbc.Col(html.Small("MOTEUR", style={"color": COLORS["warning"],
-                                                 "letterSpacing": "2px",
-                                                 "fontWeight": "700",
+                                                 "letterSpacing": "2px", "fontWeight": "700",
                                                  "fontSize": "10px"}),
                     width="auto", className="d-flex align-items-center"),
             dbc.Col(dcc.Dropdown(
                 id="engine-strat-select", options=strat_opts,
-                value=["MomentumLS", "BreakoutControlled"],
+                value=["DonchianTrend", "RSIBollingerReversion", "MomentumLS"],
                 multi=True, placeholder="Stratégies...",
                 className="dropdown-dark",
-            ), width=5),
+            ), width=6),
+            dbc.Col(dbc.Button("☑ Tout",      id="engine-select-all-btn",
+                               color="secondary", size="sm", style=_BTN), width="auto"),
+            dbc.Col(dbc.Button("☐ Aucun",    id="engine-select-none-btn",
+                               color="secondary", size="sm", style=_BTN), width="auto"),
             dbc.Col(dbc.Button("▶ DÉMARRER", id="engine-start-btn",
                                color="success", size="sm", style=_BTN), width="auto"),
             dbc.Col(dbc.Button("⏹ ARRÊTER",  id="engine-stop-btn",
@@ -322,37 +360,49 @@ def static_layout() -> html.Div:
                   "border": f"2px solid {COLORS['warning']}",
                   "borderRadius": "4px", "marginBottom": "10px"}),
 
-        # 3. Global controls
+        # Global controls
         dbc.Row([
             dbc.Col(html.Small("GLOBAL", style={"color": COLORS["text"],
                                                  "letterSpacing": "2px",
-                                                 "fontWeight": "700",
-                                                 "fontSize": "10px"}),
+                                                 "fontWeight": "700", "fontSize": "10px"}),
                     width="auto", className="d-flex align-items-center"),
-            dbc.Col(dbc.Button("▶ ON",          id="g-btn-trading-on",
+            dbc.Col(dbc.Button("▶ ON",         id="g-btn-trading-on",
                                color="success",   size="sm", style=_BTN), width="auto"),
-            dbc.Col(dbc.Button("⏸ OFF",         id="g-btn-trading-off",
+            dbc.Col(dbc.Button("⏸ OFF",        id="g-btn-trading-off",
                                color="secondary", size="sm", style=_BTN), width="auto"),
             dbc.Col(html.Div(style={"borderLeft": _BDR, "height": "26px"}), width="auto"),
             dbc.Col(dbc.Button("⚡ FLATTEN ALL", id="g-btn-flatten-all",
                                color="warning",   size="sm", style=_BTN), width="auto"),
-            dbc.Col(dbc.Button("⏸ PAUSE 1h",    id="g-btn-pause-all",
+            dbc.Col(dbc.Button("⏸ PAUSE 1h",  id="g-btn-pause-all",
                                color="secondary", size="sm", style=_BTN), width="auto"),
+            dbc.Col(html.Div(style={"borderLeft": _BDR, "height": "26px"}), width="auto"),
+            dbc.Col(dbc.Button("🗑 RESET TOUT", id="reset-all-btn",
+                               color="danger",    size="sm",
+                               style={**_BTN, "letterSpacing": "1px"}), width="auto"),
             dbc.Col(html.Div(id="global-cmd-result", style={"fontSize": "12px"}),
                     className="d-flex align-items-center"),
         ], className="g-2 align-items-center mb-3"),
 
-        # 4. One card per strategy (always visible, params inline)
-        _sec("Stratégies"),
-        *[_strat_card(name) for name in _ALL],
+        # ── Strategy cards ─────────────────────────────────────────────
+        _grp_hdr("Stratégies existantes"),
+        *[_strat_card(n) for n in
+          ["S8EMS", "MomentumLS", "BreakoutControlled",
+           "MeanReversionKalman", "FundingArbitrage"]],
+
+        _grp_hdr("Nouvelles stratégies", COLORS["success"]),
+        *[_strat_card(n) for n in
+          ["DonchianTrend", "RSIBollingerReversion"]],
+
+        _grp_hdr("Scanner / Expérimental", COLORS["warning"]),
+        *[_strat_card(n) for n in ["RotationMomentum", "RelativeValue"]],
     ])
 
 
-# ── callbacks ─────────────────────────────────────────────────────────────
+# ── Callbacks ─────────────────────────────────────────────────────────────
 
 def register_callbacks(app) -> None:
 
-    # ── Connection status ─────────────────────────────────────────────────
+    # ── Connection status (detailed, with PID) ────────────────────────────
 
     @app.callback(
         Output("conn-status-bar", "children"),
@@ -363,21 +413,36 @@ def register_callbacks(app) -> None:
         st  = _api.engine_status()
         pid = engine_ctrl.pid
         if st["connected"]:
-            c, b = COLORS["success"], f"1px solid {COLORS['success']}"
-            txt  = ("🟢  Connecté — " + st["exchange"]
+            c, b = COLORS["success"], f"1px solid {COLORS['success']}55"
+            txt  = ("Connecté — Hyperliquid"
                     + (f"  |  PID {pid}" if pid else "")
                     + f"  |  heartbeat {st['age_s']}s")
+            dot = html.Span(className="conn-dot-live")
         elif st["running"]:
-            c, b = COLORS["warning"], f"1px solid {COLORS['warning']}"
-            txt  = f"🟡  En attente — {st['exchange']}  |  {st['age_s']}s"
+            c, b = COLORS["warning"], f"1px solid {COLORS['warning']}55"
+            txt  = f"En attente — Hyperliquid  |  {st['age_s']}s"
+            dot = html.Span(className="conn-dot-warn")
         else:
-            c, b = COLORS["danger"], f"1px solid {COLORS['danger']}"
-            txt  = "🔴  Moteur non démarré — cliquer ▶ DÉMARRER"
+            c, b = COLORS["danger"], f"1px solid {COLORS['danger']}55"
+            txt  = "Moteur non démarré — cliquer ▶ DÉMARRER"
+            dot = html.Span(className="conn-dot-dead")
         return (
-            html.B(txt, style={"color": c, "fontSize": "12px"}),
+            html.Span([dot, html.B(txt, style={"color": c, "fontSize": "12px"})]),
             {"padding": "7px 14px", "borderRadius": "4px", "border": b,
-             "backgroundColor": "#0d0d0d", "marginBottom": "10px"},
+             "backgroundColor": "#0d0d0d", "marginBottom": "10px",
+             "display": "flex", "alignItems": "center", "gap": "8px"},
         )
+
+    # ── Select all / none ─────────────────────────────────────────────────
+
+    @app.callback(
+        Output("engine-strat-select", "value"),
+        Input("engine-select-all-btn",  "n_clicks"),
+        Input("engine-select-none-btn", "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def _select_strats(_all, _none):
+        return _ALL if dash.ctx.triggered_id == "engine-select-all-btn" else []
 
     # ── Engine start / stop ───────────────────────────────────────────────
 
@@ -388,68 +453,32 @@ def register_callbacks(app) -> None:
         State("engine-strat-select", "value"),
         prevent_initial_call=True,
     )
-    def _engine(_a, _b, strategies):
+    def _engine(_a, _b, strats):
         trig = dash.ctx.triggered_id
         if trig == "engine-start-btn":
-            r = engine_ctrl.start(strategies=strategies or [], paper=True)
-            if r["ok"]:
-                return _ok(f"✓ PID {r['pid']}  ({', '.join(strategies or ['toutes'])})")
-            return _err(f"✗ {r['error']}")
+            r = engine_ctrl.start(strategies=strats or [], paper=True)
+            return _ok(f"✓ PID {r['pid']}") if r["ok"] else _err(f"✗ {r['error']}")
         r = engine_ctrl.stop()
         return _ok("✓ Arrêté.") if r["ok"] else _err(f"✗ {r['error']}")
 
-<<<<<<< HEAD
-    # ── Refresh badges + capital + positions (DataTable NOT overwritten) ─
-    # The DataTable keeps its local state so user edits survive the auto-refresh.
+    # ── Refresh badges + capital + positions (DataTable NOT overwritten) ──
 
     @app.callback(
-        *[Output(f"badge-{s}",    "children")  for s in _ALL],
-        *[Output(f"badge-{s}",    "style")     for s in _ALL],
-        *[Output(f"cap-disp-{s}", "children")  for s in _ALL],
-        *[Output(_pd(s),          "children")  for s in _ALL],
-=======
-    # ── Refresh ALL DataTables + badges (single callback, N outputs) ──────
-
-    @app.callback(
-        # 5× DataTable data
-        *[Output(_dt(s), "data")          for s in _ALL],
-        # 5× badge label + color
-        *[Output(f"badge-{s}",   "children")               for s in _ALL],
-        *[Output(f"badge-{s}",   "style")                  for s in _ALL],
-        *[Output(f"cap-disp-{s}", "children")               for s in _ALL],
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
+        *[Output(f"badge-{s}",    "children") for s in _ALL],
+        *[Output(f"badge-{s}",    "style")    for s in _ALL],
+        *[Output(f"cap-disp-{s}", "children") for s in _ALL],
+        *[Output(_pd(s),           "children") for s in _ALL],
         Input("refresh-interval", "n_intervals"),
+        State("cap-store", "data"),
     )
-    def _refresh_all(_n):
-        live_list = load_strategy_status()
-        live = {s.get("name"): s for s in live_list}
+    def _refresh_all(_n, cap_store):
+        cap_store = cap_store or {}
+        live = {s.get("name"): s for s in load_strategy_status()}
         now  = time.time()
-
-<<<<<<< HEAD
         badges, badge_styles, cap_disps, pos_divs = [], [], [], []
-=======
-        dt_data, badges, badge_styles, cap_disps = [], [], [], []
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
-
         for name in _ALL:
             s    = live.get(name, {})
             dflt = _DEF[name]
-
-<<<<<<< HEAD
-            # Status badge
-=======
-            # Params (live or fallback to defaults)
-            raw = (s.get("params", {}) if s
-                   else dflt["params"])
-            params = {k: v for k, v in raw.items()
-                      if isinstance(v, (int, float)) and not isinstance(v, bool)}
-            if not params:
-                params = dflt["params"]
-            dt_data.append([{"param": k, "value": v, "original": v}
-                             for k, v in params.items()])
-
-            # Status
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
             ena  = s.get("enabled", dflt["enabled"]) if s else dflt["enabled"]
             susp = float(s.get("suspended_until", 0) or 0)
             is_s = susp > now
@@ -458,27 +487,22 @@ def register_callbacks(app) -> None:
                   "INACTIF": COLORS["danger"],
                   "SUSPENDU": COLORS["warning"]}.get(status, COLORS["text"])
             badges.append(status)
-            badge_styles.append({"backgroundColor": sc, "fontSize": "10px",
-                                  "padding": "3px 7px"})
-
-            # Capital display
-<<<<<<< HEAD
-            cap = s.get("capital_allocated_usd", dflt["capital"]) if s else dflt["capital"]
+            badge_styles.append({"backgroundColor": sc, "fontSize": "9px",
+                                  "padding": "2px 6px"})
+            # Priority: user override (store) > engine live > code default
+            stored     = cap_store.get(name)
+            engine_cap = s.get("capital_allocated_usd") if s else None
+            if stored is not None:
+                cap = stored
+            elif engine_cap is not None:
+                cap = engine_cap
+            else:
+                cap = dflt["capital"]
             cap_disps.append(f"${cap:.0f}")
-
-            # Open positions
-            positions = s.get("open_positions", []) if s else []
-            pos_divs.append(_render_positions(name, positions))
-
+            pos_divs.append(_render_positions(name, s.get("open_positions", []) if s else []))
         return (*badges, *badge_styles, *cap_disps, *pos_divs)
-=======
-            cap = s.get("capital_allocated_usd", dflt["capital"])
-            cap_disps.append(f"${cap:.0f}")
 
-        return (*dt_data, *badges, *badge_styles, *cap_disps)
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
-
-    # ── Action buttons (all 5 strategies × 5 actions = 25 inputs) ────────
+    # ── Action buttons (9 strategies × 5 actions = 45 inputs) ────────────
 
     @app.callback(
         *[Output(_fb(s), "children") for s in _ALL],
@@ -490,69 +514,79 @@ def register_callbacks(app) -> None:
         prevent_initial_call=True,
     )
     def _strat_actions(*_clicks):
-        trig = dash.ctx.triggered_id
-        if not trig:
-            return [""] * len(_ALL)
+        trig  = dash.ctx.triggered_id
         empty = [""] * len(_ALL)
+        if not trig:
+            return empty
         for prefix, label_fn, api_fn in [
-            ("en-",  lambda n: f"▶ {n} activé",            _api.enable_strategy),
-            ("dis-", lambda n: f"⏸ {n} désactivé",         _api.disable_strategy),
-            ("res-", lambda n: f"▶ {n} suspension levée",  _api.reset_strategy),
-            ("rst-", lambda n: f"↺ {n} streak remis à zéro", _api.reset_strategy),
-            ("flt-", lambda n: f"⚡ {n} flatten",           _api.flatten_strategy),
+            ("en-",  lambda n: f"▶ {n} activé",                _api.enable_strategy),
+            ("dis-", lambda n: f"⏸ {n} désactivé",             _api.disable_strategy),
+            ("res-", lambda n: f"▶ {n} suspension levée",      _api.reset_strategy),
+            ("rst-", lambda n: f"↺ {n} streak à zéro",         _api.reset_strategy),
+            ("flt-", lambda n: f"⚡ {n} flatten",               _api.flatten_strategy),
         ]:
             if trig.startswith(prefix):
                 name = trig[len(prefix):]
                 try:
                     api_fn(name)
                 except Exception as exc:
-                    idx = _ALL.index(name)
-                    empty[idx] = _err(f"✗ {exc}")
+                    if name in _ALL:
+                        empty[_ALL.index(name)] = _err(f"✗ {exc}")
                     return empty
-                idx = _ALL.index(name)
-                empty[idx] = _ok(f"✓ {label_fn(name)} — ~5s")
+                if name in _ALL:
+                    empty[_ALL.index(name)] = _ok(f"✓ {label_fn(name)} — ~5s")
                 return empty
         return empty
 
-    # ── Capital Set (5 buttons) ───────────────────────────────────────────
+    # ── Set capital (9 buttons) — writes Store so auto-refresh won't revert ─
 
     @app.callback(
-        *[Output(_fb(s), "children", allow_duplicate=True) for s in _ALL],
-        *[Input(f"setcap-{s}", "n_clicks") for s in _ALL],
-        *[State(f"cap-in-{s}", "value")    for s in _ALL],
+        *[Output(_fb(s),           "children", allow_duplicate=True) for s in _ALL],
+        *[Output(f"cap-disp-{s}", "children", allow_duplicate=True) for s in _ALL],
+        Output("cap-store", "data", allow_duplicate=True),
+        *[Input(f"setcap-{s}",    "n_clicks") for s in _ALL],
+        *[State(f"cap-in-{s}",    "value")    for s in _ALL],
+        State("cap-store", "data"),
         prevent_initial_call=True,
     )
     def _set_caps(*args):
-        n = len(_ALL)
-        _clicks, vals = args[:n], args[n:]
-        trig = dash.ctx.triggered_id
-        empty = [""] * n
+        n  = len(_ALL)
+        _clicks = args[:n]
+        vals    = args[n:2*n]
+        store   = dict(args[2*n] or {})
+        trig      = dash.ctx.triggered_id
+        empty_fb  = [""] * n
+        empty_cap = [dash.no_update] * n
         if not trig:
-            return empty
+            return (*empty_fb, *empty_cap, dash.no_update)
         name = trig[len("setcap-"):]
-        idx  = _ALL.index(name)
+        if name not in _ALL:
+            return (*empty_fb, *empty_cap, dash.no_update)
+        idx = _ALL.index(name)
         try:
             val = float(vals[idx])
             assert val >= 0
         except (TypeError, ValueError, AssertionError):
-            empty[idx] = _warn("⚠ Montant invalide")
-            return empty
+            empty_fb[idx] = _warn("⚠ Montant invalide")
+            return (*empty_fb, *empty_cap, dash.no_update)
         _api.set_capital(name, val)
-        empty[idx] = _ok(f"✓ Capital {name} → ${val:.0f} — ~5s")
-        return empty
+        store[name]    = val           # persist in browser session store
+        empty_fb[idx]  = _ok(f"✓ Capital {name} → ${val:.0f}")
+        empty_cap[idx] = f"${val:.0f}"
+        return (*empty_fb, *empty_cap, store)
 
-    # ── Apply params (5 buttons) ──────────────────────────────────────────
+    # ── Apply params (9 buttons) ──────────────────────────────────────────
 
     @app.callback(
         *[Output(_fb(s), "children", allow_duplicate=True) for s in _ALL],
-        *[Input(f"apply-{s}",  "n_clicks") for s in _ALL],
-        *[State(_dt(s),        "data")     for s in _ALL],
+        *[Input(f"apply-{s}", "n_clicks") for s in _ALL],
+        *[State(_dt(s),       "data")     for s in _ALL],
         prevent_initial_call=True,
     )
     def _apply_params(*args):
-        n = len(_ALL)
+        n  = len(_ALL)
         _clicks, datas = args[:n], args[n:]
-        trig = dash.ctx.triggered_id
+        trig  = dash.ctx.triggered_id
         empty = [""] * n
         if not trig:
             return empty
@@ -575,8 +609,7 @@ def register_callbacks(app) -> None:
         empty[idx] = _ok(f"✓ {name} — {summary} — ~5s")
         return empty
 
-<<<<<<< HEAD
-    # ── Manual position close (pattern-matched, one callback for all) ────
+    # ── Manual position close (pattern-matched) ───────────────────────────
 
     @app.callback(
         *[Output(_fb(s), "children", allow_duplicate=True) for s in _ALL],
@@ -584,12 +617,11 @@ def register_callbacks(app) -> None:
         prevent_initial_call=True,
     )
     def _close_position(n_clicks_list):
-        trig = dash.ctx.triggered_id
+        trig  = dash.ctx.triggered_id
         empty = [""] * len(_ALL)
         if not trig or not any(c for c in (n_clicks_list or []) if c):
             return empty
-        # index format: "<strat_name>|<pos_id>"
-        parts     = trig["index"].split("|", 1)
+        parts = trig["index"].split("|", 1)
         strat_name, pos_id = (parts[0], parts[1]) if len(parts) == 2 else ("", trig["index"])
         try:
             _api.close_position(pos_id)
@@ -598,11 +630,10 @@ def register_callbacks(app) -> None:
                 empty[_ALL.index(strat_name)] = _err(f"✗ {exc}")
             return empty
         if strat_name in _ALL:
-            empty[_ALL.index(strat_name)] = _ok(f"✓ Close {strat_name}/{pos_id[:8]} envoyé — ~5s")
+            empty[_ALL.index(strat_name)] = _ok(
+                f"✓ Close {strat_name}/{pos_id[:8]} — ~5s")
         return empty
 
-=======
->>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
     # ── Global commands ───────────────────────────────────────────────────
 
     @app.callback(
@@ -627,3 +658,51 @@ def register_callbacks(app) -> None:
                 "g-btn-trading-on":   "▶ TRADING ON",
                 "g-btn-trading-off":  "⏸ TRADING OFF"}
         return _ok(f"✓ {msgs.get(trig, '?')} envoyé — ~5s")
+
+    # ── Reset modal open/close ─────────────────────────────────────────────
+
+    @app.callback(
+        Output("reset-confirm-modal", "is_open"),
+        Input("reset-all-btn",     "n_clicks"),
+        Input("reset-cancel-btn",  "n_clicks"),
+        Input("reset-confirm-btn", "n_clicks"),
+        State("reset-confirm-modal", "is_open"),
+        prevent_initial_call=True,
+    )
+    def _toggle_reset_modal(_open, _cancel, _confirm, is_open):
+        trig = dash.ctx.triggered_id
+        if trig == "reset-all-btn":
+            return True
+        return False
+
+    # ── Reset action ──────────────────────────────────────────────────────
+
+    @app.callback(
+        Output("global-cmd-result", "children", allow_duplicate=True),
+        Output("cap-store",         "data",     allow_duplicate=True),
+        Input("reset-confirm-btn",  "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def _do_reset(_n):
+        # 1. Stop engine
+        engine_ctrl.stop()
+
+        # 2. Delete all data files
+        deleted, errors = [], []
+        for p in _RESET_FILES:
+            try:
+                if p.exists():
+                    p.unlink()
+                    deleted.append(p.name)
+            except OSError as e:
+                errors.append(f"{p.name}: {e}")
+
+        # 3. Clear data_loader in-memory cache so graphs update within 5s
+        _cache.clear()
+        _json_cache.clear()
+
+        if errors:
+            return _err(f"✗ Reset partiel — {', '.join(errors)}"), dash.no_update
+        n = len(deleted)
+        msg = _ok(f"✓ Reset complet ({n} fichiers). Relancer le moteur via ▶ DÉMARRER.")
+        return msg, {}   # empty dict clears all capital overrides

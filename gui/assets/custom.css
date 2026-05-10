@@ -1,95 +1,178 @@
 /* ── Artemisia v9 — Cyborg theme overrides ───────────────────────── */
 
-/* Use Cyborg's native font everywhere (NOT monospace for UI) */
+/* ── Typography ─────────────────────────────────────────────────── */
 body, h1, h2, h3, h4, h5, h6, p, label, .btn, .badge, .card,
 .nav-link, .tab-content, select, input, textarea {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                  "Helvetica Neue", Arial, sans-serif !important;
 }
-
-/* Monospace ONLY for code/numbers/pre */
-pre, code, .font-mono, .dash-spreadsheet td,
-.dash-spreadsheet th {
+pre, code, .font-mono, .dash-spreadsheet td, .dash-spreadsheet th {
     font-family: "JetBrains Mono", "Consolas", "Courier New", monospace !important;
 }
 
+/* ── Connection status dot animations ──────────────────────────── */
+.conn-dot-live {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background-color: #77B300;
+    box-shadow: 0 0 6px 2px rgba(119,179,0,0.8);
+    animation: pulse-green 1.5s ease-in-out infinite;
+    margin-right: 7px;
+    vertical-align: middle;
+}
+.conn-dot-warn {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background-color: #FF8800;
+    box-shadow: 0 0 6px 2px rgba(255,136,0,0.8);
+    animation: pulse-orange 1.5s ease-in-out infinite;
+    margin-right: 7px;
+    vertical-align: middle;
+}
+.conn-dot-dead {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background-color: #CC0000;
+    box-shadow: 0 0 4px 1px rgba(204,0,0,0.6);
+    margin-right: 7px;
+    vertical-align: middle;
+}
+
+@keyframes pulse-green {
+    0%,100% { box-shadow: 0 0 4px 1px rgba(119,179,0,0.7); }
+    50%      { box-shadow: 0 0 12px 4px rgba(119,179,0,0.35); }
+}
+@keyframes pulse-orange {
+    0%,100% { box-shadow: 0 0 4px 1px rgba(255,136,0,0.7); }
+    50%      { box-shadow: 0 0 12px 4px rgba(255,136,0,0.35); }
+}
+
+/* ── PAPER MODE badge ───────────────────────────────────────────── */
+.paper-mode-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, #FF8800, #CC5500);
+    color: #000;
+    font-weight: 900;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(255,136,0,0.55);
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+/* ── Global header bar ──────────────────────────────────────────── */
+#global-conn-bar {
+    border-radius: 4px;
+    padding: 6px 14px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #2a2a2a;
+    background-color: #0d0d0d;
+}
+
+/* ── Card hover glow ────────────────────────────────────────────── */
+.card-glow {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-glow:hover {
+    box-shadow: 0 0 14px rgba(42,159,214,0.25) !important;
+    border-color: rgba(42,159,214,0.4) !important;
+}
+
+/* ── Kill-switch alert ──────────────────────────────────────────── */
+.ks-killed {
+    border: 2px solid #CC0000 !important;
+    animation: flash-red 1s ease-in-out infinite;
+}
+@keyframes flash-red {
+    0%,100% { box-shadow: 0 0 8px rgba(204,0,0,0.3); }
+    50%      { box-shadow: 0 0 22px rgba(204,0,0,0.8); }
+}
+
+/* ── Suspended strategy badge pulse ────────────────────────────── */
+.badge-suspended {
+    animation: pulse-orange 2s ease-in-out infinite;
+}
+
+/* ── Progress bar dark ──────────────────────────────────────────── */
+.progress { background-color: #222 !important; height: 5px !important; border-radius: 2px; }
+.progress-bar { border-radius: 2px; transition: width 0.4s ease; }
+
+/* ── Strategy category header divider ──────────────────────────── */
+.strat-group-hdr {
+    color: #2A9FD6;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin: 14px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+/* ── Rejected trade log row ─────────────────────────────────────── */
+.rejected-row td { background-color: #1a0000 !important; }
+
 /* ── DCC Dropdown — dark react-select ──────────────────────────── */
-.dropdown-dark .Select-control {
+.dropdown-dark .Select-control,
+.dropdown-dark [class*="-control"] {
     background-color: #1a1a1a !important;
     border: 1px solid #2a2a2a !important;
     color: #ffffff !important;
     border-radius: 4px !important;
 }
-.dropdown-dark .Select-control:hover {
-    border-color: #2A9FD6 !important;
-}
+.dropdown-dark .Select-control:hover,
+.dropdown-dark [class*="-control"]:hover { border-color: #2A9FD6 !important; }
 .dropdown-dark .Select-placeholder { color: #555 !important; }
-.dropdown-dark .Select-value-label  { color: #ffffff !important; }
-.dropdown-dark .Select-input input  { color: #ffffff !important; }
+.dropdown-dark .Select-value-label,
+.dropdown-dark [class*="-singleValue"] { color: #ffffff !important; }
+.dropdown-dark .Select-input input,
+.dropdown-dark input { color: #ffffff !important; }
 .dropdown-dark .Select-arrow { border-top-color: #ADAFAE !important; }
-
-.dropdown-dark .Select-menu-outer {
+.dropdown-dark .Select-menu-outer,
+.dropdown-dark [class*="-menu"] {
     background-color: #1a1a1a !important;
     border: 1px solid #2a2a2a !important;
     z-index: 9999 !important;
 }
-.dropdown-dark .Select-option {
+.dropdown-dark .Select-option,
+.dropdown-dark [class*="-option"] {
     background-color: #1a1a1a !important;
     color: #ADAFAE !important;
 }
 .dropdown-dark .Select-option:hover,
-.dropdown-dark .Select-option.is-focused  {
-    background-color: #2A9FD6 !important;
-    color: #ffffff !important;
-}
-.dropdown-dark .Select-option.is-selected {
-    background-color: #155a7a !important;
-    color: #ffffff !important;
-}
-/* Multi-value tags */
-.dropdown-dark .Select-multi-value-wrapper .Select-value {
-    background-color: #155a7a !important;
-    border-color: #2A9FD6 !important;
-    color: #ffffff !important;
-}
+.dropdown-dark .Select-option.is-focused,
+.dropdown-dark [class*="-option"]:hover { background-color: #2A9FD6 !important; color: #fff !important; }
+.dropdown-dark .Select-option.is-selected,
+.dropdown-dark [class*="-option"][class*="selected"] { background-color: #155a7a !important; color: #fff !important; }
+.dropdown-dark .Select-multi-value-wrapper .Select-value,
+.dropdown-dark [class*="-multiValue"] { background-color: #155a7a !important; border-color: #2A9FD6 !important; color: #fff !important; }
+.dropdown-dark [class*="-multiValueLabel"] { color: #ffffff !important; }
 .dropdown-dark .Select-value-icon:hover { background-color: #2A9FD6 !important; }
 
-/* Newer Dash / react-select v5 class names */
-.dropdown-dark [class*="-control"]      { background-color: #1a1a1a !important; border-color: #2a2a2a !important; }
-.dropdown-dark [class*="-menu"]         { background-color: #1a1a1a !important; border: 1px solid #2a2a2a !important; }
-.dropdown-dark [class*="-option"]       { background-color: #1a1a1a !important; color: #ADAFAE !important; }
-.dropdown-dark [class*="-option"]:hover { background-color: #2A9FD6 !important; color: #fff !important; }
-.dropdown-dark [class*="-singleValue"]  { color: #ffffff !important; }
-.dropdown-dark [class*="-multiValue"]   { background-color: #155a7a !important; }
-.dropdown-dark [class*="-multiValueLabel"] { color: #ffffff !important; }
-.dropdown-dark input                    { color: #ffffff !important; }
-
-/* ── Textarea dark ──────────────────────────────────────────────── */
+/* ── Textarea / input dark ──────────────────────────────────────── */
 textarea.dark-textarea {
     background-color: #1a1a1a !important;
     color: #ffffff !important;
     border: 1px solid #2a2a2a !important;
-    font-family: "Consolas", "Courier New", monospace !important;
+    font-family: "Consolas","Courier New",monospace !important;
     font-size: 12px !important;
     resize: vertical;
     border-radius: 4px;
 }
-textarea.dark-textarea:focus {
-    border-color: #2A9FD6 !important;
-    outline: none !important;
-    box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important;
-}
-
-/* ── Input dark ─────────────────────────────────────────────────── */
-input.dark-input {
-    background-color: #1a1a1a !important;
-    color: #ffffff !important;
-    border: 1px solid #2a2a2a !important;
-}
-input.dark-input:focus {
-    border-color: #2A9FD6 !important;
-    box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important;
-}
+textarea.dark-textarea:focus { border-color: #2A9FD6 !important; outline: none !important; box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important; }
+input.dark-input { background-color: #1a1a1a !important; color: #ffffff !important; border: 1px solid #2a2a2a !important; }
+input.dark-input:focus { border-color: #2A9FD6 !important; box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important; }
 
 /* ── Scrollbar ──────────────────────────────────────────────────── */
 ::-webkit-scrollbar             { width: 6px; height: 6px; }
@@ -97,6 +180,10 @@ input.dark-input:focus {
 ::-webkit-scrollbar-thumb       { background: #2a2a2a; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #2A9FD6; }
 
-/* ── Feedback pill ──────────────────────────────────────────────── */
+/* ── Feedback spans ─────────────────────────────────────────────── */
 .feedback-ok  { color: #77B300 !important; font-size: 12px; }
 .feedback-err { color: #CC0000 !important; font-size: 12px; }
+
+/* ── Equity curve fill gradient ─────────────────────────────────── */
+.equity-positive { color: #77B300; }
+.equity-negative { color: #CC0000; }
