@@ -42,6 +42,9 @@ def load_decisions() -> pd.DataFrame:
     df = _cached_csv(DECISIONS_PATH)
     if df.empty:
         return df
+    if "decision" not in df.columns:
+        # File corrupted (e.g. git-lfs pointer or merge conflict markers)
+        return pd.DataFrame()
     if "timestamp" in df.columns:
         df["dt"] = pd.to_datetime(df["timestamp"], unit="s", utc=True, errors="coerce")
     for col in ("spread_bps", "hurst", "har_rv_forecast", "kalman_fv", "obi",

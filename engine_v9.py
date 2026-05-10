@@ -34,6 +34,10 @@ from strategies.momentum_long_short import MomentumLongShort
 from strategies.breakout_controlled import BreakoutControlled
 from strategies.mean_reversion_kalman import MeanReversionKalman
 from strategies.funding_arbitrage import FundingArbitrage
+from strategies.donchian_trend import DonchianTrendStrategy
+from strategies.rsi_bollinger_reversion import RSIBollingerReversionStrategy
+from strategies.rotation_momentum import RotationMomentumStrategy
+from strategies.relative_value import RelativeValueStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from risk.kill_switch import KillSwitch
 from risk.adverse_selection_monitor import AdverseSelectionMonitor
@@ -43,11 +47,15 @@ from monitoring.decision_logger import DecisionLogger
 log = logging.getLogger(__name__)
 
 _STRATEGY_CLASSES = {
-    "S8EconophysicsMakerScalping": S8EconophysicsMakerScalping,
-    "MomentumLongShort":           MomentumLongShort,
-    "BreakoutControlled":          BreakoutControlled,
-    "MeanReversionKalman":         MeanReversionKalman,
-    "FundingArbitrage":            FundingArbitrage,
+    "S8EconophysicsMakerScalping":  S8EconophysicsMakerScalping,
+    "MomentumLongShort":            MomentumLongShort,
+    "BreakoutControlled":           BreakoutControlled,
+    "MeanReversionKalman":          MeanReversionKalman,
+    "FundingArbitrage":             FundingArbitrage,
+    "DonchianTrendStrategy":        DonchianTrendStrategy,
+    "RSIBollingerReversionStrategy": RSIBollingerReversionStrategy,
+    "RotationMomentumStrategy":     RotationMomentumStrategy,
+    "RelativeValueStrategy":        RelativeValueStrategy,
 }
 
 
