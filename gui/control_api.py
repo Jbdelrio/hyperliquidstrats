@@ -88,6 +88,9 @@ class ControlAPI:
     def reset_capital(self, capital_usd: float = 500.0) -> None:
         self.send_nowait("reset_capital", {"capital_usd": capital_usd})
 
+    def set_llm(self, enabled: bool) -> None:
+        self.send_nowait("set_llm", {"enabled": enabled})
+
     # ------------------------------------------------------------------
     # Connection / engine status (file-age heuristic, never blocks)
     # ------------------------------------------------------------------
@@ -95,13 +98,34 @@ class ControlAPI:
     def engine_status(self) -> dict:
         """Return connection status based on strategy_status.json age."""
         status_file = _REPO / "runtime" / "strategy_status.json"
+        cfg_file    = _REPO / "runtime" / "engine_config.json"
+        llm_file    = _REPO / "runtime" / "llm_status.json"
+
+        exchange    = "Hyperliquid"
+        llm_enabled = False
+        try:
+            if cfg_file.exists():
+                c = json.loads(cfg_file.read_text(encoding="utf-8"))
+                exchange = c.get("exchange", "hyperliquid").capitalize()
+        except Exception:
+            pass
+        try:
+            if llm_file.exists():
+                ls = json.loads(llm_file.read_text(encoding="utf-8"))
+                llm_enabled = ls.get("enabled", False)
+                if time.time() - ls.get("ts", 0) > 120:
+                    llm_enabled = False
+        except Exception:
+            pass
+
         if not status_file.exists():
             return {"running": False, "connected": False, "age_s": None,
-                    "exchange": "Hyperliquid"}
+                    "exchange": exchange, "llm_enabled": llm_enabled}
         age = time.time() - status_file.stat().st_mtime
         return {
-            "running":   age < 30,
-            "connected": age < 15,
-            "age_s":     round(age, 1),
-            "exchange":  "Hyperliquid",
+            "running":     age < 30,
+            "connected":   age < 15,
+            "age_s":       round(age, 1),
+            "exchange":    exchange,
+            "llm_enabled": llm_enabled,
         }

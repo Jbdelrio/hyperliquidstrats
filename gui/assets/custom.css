@@ -187,3 +187,194 @@ input.dark-input:focus { border-color: #2A9FD6 !important; box-shadow: 0 0 0 2px
 /* ── Equity curve fill gradient ─────────────────────────────────── */
 .equity-positive { color: #77B300; }
 .equity-negative { color: #CC0000; }
+
+/* ── Cyborg scanline overlay (subtle texture on the background) ─── */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(42,159,214,0.015) 2px,
+        rgba(42,159,214,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Animated accent border on active tab ───────────────────────── */
+.nav-tabs .nav-link.active {
+    position: relative;
+    overflow: visible;
+}
+.nav-tabs .nav-link.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #2A9FD6, transparent);
+    animation: tab-glow 2s ease-in-out infinite;
+}
+@keyframes tab-glow {
+    0%,100% { opacity: 0.6; }
+    50%      { opacity: 1; box-shadow: 0 0 12px #2A9FD6; }
+}
+
+/* ── Scanner-mode badge ─────────────────────────────────────────── */
+.scanner-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, #1a3a4a, #0d1f2d);
+    color: #2A9FD6;
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid #2A9FD620;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+/* ── Quorum badge (MetaAlpha) ───────────────────────────────────── */
+.quorum-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, #1a1a2a, #0d0d1a);
+    color: #7B68EE;
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid #7B68EE20;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+/* ── Funding positive/negative indicator ────────────────────────── */
+.funding-positive { color: #FFD700 !important; font-weight: 700; }
+.funding-negative { color: #FF6B6B !important; font-weight: 700; }
+.funding-neutral  { color: #ADAFAE !important; }
+
+/* ── Imbalance bar (visual inline indicator) ────────────────────── */
+.imb-bar {
+    display: inline-block;
+    height: 8px;
+    border-radius: 2px;
+    vertical-align: middle;
+    transition: width 0.3s ease;
+}
+.imb-bar-buy  { background: linear-gradient(90deg, #77B300, #00D4AA); }
+.imb-bar-sell { background: linear-gradient(90deg, #FF6B6B, #CC0000); }
+
+/* ── Calibration table row highlighting ─────────────────────────── */
+.cal-row-active td   { background-color: #0d1f2d !important; }
+.cal-row-scanner td  { background-color: #0d0d1a !important; color: #2A9FD6 !important; }
+
+/* ── DataTable dark polish ──────────────────────────────────────── */
+.dash-spreadsheet-container .dash-spreadsheet-inner td,
+.dash-spreadsheet-container .dash-spreadsheet-inner th {
+    background-color: #1a1a1a !important;
+    color: #ADAFAE !important;
+    border: 1px solid #2a2a2a !important;
+    font-size: 12px;
+}
+.dash-spreadsheet-container .dash-spreadsheet-inner th {
+    background-color: #0d0d0d !important;
+    color: #2A9FD6 !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+.dash-spreadsheet-container .dash-spreadsheet-inner tr:hover td {
+    background-color: #1e2a30 !important;
+}
+
+/* ── Stat card accent top border ────────────────────────────────── */
+.card-glow {
+    border-top: 2px solid #2A9FD6 !important;
+}
+.card-glow.card-success { border-top-color: #77B300 !important; }
+.card-glow.card-danger  { border-top-color: #CC0000 !important; }
+.card-glow.card-warning { border-top-color: #FF8800 !important; }
+
+/* ── LLM overlay agent row ──────────────────────────────────────── */
+.llm-agent-row {
+    padding: 6px 12px;
+    border-left: 3px solid #2A9FD6;
+    margin-bottom: 4px;
+    background: #0d0d0d;
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+}
+.llm-agent-row.bullish { border-left-color: #77B300; }
+.llm-agent-row.bearish { border-left-color: #CC0000; }
+.llm-agent-row.neutral { border-left-color: #ADAFAE; }
+
+/* ── Fresh start guide section ──────────────────────────────────── */
+.guide-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    background: #0d0d0d;
+    border-radius: 4px;
+    border: 1px solid #1a1a1a;
+}
+.guide-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 50%;
+    background: #2A9FD6;
+    color: #000;
+    font-weight: 900;
+    font-size: 13px;
+}
+.guide-step-text { color: #ADAFAE; font-size: 13px; line-height: 1.5; }
+.guide-cmd {
+    display: inline-block;
+    background: #060606;
+    border: 1px solid #2A9FD620;
+    color: #2A9FD6;
+    font-family: "Consolas","Courier New",monospace;
+    font-size: 12px;
+    padding: 1px 8px;
+    border-radius: 3px;
+}
+
+/* ── Exchange adapter status pill ───────────────────────────────── */
+.exchange-enabled  { color: #77B300; font-weight: 700; font-size: 11px; }
+.exchange-disabled { color: #555; font-size: 11px; }
+
+/* ── Brier score color scale ────────────────────────────────────── */
+.brier-good    { color: #77B300 !important; font-weight: 700; }
+.brier-ok      { color: #FF8800 !important; font-weight: 700; }
+.brier-bad     { color: #CC0000 !important; font-weight: 700; }
+.brier-missing { color: #555 !important; }
+
+/* ── Regime badge (VolBreakout) ─────────────────────────────────── */
+.regime-high { color: #FF8800 !important; font-weight: 700; }
+.regime-low  { color: #2A9FD6 !important; }
+.regime-mid  { color: #ADAFAE !important; }
+
+/* ── Arbitrage monitor alert row ────────────────────────────────── */
+.arb-alert-row {
+    border-left: 3px solid #FFD700;
+    background: #1a1500 !important;
+}
+
+/* ── Pulse for live PnL positive ────────────────────────────────── */
+@keyframes pulse-profit {
+    0%,100% { text-shadow: 0 0 0px #77B300; }
+    50%      { text-shadow: 0 0 10px rgba(119,179,0,0.8); }
+}
+.pnl-live-positive { animation: pulse-profit 2.5s ease-in-out infinite; }

@@ -25,7 +25,8 @@ class EngineController:
 
     # ── Start ─────────────────────────────────────────────────────────────
 
-    def start(self, strategies: list = None, paper: bool = True) -> dict:
+    def start(self, strategies: list = None, paper: bool = True,
+              exchange: str = "hyperliquid") -> dict:
         if self.is_running():
             return {"ok": False, "error": f"Moteur déjà en cours (PID {self.pid})"}
 
@@ -34,6 +35,7 @@ class EngineController:
             cmd[-1] = "--live"
         if strategies:
             cmd += ["--strategy", ",".join(s.strip() for s in strategies)]
+        cmd += ["--exchange", exchange]
 
         _LOG.parent.mkdir(parents=True, exist_ok=True)
         _PID.parent.mkdir(parents=True, exist_ok=True)

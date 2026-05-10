@@ -38,6 +38,11 @@ from strategies.donchian_trend import DonchianTrendStrategy
 from strategies.rsi_bollinger_reversion import RSIBollingerReversionStrategy
 from strategies.rotation_momentum import RotationMomentumStrategy
 from strategies.relative_value import RelativeValueStrategy
+from strategies.spot_perp_basis import SpotPerpBasisStrategy
+from strategies.funding_carry_hedged import FundingCarryHedgedStrategy
+from strategies.orderbook_imbalance_scalper import OrderBookImbalanceScalper
+from strategies.volatility_regime_breakout import VolatilityRegimeBreakoutStrategy
+from strategies.meta_alpha_strategy import MetaAlphaStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from risk.kill_switch import KillSwitch
 from risk.adverse_selection_monitor import AdverseSelectionMonitor
@@ -56,6 +61,12 @@ _STRATEGY_CLASSES = {
     "RSIBollingerReversionStrategy": RSIBollingerReversionStrategy,
     "RotationMomentumStrategy":     RotationMomentumStrategy,
     "RelativeValueStrategy":        RelativeValueStrategy,
+    # ── New strategies (Phase 2) ──────────────────────────────────────────
+    "SpotPerpBasisStrategy":              SpotPerpBasisStrategy,
+    "FundingCarryHedgedStrategy":         FundingCarryHedgedStrategy,
+    "OrderBookImbalanceScalper":          OrderBookImbalanceScalper,
+    "VolatilityRegimeBreakoutStrategy":   VolatilityRegimeBreakoutStrategy,
+    "MetaAlphaStrategy":                  MetaAlphaStrategy,
 }
 
 
@@ -64,13 +75,15 @@ class EngineV9:
     def __init__(self, config_path: str = "config_v9.json",
                  paper: bool = True,
                  symbols: Optional[list[str]] = None,
-                 enable_strategies: Optional[list[str]] = None):
+                 enable_strategies: Optional[list[str]] = None,
+                 exchange: str = "hyperliquid"):
 
         cfg_file = Path(__file__).parent / config_path
-        with open(cfg_file) as f:
+        with open(cfg_file, encoding="utf-8", errors="replace") as f:
             self.cfg = json.load(f)
 
         self.paper      = paper
+        self.exchange   = exchange
         risk_p          = self.cfg.get("risk", {})
         log_cfg         = self.cfg.get("logging", {})
         self._runtime_cfg = self.cfg.get("runtime", {})
@@ -188,6 +201,38 @@ class EngineV9:
         self._dashboard_interval = log_cfg.get("dashboard_interval_s", 60)
         self._running            = False
 
+        # ── OHLCV bars history (for LLM feature builder) ───────────────
+        from llm_agents.config import LLM_MAX_OHLCV_ROWS as _LLM_MAX_BARS
+        self._bars_history: dict[str, list] = {s: [] for s in self.symbols}
+        self._llm_max_bars = _LLM_MAX_BARS
+
+        # ── LLM Overlay (optional, disabled by default) ─────────────────
+        self._llm_overlay = None
+        try:
+            from llm_agents.config import LLM_ENABLED
+            if LLM_ENABLED:
+                from llm_agents.base import LLMOverlay
+                self._llm_overlay = LLMOverlay()
+                log.info("LLM overlay enabled | arch=%s", self._llm_overlay.architecture)
+            else:
+                log.debug("LLM overlay disabled (LLM_ENABLED=false)")
+        except Exception as _llm_init_exc:
+            log.warning("LLM overlay init failed (ignored): %s", _llm_init_exc)
+
+        # ── LLM sampling rate (skip N% of calls to reduce API cost) ───────
+        try:
+            from llm_agents.config import LLM_SAMPLE_RATE as _llm_sr
+            self._llm_sample_rate: float = float(_llm_sr)
+        except Exception:
+            self._llm_sample_rate = 1.0   # default: evaluate every call
+
+        # ── Exchange factory (optional, multi-exchange data) ────────────
+        try:
+            from exchanges.factory import set_orderbook_manager
+            set_orderbook_manager(self.obm)
+        except Exception:
+            pass
+
         log.info("EngineV9 | paper=%s | symbols=%s | equity=%.2f | strategies=%s",
                  paper, self.symbols, self.equity,
                  list(self.manager.strategies.keys()))
@@ -200,7 +245,18 @@ class EngineV9:
         self._running = True
         await self.obm.connect()
         self.ks.record_heartbeat()   # reset watchdog clock after connect
-        log.info("Engine V9 running. Ctrl+C to stop.")
+        log.info("Engine V9 running. exchange=%s paper=%s strategies=%s",
+                 self.exchange, self.paper,
+                 [n for n, s in self.manager.strategies.items() if s.enabled])
+        # Write proper strategy list immediately so GUI shows correct ACTIF/INACTIF
+        # (never write a dict — load_strategy_status() only accepts lists)
+        try:
+            _sf = Path(self._runtime_cfg.get("status_file", "runtime/strategy_status.json"))
+            _sf.parent.mkdir(parents=True, exist_ok=True)
+            with open(_sf, "w", encoding="utf-8") as _f:
+                json.dump(self.manager.get_status(), _f, default=str)
+        except Exception:
+            pass
         try:
             await asyncio.gather(
                 self._orderbook_loop(),
@@ -210,6 +266,7 @@ class EngineV9:
                 self._watchdog_loop(),
                 self._dashboard_loop(),
                 self._control_loop(),
+                self._arbitrage_monitor_loop(),
             )
         except asyncio.CancelledError:
             pass
@@ -311,6 +368,15 @@ class EngineV9:
                     "close": close, "vol": 0.0, "prev_close": close,
                 }
 
+                # Store bar in history for LLM feature builder
+                hist = self._bars_history.setdefault(sym, [])
+                hist.append({
+                    "ts": ts, "open": open_, "high": high, "low": low,
+                    "close": close, "volume_usd": vol,
+                })
+                if len(hist) > self._llm_max_bars:
+                    hist.pop(0)
+
                 for strat_name, decision in self.manager.on_bar_minute(sym, bar, ts):
                     await self._execute_decision(strat_name, decision, ts)
 
@@ -326,6 +392,25 @@ class EngineV9:
                 book = self.obm.get_book(sym)
                 if not book or not book.mid:
                     continue
+
+                # Executor-level exits: TP / stop-loss / max_hold set by on_fill
+                for pos, exit_price, ex_reason in self.executor.check_exits(
+                        sym, book.mid, book.best_bid or book.mid,
+                        book.best_ask or book.mid):
+                    sname   = self._pos_to_strategy.get(pos.pos_id, "")
+                    net_pnl = self.executor.close_position(pos, exit_price, ex_reason, strategy=sname)
+                    hold_s  = ts - pos.entry_ts
+                    self.equity += net_pnl
+                    self.ks.update_equity(self.equity)
+                    self.ks.register_close(pos.notional_usd)
+                    self.ks.record_trade(net_pnl)
+                    self.adv_mon.record_close(sym, net_pnl < 0)
+                    self.adv_mon.check_and_suspend(sym, ts)
+                    self.tracker.record_trade(net_pnl, hold_s, ex_reason)
+                    if strat := self.manager.get(sname):
+                        strat.on_position_closed(sym, net_pnl, ex_reason)
+
+                # Strategy-level exits (signal reversal, momentum exit, etc.)
                 for strat_name, decision in self.manager.check_position_exits(sym, book, ts):
                     self._apply_close_action(strat_name, decision, ts)
 
@@ -351,6 +436,17 @@ class EngineV9:
             await asyncio.sleep(self._dashboard_interval)
             try:
                 self._print_dashboard()
+            except Exception:
+                pass
+            # LLM outcome tracking — feed current mid prices to calibration logger
+            if self._llm_overlay is not None:
+                try:
+                    await asyncio.to_thread(self._update_llm_outcomes)
+                except Exception:
+                    pass
+            # Always write LLM status (even when disabled) so GUI toggle is responsive
+            try:
+                await asyncio.to_thread(self._write_llm_status)
             except Exception:
                 pass
 
@@ -446,6 +542,21 @@ class EngineV9:
             if not ok:
                 return
 
+            # ── LLM Overlay (optional, disabled by default) ──────────────
+            if self._llm_overlay is not None:
+                import random as _random
+                if _random.random() < self._llm_sample_rate:
+                    try:
+                        decision = await asyncio.to_thread(
+                            self._apply_llm_overlay_sync, strat_name, decision, ts, book
+                        )
+                        if decision.action == "SKIP":
+                            return
+                        # Update action/notional from (possibly modified) decision
+                        action = decision.action
+                    except Exception as _llm_exc:
+                        log.debug("LLM overlay error (ignored, proceeding): %s", _llm_exc)
+
         if action == "PLACE_QUOTES":
             pair_id = self.executor.place_quotes(
                 sym,
@@ -521,6 +632,15 @@ class EngineV9:
         if pos is None:
             return
 
+        # Minimum hold time guard: don't close positions younger than 60s
+        # unless it's a genuine stop-loss, manual close, or emergency.
+        _reason_l = (reason or "").lower()
+        _is_protective = any(k in _reason_l for k in ("stop", "manual", "emergency", "flatten", "shutdown"))
+        if not _is_protective and (ts - pos.entry_ts) < 60.0:
+            log.debug("Skip early close %s %s after %.1fs (min_hold=60s)",
+                      strat_name, sym, ts - pos.entry_ts)
+            return
+
         exit_price = meta.get("exit_price")
         if exit_price is None:
             bk = self._last_book.get(sym)
@@ -544,6 +664,190 @@ class EngineV9:
 
         log.info("[CLOSE] %s %s %s @ %.6f | net=$%.4f | %s",
                  strat_name, sym, pos.side, exit_price, net_pnl, reason)
+
+    # ------------------------------------------------------------------
+    # LLM overlay (sync, called via asyncio.to_thread)
+    # ------------------------------------------------------------------
+
+    def _apply_llm_overlay_sync(self, strat_name: str,
+                                 decision: StrategyDecision,
+                                 ts: float, book) -> StrategyDecision:
+        """
+        Build a MarketSnapshot, evaluate LLM overlay, modify decision.
+        Runs in a thread to avoid blocking the asyncio event loop.
+        Never raises — returns original decision on any error.
+        """
+        try:
+            from llm_agents.feature_builder import build_market_snapshot
+            from exchanges.factory import collect_cross_exchange_data
+
+            sym  = decision.symbol
+            bars = list(self._bars_history.get(sym, []))
+
+            account_state = {
+                "equity":         self.equity,
+                "open_positions": len(self.executor.open_positions),
+                "notional_open":  sum(p.notional_usd for p in self.executor.open_positions),
+                "daily_dd_pct":   getattr(self.ks, "_daily_dd_pct", None),
+            }
+            market_data = {
+                "book":          book,
+                "bars":          bars,
+                "funding_rate":  None,
+                "open_interest": None,
+            }
+            strategy_outputs = {
+                strat_name: {
+                    "action":       decision.action,
+                    "reason":       decision.reason,
+                    "notional_usd": decision.notional_usd,
+                }
+            }
+
+            # Cross-exchange data (only if enabled and multiple exchanges configured)
+            cross_ex = collect_cross_exchange_data(sym, exclude="hyperliquid")
+
+            snapshot = build_market_snapshot(
+                symbol=sym,
+                market_data=market_data,
+                strategy_outputs=strategy_outputs,
+                account_state=account_state,
+                exchange="hyperliquid",
+                cross_exchange_data=cross_ex,
+            )
+
+            llm_dec = self._llm_overlay.evaluate(snapshot, strategy_context=strat_name)
+            return self._llm_overlay.modify_decision(decision, llm_dec)
+
+        except Exception as exc:
+            log.debug("_apply_llm_overlay_sync error (ignored): %s", exc)
+            return decision
+
+    # ------------------------------------------------------------------
+    # LLM outcome tracking (called from dashboard loop)
+    # ------------------------------------------------------------------
+
+    def _update_llm_outcomes(self) -> None:
+        """Feed current mid prices to the LLM prediction logger for Brier tracking."""
+        try:
+            pred_logger = getattr(
+                getattr(self._llm_overlay, "logger", None), "_pred_logger", None
+            )
+            if pred_logger is None:
+                return
+            mids = {}
+            for sym in self.symbols:
+                book = self._last_book.get(sym)
+                mid  = getattr(book, "mid", None)
+                if mid:
+                    mids[sym] = mid
+            if mids:
+                pred_logger.update_outcomes(mids)
+        except Exception as exc:
+            log.debug("LLM outcome update error (ignored): %s", exc)
+
+    def _write_llm_status(self) -> None:
+        """Write runtime/llm_status.json for the GUI LLM Overlay tab."""
+        active = self._llm_overlay is not None
+        decisions: dict = {}
+        if active:
+            try:
+                from llm_agents.logger import last_decisions
+                decisions = last_decisions()
+            except Exception:
+                pass
+        try:
+            status_path = Path("runtime/llm_status.json")
+            status_path.parent.mkdir(parents=True, exist_ok=True)
+            payload = {
+                "enabled":        active,
+                "sample_rate":    self._llm_sample_rate,
+                "architecture":   getattr(self._llm_overlay, "architecture", "unknown") if active else "—",
+                "last_decisions": decisions,
+                "ts":             time.time(),
+            }
+            with open(status_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2)
+        except Exception as exc:
+            log.debug("LLM status write error (ignored): %s", exc)
+
+    # ------------------------------------------------------------------
+    # Loop H — arbitrage monitor (alert-only, 30s)
+    # ------------------------------------------------------------------
+
+    async def _arbitrage_monitor_loop(self) -> None:
+        """
+        Compare funding rates and basis across symbols to detect
+        cross-symbol arbitrage opportunities.  ALERT ONLY — no orders sent.
+        Writes runtime/arb_alerts.json for the GUI.
+        """
+        arb_path = Path("runtime/arb_alerts.json")
+        arb_path.parent.mkdir(parents=True, exist_ok=True)
+        interval = 30.0
+        while self._running:
+            await asyncio.sleep(interval)
+            try:
+                alerts = await asyncio.to_thread(self._scan_arb_opportunities)
+                if alerts:
+                    for a in alerts:
+                        log.info("[ARB-MONITOR] %s", a)
+                with open(arb_path, "w") as f:
+                    json.dump({
+                        "ts": time.time(),
+                        "alerts": alerts,
+                    }, f, indent=2)
+            except Exception as exc:
+                log.debug("Arbitrage monitor error (ignored): %s", exc)
+
+    def _scan_arb_opportunities(self) -> list[dict]:
+        """
+        Heuristic cross-symbol arbitrage scan.
+        Detects: (1) funding outliers, (2) large cross-symbol basis divergence.
+        Returns list of alert dicts (alert-only, no orders).
+        """
+        alerts = []
+        try:
+            from strategies.funding_carry_hedged import _fetch_all_funding
+            rates = _fetch_all_funding()
+
+            # Funding rate outlier: any symbol > 3× median absolute rate
+            abs_rates = {s: abs(r) for s, r in rates.items() if s in self.symbols}
+            if abs_rates:
+                sorted_r = sorted(abs_rates.values())
+                median_r = sorted_r[len(sorted_r) // 2]
+                thr = max(median_r * 3.0, 0.5 / 10_000)  # 3× median or min 0.5bps/h
+                for sym, r in abs_rates.items():
+                    if r > thr:
+                        alerts.append({
+                            "type":    "funding_outlier",
+                            "symbol":  sym,
+                            "rate_bps_per_h": round(r * 10_000, 3),
+                            "median_bps":     round(median_r * 10_000, 3),
+                        })
+
+            # Cross-symbol mid spread extremes
+            mids = {}
+            for sym in self.symbols:
+                book = self._last_book.get(sym)
+                mid  = getattr(book, "mid", None)
+                if mid:
+                    mids[sym] = mid
+
+            # Check BTC-normalised prices (BTC vs ETH correlation monitor)
+            btc_mid = mids.get("BTC")
+            eth_mid = mids.get("ETH")
+            if btc_mid and eth_mid:
+                ratio = eth_mid / btc_mid
+                # Alert if ratio deviates >15% from typical ~0.05-0.07 range
+                if ratio > 0.10 or ratio < 0.02:
+                    alerts.append({
+                        "type":     "cross_price_ratio_extreme",
+                        "symbols":  ["BTC", "ETH"],
+                        "eth_btc_ratio": round(ratio, 6),
+                    })
+        except Exception as exc:
+            log.debug("_scan_arb_opportunities error: %s", exc)
+        return alerts
 
     # ------------------------------------------------------------------
     # Emergency close (called by KillSwitch)
@@ -587,10 +891,16 @@ class EngineV9:
                 })
             for s in status:
                 s["open_positions"] = pos_by_strat.get(s["name"], [])
-            with open(status_file, "w") as f:
+            # Atomic write: temp file → rename so GUI never reads a partial file
+            _tmp_s = status_file.with_suffix(".tmp")
+            with open(_tmp_s, "w", encoding="utf-8") as f:
                 json.dump(status, f, default=str)
-            with open(calib_file, "w") as f:
+            import os as _os; _os.replace(_tmp_s, status_file)
+
+            _tmp_c = calib_file.with_suffix(".tmp")
+            with open(_tmp_c, "w", encoding="utf-8") as f:
                 json.dump(self.manager.get_calibration_data(), f, default=str)
+            _os.replace(_tmp_c, calib_file)
         except Exception as e:
             log.error("Status write failed: %s", e)
 
@@ -639,6 +949,20 @@ class EngineV9:
             elif command == "set_trading":
                 self._trading_enabled = bool(args.get("enabled", True))
                 return {"ok": True, "trading_enabled": self._trading_enabled}
+
+            elif command == "set_llm":
+                enabled = bool(args.get("enabled", False))
+                if enabled and self._llm_overlay is None:
+                    try:
+                        from llm_agents.base import LLMOverlay
+                        self._llm_overlay = LLMOverlay()
+                        log.info("LLM overlay enabled at runtime")
+                    except Exception as exc:
+                        return {"ok": False, "error": f"LLM init failed: {exc}"}
+                elif not enabled:
+                    self._llm_overlay = None
+                    log.info("LLM overlay disabled at runtime")
+                return {"ok": True, "llm_enabled": self._llm_overlay is not None}
 
             else:
                 return {"ok": False, "error": f"unknown command: {command}"}
@@ -728,6 +1052,16 @@ class EngineV9:
             self._print_dashboard()
         except Exception:
             pass
+        # Write empty list so GUI knows engine has stopped (avoids stale capitals)
+        try:
+            import os as _os
+            _sf = Path(self._runtime_cfg.get("status_file", "runtime/strategy_status.json"))
+            _tmp = _sf.with_suffix(".tmp")
+            with open(_tmp, "w", encoding="utf-8") as _f:
+                json.dump([], _f)
+            _os.replace(_tmp, _sf)
+        except Exception:
+            pass
 
 
 # ---------------------------------------------------------------------------
@@ -759,7 +1093,7 @@ async def _main(args: argparse.Namespace) -> None:
         print(f"Config not found: {args.config}")
         sys.exit(1)
 
-    with open(cfg_path) as f:
+    with open(cfg_path, encoding="utf-8", errors="replace") as f:
         cfg = json.load(f)
     _setup_logging(cfg.get("logging", {}))
 
@@ -767,8 +1101,15 @@ async def _main(args: argparse.Namespace) -> None:
     enable_strategies = [s.strip()        for s in args.strategy.split(",")]  if args.strategy  else None
     paper             = not args.live
 
+    # Write selected exchange to runtime for GUI status display
+    _rt = Path("runtime")
+    _rt.mkdir(parents=True, exist_ok=True)
+    with open(_rt / "engine_config.json", "w") as _f:
+        json.dump({"exchange": args.exchange, "paper": paper, "started_at": time.time()}, _f)
+
     engine = EngineV9(config_path=args.config, paper=paper,
-                      symbols=symbols, enable_strategies=enable_strategies)
+                      symbols=symbols, enable_strategies=enable_strategies,
+                      exchange=args.exchange)
 
     loop = asyncio.get_running_loop()
     try:
@@ -785,6 +1126,16 @@ async def _graceful_stop(engine: EngineV9) -> None:
 
 
 if __name__ == "__main__":
+    # Fix Windows cp1252 terminal encoding — must be FIRST
+    import io as _io
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+    elif hasattr(sys.stdout, "buffer"):
+        sys.stdout = _io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser(description="Artemisia v9 — multi-strategy")
     parser.add_argument("--config", default="config_v9.json")
     parser.add_argument("--paper",  action="store_true", default=False)
@@ -796,6 +1147,8 @@ if __name__ == "__main__":
                         help="Enable only these strategies (comma-separated). "
                              "Overrides config enabled flags. "
                              "e.g. MomentumLS,BreakoutControlled")
+    parser.add_argument("--exchange", type=str, default="hyperliquid",
+                        help="Primary data exchange: hyperliquid (default), binance, bitget")
     args = parser.parse_args()
 
     if args.live:

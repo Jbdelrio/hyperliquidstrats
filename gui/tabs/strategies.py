@@ -31,12 +31,15 @@ _RESET_FILES = [
 
 _api = ControlAPI()
 
-# All 9 strategies in display order
+# All strategies in display order (Phase-1 original + Phase-2 new)
 _ALL = [
     "S8EMS", "MomentumLS", "BreakoutControlled",
     "MeanReversionKalman", "FundingArbitrage",
     "DonchianTrend", "RSIBollingerReversion",
     "RotationMomentum", "RelativeValue",
+    # Phase-2
+    "SpotPerpBasis", "FundingCarryHedged",
+    "OBImbalanceScalper", "VolatilityRegimeBreakout", "MetaAlpha",
 ]
 
 _DEF = {
@@ -90,6 +93,38 @@ _DEF = {
                                  "min_correlation": 0.70, "stop_loss_pct": 0.05,
                                  "take_profit_pct": 0.03, "max_hold_hours": 48,
                                  "min_cost_ratio": 2.5}},
+    # Phase-2 strategies (disabled by default)
+    "SpotPerpBasis": {"capital": 500, "enabled": False,
+                      "params": {"basis_entry_bps": 20.0, "basis_exit_bps": 5.0,
+                                 "max_basis_abs_bps": 200.0, "min_expected_edge_bps": 8.0,
+                                 "stop_loss_pct": 0.015, "take_profit_pct": 0.010,
+                                 "max_hold_minutes": 240,
+                                 "trade_when_external_spot_missing": False,
+                                 "external_spot_prices": {}}},
+    "FundingCarryHedged": {"capital": 500, "enabled": False,
+                           "params": {"funding_entry_bps_per_hour": 0.5,
+                                      "funding_exit_bps_per_hour": 0.1,
+                                      "taker_fee_bps": 3.5, "slippage_bps": 2.0,
+                                      "safety_buffer_bps": 2.0, "min_expected_edge_bps": 3.0,
+                                      "max_abs_return_15m_pct": 2.5, "stop_loss_pct": 0.02,
+                                      "take_profit_pct": 0.012, "max_hold_hours": 8,
+                                      "allow_unhedged_perp": False}},
+    "OBImbalanceScalper": {"capital": 300, "enabled": False,
+                           "params": {"imbalance_entry_threshold": 0.30,
+                                      "imbalance_exit_threshold": 0.05,
+                                      "imbalance_levels": 5,
+                                      "min_persistence_updates": 3,
+                                      "stop_loss_pct": 0.004, "take_profit_pct": 0.003,
+                                      "max_hold_seconds": 120}},
+    "VolatilityRegimeBreakout": {"capital": 500, "enabled": False,
+                                 "params": {"donchian_period": 20, "atr_period": 14,
+                                            "high_vol_threshold_bps": 30.0,
+                                            "low_vol_threshold_bps": 8.0,
+                                            "stop_loss_pct": 0.015, "take_profit_pct": 0.025,
+                                            "max_hold_hours": 4}},
+    "MetaAlpha": {"capital": 500, "enabled": False,
+                  "params": {"min_agreement_score": 2, "stop_loss_pct": 0.012,
+                             "take_profit_pct": 0.018, "max_hold_hours": 6}},
 }
 
 _BTN = {"fontWeight": "700", "fontSize": "11px"}
@@ -292,6 +327,52 @@ def _strat_card(name: str) -> dbc.Card:
 
 # ── Layout ────────────────────────────────────────────────────────────────
 
+def _step(n, text):
+    return html.Div(className="guide-step", children=[
+        html.Span(str(n), className="guide-step-num"),
+        html.Div(className="guide-step-text", children=text),
+    ])
+
+def _cmd(s):
+    return html.Code(s, className="guide-cmd")
+
+
+def _fresh_start_guide() -> html.Div:
+    return html.Div([
+        _step(1, ["Cloner et installer: ",
+                  _cmd("pip install -r requirements.txt")]),
+        _step(2, ["Copier la config: ",
+                  _cmd("cp .env.example .env"),
+                  html.Span("  puis éditer ", style={"color": COLORS["text"]}),
+                  _cmd(".env"),
+                  html.Span(" (ajouter clés API si LLM activé)", style={"color": COLORS["text"]})]),
+        _step(3, ["Démarrage vierge (efface anciens logs): ",
+                  _cmd("python -m gui.app --fresh"),
+                  html.Span("  puis ouvrir ", style={"color": COLORS["text"]}),
+                  _cmd("http://127.0.0.1:8050")]),
+        _step(4, ["Sélectionner les stratégies souhaitées dans le dropdown moteur "
+                  "et cliquer ", html.B("▶ DÉMARRER", style={"color": COLORS["success"]}),
+                  html.Span(". Le moteur tourne en mode paper par défaut — aucun ordre réel.",
+                            style={"color": COLORS["warning"], "marginLeft": "6px"})]),
+        _step(5, ["Observer l'onglet ", html.B("Overview", style={"color": COLORS["accent"]}),
+                  " pour le PnL en temps réel, ",
+                  html.B("Calibration", style={"color": COLORS["accent"]}),
+                  " pour les signaux raw de chaque stratégie."]),
+        _step(6, [html.B("Nouvelles stratégies Phase 2 ", style={"color": "#00D4AA"}),
+                  "sont toutes désactivées par défaut. Activer une par une après validation paper. "
+                  "FundingCarryHedged et SpotPerpBasis sont en mode scanner (pas de trades) "
+                  "jusqu'à ce que ", _cmd("allow_unhedged_perp: true"),
+                  " / ", _cmd("external_spot_prices"),
+                  " soient configurés."]),
+        _step(7, [html.B("LLM Overlay ", style={"color": COLORS["accent"]}),
+                  ": désactivé par défaut. Activer avec ",
+                  _cmd("LLM_ENABLED=true"), " dans ", _cmd(".env"),
+                  " + clé API OpenAI/compatible. Vérifier le Brier Score dans l'onglet ",
+                  html.B("LLM Overlay", style={"color": COLORS["accent"]}),
+                  " avant de faire confiance aux signaux."]),
+    ], style={"marginBottom": "24px"})
+
+
 def static_layout() -> html.Div:
     strat_opts = [{"label": s, "value": s} for s in _ALL]
 
@@ -333,34 +414,69 @@ def static_layout() -> html.Div:
                         "border": _BDR, "marginBottom": "10px",
                         "backgroundColor": "#0d0d0d"}),
 
-        # Engine start / stop
-        dbc.Row([
-            dbc.Col(html.Small("MOTEUR", style={"color": COLORS["warning"],
-                                                 "letterSpacing": "2px", "fontWeight": "700",
-                                                 "fontSize": "10px"}),
-                    width="auto", className="d-flex align-items-center"),
-            dbc.Col(dcc.Dropdown(
-                id="engine-strat-select", options=strat_opts,
-                value=["DonchianTrend", "RSIBollingerReversion", "MomentumLS"],
-                multi=True, placeholder="Stratégies...",
-                className="dropdown-dark",
-            ), width=6),
-            dbc.Col(dbc.Button("☑ Tout",      id="engine-select-all-btn",
-                               color="secondary", size="sm", style=_BTN), width="auto"),
-            dbc.Col(dbc.Button("☐ Aucun",    id="engine-select-none-btn",
-                               color="secondary", size="sm", style=_BTN), width="auto"),
-            dbc.Col(dbc.Button("▶ DÉMARRER", id="engine-start-btn",
-                               color="success", size="sm", style=_BTN), width="auto"),
-            dbc.Col(dbc.Button("⏹ ARRÊTER",  id="engine-stop-btn",
-                               color="danger",  size="sm", style=_BTN), width="auto"),
-            dbc.Col(html.Div(id="engine-cmd-result", style={"fontSize": "12px"}),
-                    className="d-flex align-items-center"),
-        ], className="g-2 align-items-center mb-2",
-           style={"backgroundColor": "#0d0d0d", "padding": "8px 12px",
-                  "border": f"2px solid {COLORS['warning']}",
-                  "borderRadius": "4px", "marginBottom": "10px"}),
+        # ── Engine start / stop ────────────────────────────────────────
+        html.Div(style={"backgroundColor": "#0d0d0d", "padding": "10px 14px",
+                        "border": f"2px solid {COLORS['warning']}",
+                        "borderRadius": "4px", "marginBottom": "10px"}, children=[
 
-        # Global controls
+            # Row 1: label + strat select + tout/aucun
+            dbc.Row([
+                dbc.Col(html.Small("MOTEUR", style={"color": COLORS["warning"],
+                                                     "letterSpacing": "2px",
+                                                     "fontWeight": "900", "fontSize": "10px"}),
+                        width="auto", className="d-flex align-items-center"),
+                dbc.Col(dcc.Dropdown(
+                    id="engine-strat-select", options=strat_opts,
+                    value=["DonchianTrend", "RSIBollingerReversion", "MomentumLS"],
+                    multi=True, placeholder="Stratégies...",
+                    className="dropdown-dark",
+                ), width=7),
+                dbc.Col(dbc.Button("☑ Tout",   id="engine-select-all-btn",
+                                   color="secondary", size="sm", style=_BTN), width="auto"),
+                dbc.Col(dbc.Button("☐ Aucun",  id="engine-select-none-btn",
+                                   color="secondary", size="sm", style=_BTN), width="auto"),
+            ], className="g-2 align-items-center mb-2"),
+
+            # Row 2: exchange + LLM + start + stop
+            dbc.Row([
+                dbc.Col(html.Small("EXCHANGE", style={"color": COLORS["text"],
+                                                       "letterSpacing": "1px",
+                                                       "fontWeight": "700", "fontSize": "10px"}),
+                        width="auto", className="d-flex align-items-center"),
+                dbc.Col(dcc.Dropdown(
+                    id="engine-exchange-select",
+                    options=[
+                        {"label": "Hyperliquid (WebSocket)", "value": "hyperliquid"},
+                        {"label": "Binance USDT-M (REST)",   "value": "binance"},
+                        {"label": "Bitget USDT-M (REST)",    "value": "bitget"},
+                    ],
+                    value="hyperliquid", clearable=False,
+                    className="dropdown-dark",
+                ), width=3),
+                dbc.Col(html.Div(style={"borderLeft": _BDR, "height": "26px"}), width="auto"),
+                dbc.Col(html.Small("LLM", style={"color": COLORS["accent"],
+                                                  "letterSpacing": "1px",
+                                                  "fontWeight": "700", "fontSize": "10px"}),
+                        width="auto", className="d-flex align-items-center"),
+                dbc.Col(dbc.Button("LLM ON",  id="llm-on-btn",
+                                   color="info",      size="sm", style=_BTN), width="auto"),
+                dbc.Col(dbc.Button("LLM OFF", id="llm-off-btn",
+                                   color="secondary", size="sm", style=_BTN), width="auto"),
+                dbc.Col(html.Div(id="llm-status-indicator",
+                                 style={"fontSize": "11px", "color": COLORS["text"]}),
+                        className="d-flex align-items-center"),
+                dbc.Col(html.Div(style={"borderLeft": _BDR, "height": "26px"}), width="auto"),
+                dbc.Col(dbc.Button("▶ DÉMARRER", id="engine-start-btn",
+                                   color="success", size="sm",
+                                   style={**_BTN, "letterSpacing": "1px"}), width="auto"),
+                dbc.Col(dbc.Button("⏹ ARRÊTER",  id="engine-stop-btn",
+                                   color="danger",  size="sm", style=_BTN), width="auto"),
+                dbc.Col(html.Div(id="engine-cmd-result", style={"fontSize": "12px"}),
+                        className="d-flex align-items-center"),
+            ], className="g-2 align-items-center"),
+        ]),
+
+        # ── Global controls ────────────────────────────────────────────
         dbc.Row([
             dbc.Col(html.Small("GLOBAL", style={"color": COLORS["text"],
                                                  "letterSpacing": "2px",
@@ -376,12 +492,27 @@ def static_layout() -> html.Div:
             dbc.Col(dbc.Button("⏸ PAUSE 1h",  id="g-btn-pause-all",
                                color="secondary", size="sm", style=_BTN), width="auto"),
             dbc.Col(html.Div(style={"borderLeft": _BDR, "height": "26px"}), width="auto"),
-            dbc.Col(dbc.Button("🗑 RESET TOUT", id="reset-all-btn",
+            dbc.Col(dbc.Button("RESET TOUT", id="reset-all-btn",
                                color="danger",    size="sm",
                                style={**_BTN, "letterSpacing": "1px"}), width="auto"),
             dbc.Col(html.Div(id="global-cmd-result", style={"fontSize": "12px"}),
                     className="d-flex align-items-center"),
         ], className="g-2 align-items-center mb-3"),
+
+        # ── Engine log (last lines) ────────────────────────────────────
+        html.Details([
+            html.Summary(html.Small("LOG MOTEUR — dernières lignes",
+                                    style={"color": COLORS["text"], "letterSpacing": "1px",
+                                           "fontSize": "10px", "fontWeight": "700",
+                                           "textTransform": "uppercase", "cursor": "pointer"})),
+            html.Div(id="engine-log-box",
+                     style={"backgroundColor": "#060606", "border": f"1px solid {COLORS['grid']}",
+                            "borderRadius": "3px", "padding": "8px 12px",
+                            "fontFamily": "Consolas,monospace", "fontSize": "11px",
+                            "color": "#ADAFAE", "maxHeight": "180px",
+                            "overflowY": "auto", "whiteSpace": "pre-wrap",
+                            "marginTop": "6px"}),
+        ], style={"marginBottom": "10px"}),
 
         # ── Strategy cards ─────────────────────────────────────────────
         _grp_hdr("Stratégies existantes"),
@@ -395,6 +526,18 @@ def static_layout() -> html.Div:
 
         _grp_hdr("Scanner / Expérimental", COLORS["warning"]),
         *[_strat_card(n) for n in ["RotationMomentum", "RelativeValue"]],
+
+        _grp_hdr("Phase 2 — Nouvelles stratégies", "#00D4AA"),
+        *[_strat_card(n) for n in
+          ["SpotPerpBasis", "FundingCarryHedged",
+           "OBImbalanceScalper", "VolatilityRegimeBreakout", "MetaAlpha"]],
+
+        # ── Fresh start guide ──────────────────────────────────────────
+        html.Hr(style={"borderColor": COLORS["grid"], "marginTop": "24px"}),
+        html.P("GUIDE DÉMARRAGE VIERGE", style={"color": COLORS["accent"],
+               "fontSize": "10px", "letterSpacing": "2px", "fontWeight": "700",
+               "textTransform": "uppercase", "marginBottom": "10px"}),
+        _fresh_start_guide(),
     ])
 
 
@@ -450,16 +593,61 @@ def register_callbacks(app) -> None:
         Output("engine-cmd-result", "children"),
         Input("engine-start-btn", "n_clicks"),
         Input("engine-stop-btn",  "n_clicks"),
-        State("engine-strat-select", "value"),
+        State("engine-strat-select",   "value"),
+        State("engine-exchange-select", "value"),
         prevent_initial_call=True,
     )
-    def _engine(_a, _b, strats):
+    def _engine(_a, _b, strats, exchange):
         trig = dash.ctx.triggered_id
         if trig == "engine-start-btn":
-            r = engine_ctrl.start(strategies=strats or [], paper=True)
-            return _ok(f"✓ PID {r['pid']}") if r["ok"] else _err(f"✗ {r['error']}")
+            r = engine_ctrl.start(strategies=strats or [], paper=True,
+                                  exchange=exchange or "hyperliquid")
+            return _ok(f"✓ PID {r['pid']} [{exchange}]") if r["ok"] else _err(f"✗ {r['error']}")
         r = engine_ctrl.stop()
         return _ok("✓ Arrêté.") if r["ok"] else _err(f"✗ {r['error']}")
+
+    # ── LLM toggle ────────────────────────────────────────────────────────
+
+    @app.callback(
+        Output("llm-status-indicator", "children"),
+        Output("llm-status-indicator", "style"),
+        Input("llm-on-btn",          "n_clicks"),
+        Input("llm-off-btn",         "n_clicks"),
+        Input("refresh-interval",    "n_intervals"),
+        prevent_initial_call=False,
+    )
+    def _llm_toggle(_on, _off, _n):
+        trig = dash.ctx.triggered_id
+        if trig == "llm-on-btn":
+            _api.set_llm(True)
+        elif trig == "llm-off-btn":
+            _api.set_llm(False)
+        st = _api.engine_status()
+        if st["llm_enabled"]:
+            txt   = "LLM ACTIF"
+            color = COLORS["accent"]
+        else:
+            txt   = "LLM INACTIF"
+            color = COLORS["text"]
+        return txt, {"fontSize": "11px", "color": color, "fontWeight": "700"}
+
+    # ── Engine log viewer ─────────────────────────────────────────────────
+
+    @app.callback(
+        Output("engine-log-box", "children"),
+        Input("refresh-interval", "n_intervals"),
+    )
+    def _engine_log(_n):
+        log_path = _REPO / "logs" / "engine_stdout.log"
+        if not log_path.exists():
+            return "— Aucun log moteur pour l'instant —"
+        try:
+            with open(log_path, encoding="utf-8", errors="replace") as f:
+                lines = f.readlines()
+            last = lines[-60:]  # dernières 60 lignes
+            return "".join(last)
+        except Exception as e:
+            return f"Erreur lecture log: {e}"
 
     # ── Refresh badges + capital + positions (DataTable NOT overwritten) ──
 

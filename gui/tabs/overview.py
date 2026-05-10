@@ -2,29 +2,49 @@
 overview.py — Tab 1: global KPIs + per-strategy cards + equity curve.
 IDs overview-cards / overview-charts preserved for compatibility.
 """
+import json
 import time
+from pathlib import Path
 
 import dash_bootstrap_components as dbc
+import pandas as pd
 import plotly.graph_objects as go
 from dash import Input, Output, dcc, html
 
-from gui.data_loader import load_fills, load_metrics, load_strategy_status
+from gui.data_loader import load_decisions, load_fills, load_metrics, load_strategy_status
 from gui.theme import COLORS, STRAT_COLORS, apply_dark_theme, no_data, stat_card
+
+_REPO = Path(__file__).parent.parent.parent
+
+# Bars needed before each strategy can generate signals (1 bar = 1 min)
+_WARMUP_BARS = {
+    "S8EMS":                 0,
+    "OBImbalanceScalper":    0,
+    "FundingArbitrage":      0,
+    "FundingCarryHedged":    0,
+    "SpotPerpBasis":         0,
+    "MomentumLS":           14,
+    "RotationMomentum":     14,
+    "MeanReversionKalman":  10,
+    "RelativeValue":        14,
+    "BreakoutControlled":   20,
+    "DonchianTrend":        20,
+    "RSIBollingerReversion":20,
+    "VolatilityRegimeBreakout": 14,
+    "MetaAlpha":            20,
+}
 
 _ALL_STRATS = [
     "S8EMS", "MomentumLS", "BreakoutControlled",
     "MeanReversionKalman", "FundingArbitrage",
     "DonchianTrend", "RSIBollingerReversion",
     "RotationMomentum", "RelativeValue",
+    "SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
+    "VolatilityRegimeBreakout", "MetaAlpha",
 ]
-_DFLT_CAP = {
-    "S8EMS": 500, "MomentumLS": 500, "BreakoutControlled": 500,
-    "MeanReversionKalman": 500, "FundingArbitrage": 500,
-    "DonchianTrend": 500, "RSIBollingerReversion": 500,
-    "RotationMomentum": 0, "RelativeValue": 500,
-}
+_DFLT_CAP = {s: 500 for s in _ALL_STRATS}
 # Total capital = sum of all strategy allocations (computed dynamically)
-_DFLT_TOTAL_CAP = float(sum(_DFLT_CAP.values()))  # 4000.0
+_DFLT_TOTAL_CAP = float(sum(_DFLT_CAP.values()))  # 7000.0
 
 
 def _total_capital(live_list: list) -> float:
@@ -63,7 +83,28 @@ def _wr_bar(wr: float, color: str):
     )
 
 
-def _strat_card(name, status, cap, cum_pnl, n_trades, wr, n_pos):
+def _warmup_progress(name: str, n_trades: int, engine_start_ts: float, now: float):
+    """Show warmup bar when strategy needs bar history and hasn't traded yet."""
+    w = _WARMUP_BARS.get(name, 20)
+    if w == 0 or n_trades > 0 or engine_start_ts <= 0:
+        return None
+    elapsed = (now - engine_start_ts) / 60.0
+    if elapsed >= w:
+        return None
+    pct = min(elapsed / w * 100, 100)
+    return html.Div([
+        html.Div(f"Warmup {int(elapsed)}/{w} bars",
+                 style={"fontSize": "9px", "color": COLORS["warning"],
+                        "marginBottom": "1px", "fontFamily": "Consolas,monospace"}),
+        html.Div(html.Div(style={
+            "width": f"{pct:.0f}%", "height": "3px",
+            "backgroundColor": COLORS["warning"], "borderRadius": "2px",
+        }), style={"height": "3px", "backgroundColor": "#222", "borderRadius": "2px"}),
+    ], style={"marginTop": "5px"})
+
+
+def _strat_card(name, status, cap, cum_pnl, n_trades, wr, n_pos,
+                engine_start_ts: float = 0.0, now: float = 0.0):
     sc     = {"ACTIF": COLORS["success"], "INACTIF": COLORS["danger"],
               "SUSPENDU": COLORS["warning"]}.get(status, COLORS["text"])
     accent = STRAT_COLORS.get(name, COLORS["accent"])
@@ -72,8 +113,9 @@ def _strat_card(name, status, cap, cum_pnl, n_trades, wr, n_pos):
                  else COLORS["danger"]) if cum_pnl is not None else COLORS["text"]
     wr_txt    = f"{wr:.0f}%" if wr is not None else "—"
     wr_color  = COLORS["success"] if (wr or 0) >= 50 else COLORS["warning"]
+    warmup    = _warmup_progress(name, n_trades, engine_start_ts, now)
 
-    return dbc.Card(dbc.CardBody([
+    body_children = [
         dbc.Row([
             dbc.Col(html.B(name, style={"color": accent, "fontSize": "11px"}),
                     width="auto"),
@@ -104,7 +146,11 @@ def _strat_card(name, status, cap, cum_pnl, n_trades, wr, n_pos):
                                       "fontFamily": "Consolas,monospace"})], width=2),
         ]),
         _wr_bar(wr or 0, wr_color),
-    ], style={"padding": "8px 10px"}),
+    ]
+    if warmup:
+        body_children.append(warmup)
+
+    return dbc.Card(dbc.CardBody(body_children, style={"padding": "8px 10px"}),
     className="card-glow",
     style={"backgroundColor": COLORS["card_bg"], "border": _BDR,
            "borderRadius": "4px", "borderLeft": f"3px solid {accent}"})
@@ -143,6 +189,61 @@ def _pos_table(positions):
               "borderRadius": "4px", "padding": "8px 12px", "marginTop": "10px"})
 
 
+def _health_row(live_list: list, decisions_today: int, now: float) -> html.Div:
+    """Small health bar: engine feed age + active strategies + signals today."""
+    # Feed freshness from strategy_status.json timestamp
+    status_age = None
+    for s in live_list:
+        ts_val = s.get("ts") or s.get("updated_at")
+        if ts_val:
+            try:
+                status_age = now - float(ts_val)
+                break
+            except Exception:
+                pass
+
+    # Also read directly from file ts field (written by _write_status)
+    if status_age is None:
+        try:
+            _sf = _REPO / "runtime" / "strategy_status.json"
+            if _sf.exists():
+                status_age = now - _sf.stat().st_mtime
+        except Exception:
+            pass
+
+    if status_age is None:
+        feed_txt   = "—"
+        feed_color = COLORS["text"]
+    elif status_age < 15:
+        feed_txt   = f"Feed OK ({status_age:.0f}s)"
+        feed_color = COLORS["success"]
+    elif status_age < 60:
+        feed_txt   = f"Feed {status_age:.0f}s"
+        feed_color = COLORS["warning"]
+    else:
+        feed_txt   = f"Feed stale ({status_age:.0f}s)"
+        feed_color = COLORS["danger"]
+
+    n_active = sum(1 for s in live_list if s.get("enabled"))
+    n_total  = len(live_list) or len(_ALL_STRATS)
+
+    def _pill(label, val, color):
+        return html.Span([
+            html.Span(label, style={"color": COLORS["text"], "fontSize": "10px"}),
+            html.Span(f" {val}", style={"color": color, "fontWeight": "700",
+                                         "fontSize": "10px", "fontFamily": "Consolas,monospace"}),
+        ], style={"marginRight": "18px"})
+
+    return html.Div([
+        _pill("Data:", feed_txt, feed_color),
+        _pill("Stratégies actives:", f"{n_active}/{n_total}", COLORS["accent"]),
+        _pill("Signaux aujourd'hui:", str(decisions_today), COLORS["text_light"]),
+    ], style={"display": "flex", "alignItems": "center", "flexWrap": "wrap",
+              "padding": "5px 10px", "marginBottom": "8px",
+              "backgroundColor": "#0a0a0a",
+              "borderRadius": "4px", "border": f"1px solid {COLORS['grid']}"})
+
+
 def register_callbacks(app) -> None:
 
     @app.callback(
@@ -153,6 +254,7 @@ def register_callbacks(app) -> None:
     def update(_n):
         fills     = load_fills()
         metrics   = load_metrics()
+        decisions = load_decisions()
         live_list = load_strategy_status()
         live_map  = {s.get("name"): s for s in live_list}
         now       = time.time()
@@ -160,6 +262,7 @@ def register_callbacks(app) -> None:
         # Total capital = sum of all strategy allocations (dynamic)
         init_cap = _total_capital(live_list)
 
+        # Per-strategy stats from fills (always up-to-date)
         strat_stats: dict = {}
         if not fills.empty and "net" in fills.columns and "strategy" in fills.columns:
             for sname, g in fills.groupby("strategy"):
@@ -171,19 +274,50 @@ def register_callbacks(app) -> None:
                     "wr":  100.0 * (g["net"] > 0).sum() / len(g),
                 }
 
-        if not metrics.empty:
-            last    = metrics.iloc[-1]
-            equity  = float(last.get("equity",   init_cap) or init_cap)
-            pnl_day = float(last.get("pnl_day",  0) or 0)
-            pnl_1h  = float(last.get("pnl_hour", 0) or 0)
-            wins    = int(last.get("wins",   0) or 0)
-            losses  = int(last.get("losses", 0) or 0)
-            total   = wins + losses
-            wr_txt  = f"{100*wins/total:.1f}%" if total else "—"
-            dd      = (equity - init_cap) / init_cap * 100 if init_cap else 0.0
-        else:
-            equity = init_cap; pnl_day = pnl_1h = 0.0
-            total = wins = 0; wr_txt = "—"; dd = 0.0
+        # ── Equity from fills directly (never from stale metrics CSV) ──
+        total_pnl = 0.0
+        pnl_day   = 0.0
+        pnl_1h    = 0.0
+        wins      = 0
+        losses    = 0
+        if not fills.empty and "net" in fills.columns:
+            net       = fills["net"].fillna(0)
+            total_pnl = float(net.sum())
+            wins      = int((net > 0).sum())
+            losses    = int((net < 0).sum())
+            if "ts" in fills.columns:
+                ts_col  = fills["ts"]
+                try:
+                    ts_num  = ts_col.astype(float)
+                except Exception:
+                    ts_num  = net * 0  # zeros
+                pnl_day = float(net[ts_num > now - 86400].sum())
+                pnl_1h  = float(net[ts_num > now - 3600].sum())
+        equity = init_cap + total_pnl
+        total  = wins + losses
+        wr_txt = f"{100*wins/total:.1f}%" if total else "—"
+        dd     = total_pnl / init_cap * 100 if init_cap else 0.0
+
+        # Engine start time — for warmup progress bars
+        engine_start_ts = 0.0
+        try:
+            _ecfg = _REPO / "runtime" / "engine_config.json"
+            if _ecfg.exists():
+                _ecfg_data = json.load(open(_ecfg, encoding="utf-8"))
+                engine_start_ts = float(
+                    _ecfg_data.get("started_at") or _ecfg_data.get("ts") or 0
+                )
+        except Exception:
+            pass
+
+        # Decisions since engine start (not 24h — avoids mixing old sessions)
+        decisions_today = 0
+        if not decisions.empty and "timestamp" in decisions.columns and engine_start_ts > 0:
+            try:
+                ts_num = pd.to_numeric(decisions["timestamp"], errors="coerce")
+                decisions_today = int((ts_num > engine_start_ts).sum())
+            except Exception:
+                pass
 
         all_pos = []
         for s in live_list:
@@ -193,7 +327,7 @@ def register_callbacks(app) -> None:
 
         # ── Global KPIs ───────────────────────────────────────────────
         g_cards = dbc.Row([
-            dbc.Col(stat_card("Capital total", f"${init_cap:.0f}", COLORS["text_light"])),
+            dbc.Col(stat_card("Capital", f"${init_cap:.0f}", COLORS["text_light"])),
             dbc.Col(stat_card("Equity",    f"${equity:.2f}", COLORS["accent"])),
             dbc.Col(stat_card("PnL today", f"${pnl_day:+.2f}",
                               COLORS["success"] if pnl_day >= 0 else COLORS["danger"])),
@@ -214,14 +348,16 @@ def register_callbacks(app) -> None:
                 live  = live_map.get(name, {})
                 cap   = float(live.get("capital_allocated_usd",
                                        _DFLT_CAP.get(name, 500)) or _DFLT_CAP.get(name, 500))
-                ena   = live.get("enabled", False) if live else False
+                ena   = live.get("enabled", _DFLT_CAP.get(name, 0) > 0) if live else False
                 susp  = float(live.get("suspended_until", 0) or 0)
                 status = "SUSPENDU" if susp > now else ("ACTIF" if ena else "INACTIF")
                 n_pos  = len(live.get("open_positions", [])) if live else 0
                 st     = strat_stats.get(name, {})
-                cols.append(dbc.Col(_strat_card(name, status, cap,
-                                               st.get("pnl"), st.get("n", 0),
-                                               st.get("wr"), n_pos), width=True))
+                cols.append(dbc.Col(_strat_card(
+                    name, status, cap,
+                    st.get("pnl"), st.get("n", 0), st.get("wr"), n_pos,
+                    engine_start_ts=engine_start_ts, now=now,
+                ), width=True))
             return dbc.Row(cols, className="g-2", style={"marginTop": "8px"})
 
         def _grp(txt):
@@ -231,15 +367,20 @@ def register_callbacks(app) -> None:
 
         existing  = ["S8EMS", "MomentumLS", "BreakoutControlled",
                      "MeanReversionKalman", "FundingArbitrage"]
-        nouvelles = ["DonchianTrend", "RSIBollingerReversion",
+        phase1    = ["DonchianTrend", "RSIBollingerReversion",
                      "RotationMomentum", "RelativeValue"]
+        phase2    = ["SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
+                     "VolatilityRegimeBreakout", "MetaAlpha"]
 
         cards = html.Div([
             g_cards,
+            _health_row(live_list, decisions_today, now),
             _grp("Stratégies existantes"),
             _make_row(existing),
-            _grp("Nouvelles stratégies"),
-            _make_row(nouvelles),
+            _grp("Phase 1"),
+            _make_row(phase1),
+            _grp("Phase 2"),
+            _make_row(phase2),
             _pos_table(all_pos),
         ])
 

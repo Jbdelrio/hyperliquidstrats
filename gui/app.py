@@ -32,6 +32,7 @@ if "--fresh" in _sys.argv:
 from gui.control_api import ControlAPI
 from gui.theme import COLORS, THEME
 from gui.tabs import calibration, coins, decisions, overview, risk, strategies, trades
+from gui.tabs import llm_overlay, exchanges
 
 _HERE = _os.path.dirname(_os.path.abspath(__file__))
 _api  = ControlAPI()
@@ -71,6 +72,8 @@ _TABS = [
     ("Risk",         "tab-risk",         risk),
     ("Strategies",   "tab-strategies",   strategies),
     ("Calibration",  "tab-calibration",  calibration),
+    ("LLM Overlay",  "tab-llm",          llm_overlay),
+    ("Exchanges",    "tab-exchanges",    exchanges),
 ]
 
 app.layout = dbc.Container(
@@ -82,20 +85,44 @@ app.layout = dbc.Container(
 
         # ── Header row ────────────────────────────────────────────────
         dbc.Row([
-            dbc.Col(html.H4(
-                [
-                    "Artemisia v9  —  Multi-Strategy Monitor",
-                    html.Span("PAPER", className="paper-mode-badge"),
-                ],
-                style=_HEADER_STYLE,
-            )),
+            dbc.Col(html.Div([
+                html.Span("ARTEMISIA", style={
+                    "color": COLORS["accent"],
+                    "fontWeight": "900",
+                    "fontSize": "22px",
+                    "letterSpacing": "4px",
+                    "fontFamily": "'Consolas','Courier New',monospace",
+                    "textShadow": f"0 0 18px {COLORS['accent']}99",
+                }),
+                html.Span(" v9", style={
+                    "color": COLORS["text"],
+                    "fontWeight": "700",
+                    "fontSize": "16px",
+                    "letterSpacing": "2px",
+                    "fontFamily": "'Consolas','Courier New',monospace",
+                }),
+                html.Span(" // ", style={"color": COLORS["grid"],
+                                         "fontSize": "14px", "margin": "0 6px"}),
+                html.Span("Multi-Strategy Monitor", style={
+                    "color": COLORS["text_light"],
+                    "fontWeight": "400",
+                    "fontSize": "13px",
+                    "letterSpacing": "1px",
+                }),
+                html.Span("PAPER", className="paper-mode-badge"),
+            ], style={"display": "flex", "alignItems": "center", "gap": "0px",
+                      "flexWrap": "wrap"})),
             dbc.Col(
-                html.Small("auto-refresh 5s",
-                           style={"color": COLORS["text"], "float": "right",
-                                  "lineHeight": "2.2"}),
+                html.Div([
+                    html.Span("auto-refresh 5s",
+                              style={"color": COLORS["text"], "fontSize": "11px",
+                                     "fontFamily": "Consolas,monospace"}),
+                ], style={"textAlign": "right"}),
                 width="auto",
             ),
-        ], style={"marginBottom": "6px"}),
+        ], style={"marginBottom": "8px",
+                  "borderBottom": f"1px solid {COLORS['grid']}",
+                  "paddingBottom": "8px"}),
 
         # ── Global connection status bar (always visible) ─────────────
         html.Div(id="global-conn-bar", className=""),
@@ -128,27 +155,45 @@ app.layout = dbc.Container(
     Input("refresh-interval", "n_intervals"),
 )
 def _update_global_conn(_n):
-    st = _api.engine_status()
+    st       = _api.engine_status()
+    exchange = st.get("exchange", "Hyperliquid")
+    llm_on   = st.get("llm_enabled", False)
+
     if st["connected"]:
-        dot   = html.Span(className="conn-dot-live")
-        msg   = f"Hyperliquid WebSocket  |  heartbeat {st['age_s']}s"
-        color = COLORS["success"]
+        dot    = html.Span(className="conn-dot-live")
+        msg    = f"{exchange}  |  heartbeat {st['age_s']}s"
+        color  = COLORS["success"]
         border = f"1px solid {COLORS['success']}33"
     elif st["running"]:
-        dot   = html.Span(className="conn-dot-warn")
-        msg   = f"Moteur démarré — en attente heartbeat  |  {st['age_s']}s"
-        color = COLORS["warning"]
+        dot    = html.Span(className="conn-dot-warn")
+        msg    = f"{exchange}  —  connexion en cours  |  {st['age_s']}s"
+        color  = COLORS["warning"]
         border = f"1px solid {COLORS['warning']}33"
     else:
-        dot   = html.Span(className="conn-dot-dead")
-        msg   = "Moteur non démarré — aller dans Strategies > DÉMARRER"
-        color = COLORS["danger"]
+        dot    = html.Span(className="conn-dot-dead")
+        msg    = "Moteur non démarré — Strategies > selectionner exchange + DÉMARRER"
+        color  = COLORS["danger"]
         border = f"1px solid {COLORS['danger']}33"
+
+    llm_badge = html.Span(
+        "LLM",
+        style={
+            "marginLeft":      "12px",
+            "padding":         "1px 7px",
+            "borderRadius":    "3px",
+            "fontSize":        "10px",
+            "fontWeight":      "700",
+            "letterSpacing":   "1px",
+            "backgroundColor": COLORS["accent"] + "22" if llm_on else "#222",
+            "color":           COLORS["accent"] if llm_on else "#555",
+            "border":          f"1px solid {COLORS['accent']}44" if llm_on else "1px solid #333",
+        }
+    )
 
     children = [
         dot,
-        html.Span(msg, style={"color": color, "fontSize": "12px",
-                               "fontWeight": "600"}),
+        html.Span(msg, style={"color": color, "fontSize": "12px", "fontWeight": "600"}),
+        llm_badge,
     ]
     style = {
         "border":          border,
@@ -158,7 +203,7 @@ def _update_global_conn(_n):
         "backgroundColor": "#0d0d0d",
         "display":         "flex",
         "alignItems":      "center",
-        "gap":             "8px",
+        "gap":             "6px",
     }
     return children, style
 
@@ -172,6 +217,8 @@ coins.register_callbacks(app)
 risk.register_callbacks(app)
 strategies.register_callbacks(app)
 calibration.register_callbacks(app)
+llm_overlay.register_callbacks(app)
+exchanges.register_callbacks(app)
 
 
 if __name__ == "__main__":
