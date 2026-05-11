@@ -1,9 +1,19 @@
 {
-  "_comment": "CLEAN paper test — 5 strategies × 500 USD = 2500 USD total. All others disabled. Usage: python engine_v9.py --paper --config config/presets/paper_500_clean.json",
+  "_comment": "CLEAN paper test — 5 directional strategies × $500 = $2500. Anti-micro-trade filters enabled. Usage: python engine_v9.py --paper --config config/presets/paper_500_clean.json",
   "capital": 2500,
   "paper_mode": true,
   "websocket_url": "wss://api.hyperliquid.xyz/ws",
   "subscription_delay_s": 0.15,
+  "execution_filters": {
+    "enabled": true,
+    "min_expected_net_profit_usd": 3.0,
+    "min_reward_risk_ratio": 1.4,
+    "taker_fee_bps": 3.0,
+    "slippage_bps": 4.0,
+    "min_hold_seconds": 90,
+    "cooldown_win_s": 300,
+    "cooldown_loss_s": 900
+  },
   "strategies": [
     {
       "name": "MomentumLS",
@@ -11,21 +21,21 @@
       "enabled": true,
       "capital_allocated_usd": 500,
       "max_positions": 2,
-      "max_position_size_usd": 125,
-      "kill_after_consecutive_losses": 6,
-      "suspend_minutes_on_kill": 20,
+      "max_position_size_usd": 250,
+      "kill_after_consecutive_losses": 5,
+      "suspend_minutes_on_kill": 30,
       "coins": ["BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK", "ARB", "OP", "AAVE", "LTC", "BCH", "XRP"],
       "params": {
         "rerank_seconds": 60,
         "top_k_long": 2,
         "bottom_k_short": 2,
-        "score_threshold": 8,
-        "spread_bps_max": 30.0,
-        "r_15m_max_pct": 8.0,
-        "stop_loss_pct": 3.0,
-        "take_profit_pct": 3.0,
-        "trailing_stop_pct": 1.5,
-        "max_hold_hours": 24
+        "score_threshold": 70,
+        "spread_bps_max": 25.0,
+        "r_15m_max_pct": 5.0,
+        "stop_loss_pct": 1.0,
+        "take_profit_pct": 2.0,
+        "trailing_stop_pct": 1.0,
+        "max_hold_hours": 48
       }
     },
     {
@@ -34,40 +44,18 @@
       "enabled": true,
       "capital_allocated_usd": 500,
       "max_positions": 2,
-      "max_position_size_usd": 125,
-      "kill_after_consecutive_losses": 5,
-      "suspend_minutes_on_kill": 20,
+      "max_position_size_usd": 250,
+      "kill_after_consecutive_losses": 4,
+      "suspend_minutes_on_kill": 30,
       "coins": ["BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK", "ARB", "OP", "AAVE", "LTC", "BCH", "XRP"],
       "params": {
         "lookback_bars": 12,
-        "bo_max_pct": 10.0,
-        "vr_min": 0.8,
-        "spread_bps_max": 30.0,
-        "take_profit_pct": 4.0,
-        "stop_below_resistance_pct": 2.0,
-        "max_hold_hours": 20
-      }
-    },
-    {
-      "name": "MeanReversionKalman",
-      "class": "MeanReversionKalman",
-      "enabled": true,
-      "capital_allocated_usd": 500,
-      "max_positions": 2,
-      "max_position_size_usd": 125,
-      "kill_after_consecutive_losses": 6,
-      "suspend_minutes_on_kill": 20,
-      "coins": ["BTC", "ETH", "SOL", "AVAX", "LINK"],
-      "params": {
-        "warmup_seconds": 60,
-        "z_entry": 0.8,
-        "z_exit": 0.0,
-        "z_stop": 4.5,
-        "spread_bps_max": 15.0,
-        "vol_max_pct_per_min": 1.5,
-        "max_hold_minutes": 240,
-        "kalman_process_noise": 1e-6,
-        "kalman_obs_noise": 1e-4
+        "bo_max_pct": 8.0,
+        "vr_min": 1.0,
+        "spread_bps_max": 25.0,
+        "take_profit_pct": 2.5,
+        "stop_below_resistance_pct": 1.5,
+        "max_hold_hours": 24
       }
     },
     {
@@ -76,22 +64,42 @@
       "enabled": true,
       "capital_allocated_usd": 500,
       "max_positions": 2,
-      "max_position_size_usd": 125,
+      "max_position_size_usd": 250,
       "kill_after_consecutive_losses": 4,
       "suspend_minutes_on_kill": 45,
-      "coins": ["BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK", "ARB", "OP", "AAVE", "LTC", "BCH", "XRP"],
+      "coins": ["BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK", "ARB", "OP", "AAVE", "XRP"],
       "params": {
         "donchian_n": 36,
         "ema_1h_period": 50,
         "btc_regime_ema": 200,
         "vol_period": 20,
-        "vol_multiplier": 1.1,
+        "vol_multiplier": 1.2,
         "stop_loss_pct": 0.01,
-        "take_profit_pct": 0.02,
+        "take_profit_pct": 0.025,
         "trailing_mode": "mid",
         "min_cost_ratio": 2.5,
-        "max_hold_hours": 36,
-        "cooldown_s": 60
+        "max_hold_hours": 48,
+        "cooldown_s": 90
+      }
+    },
+    {
+      "name": "VolatilityRegimeBreakout",
+      "class": "VolatilityRegimeBreakoutStrategy",
+      "enabled": true,
+      "capital_allocated_usd": 500,
+      "max_positions": 2,
+      "max_position_size_usd": 250,
+      "kill_after_consecutive_losses": 4,
+      "suspend_minutes_on_kill": 30,
+      "coins": ["BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK", "ARB", "OP", "AAVE", "XRP"],
+      "params": {
+        "donchian_period": 20,
+        "atr_period": 14,
+        "high_vol_threshold_bps": 35.0,
+        "low_vol_threshold_bps": 10.0,
+        "stop_loss_pct": 0.012,
+        "take_profit_pct": 0.025,
+        "max_hold_hours": 6
       }
     },
     {
@@ -100,23 +108,23 @@
       "enabled": true,
       "capital_allocated_usd": 500,
       "max_positions": 2,
-      "max_position_size_usd": 125,
+      "max_position_size_usd": 250,
       "kill_after_consecutive_losses": 4,
       "suspend_minutes_on_kill": 45,
       "coins": ["BTC", "ETH", "SOL", "AVAX", "HYPE"],
       "params": {
         "rsi_period": 14,
-        "rsi_oversold": 35,
+        "rsi_oversold": 25,
         "zscore_period": 30,
-        "zscore_entry": -1.5,
+        "zscore_entry": -2.2,
         "bb_period": 20,
         "bb_k": 2.0,
         "ema_1h_period": 100,
-        "stop_loss_pct": 0.008,
-        "take_profit_pct": 0.015,
-        "time_stop_bars": 16,
+        "stop_loss_pct": 0.01,
+        "take_profit_pct": 0.02,
+        "time_stop_bars": 20,
         "min_cost_ratio": 2.5,
-        "cooldown_s": 60
+        "cooldown_s": 90
       }
     },
     {
@@ -140,9 +148,18 @@
       "params": {}
     },
     {
+      "name": "MeanReversionKalman",
+      "class": "MeanReversionKalman",
+      "enabled": false,
+      "capital_allocated_usd": 0,
+      "max_positions": 1,
+      "max_position_size_usd": 0,
+      "coins": ["BTC", "ETH", "SOL"],
+      "params": {}
+    },
+    {
       "name": "RotationMomentum",
       "class": "RotationMomentumStrategy",
-      "_comment": "Scanner only — no capital, no autonomous trading.",
       "enabled": false,
       "capital_allocated_usd": 0,
       "max_positions": 0,
@@ -191,16 +208,6 @@
       "params": {}
     },
     {
-      "name": "VolatilityRegimeBreakout",
-      "class": "VolatilityRegimeBreakoutStrategy",
-      "enabled": false,
-      "capital_allocated_usd": 0,
-      "max_positions": 1,
-      "max_position_size_usd": 0,
-      "coins": ["BTC", "ETH", "SOL"],
-      "params": {}
-    },
-    {
       "name": "MetaAlpha",
       "class": "MetaAlphaStrategy",
       "enabled": false,
@@ -217,8 +224,8 @@
     "max_open_positions": 10,
     "max_notional_total": 2500,
     "network_timeout_s": 60,
-    "max_trades_per_hour": 30,
-    "max_loss_streak": 6,
+    "max_trades_per_hour": 20,
+    "max_loss_streak": 5,
     "btc_move_5m_pct": 3.0,
     "max_pick_rate": 0.85,
     "rampage_suspend_s": 300,

@@ -134,6 +134,18 @@ class ControlAPI:
             pass
 
         if not status_file.exists():
+            # Engine may still be starting up — check engine_config.json age
+            cfg_age = None
+            try:
+                if cfg_file.exists():
+                    cfg_age = time.time() - cfg_file.stat().st_mtime
+            except Exception:
+                pass
+            if cfg_age is not None and cfg_age < 45:
+                return {"running": True, "connected": False,
+                        "age_s": round(cfg_age, 1),
+                        "exchange": exchange, "llm_enabled": llm_enabled,
+                        "starting": True}
             return {"running": False, "connected": False, "age_s": None,
                     "exchange": exchange, "llm_enabled": llm_enabled}
         age = time.time() - status_file.stat().st_mtime

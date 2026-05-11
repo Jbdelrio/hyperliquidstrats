@@ -9927,3 +9927,95 @@
 2026-05-11 00:05:47,052 INFO execution.high_freq_executor [FILL] BTC SELL @ 80997.000000 notional=$0
 2026-05-11 00:05:47,267 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=80997.000000 exit=80754.009000 net=$0.0000 hold=0s take_profit
 2026-05-11 00:05:47,269 INFO __main__ Shutting down v9...
+2026-05-11 00:21:27,187 INFO execution.high_freq_executor [FILL] BTC SELL @ 81234.000000 notional=$200
+2026-05-11 00:21:27,753 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81234.000000 exit=81234.500000 net=$-0.0552 hold=1s imbalance_reversed
+2026-05-11 00:21:27,755 INFO __main__ [CLOSE] OBImbalanceScalper BTC SELL @ 81234.500000 | net=$-0.0552 | imbalance_reversed
+2026-05-11 00:21:28,196 INFO execution.high_freq_executor [FILL] ETH BUY @ 2349.900000 notional=$200
+2026-05-11 00:21:28,203 INFO execution.high_freq_executor [FILL] SOL BUY @ 95.568000 notional=$200
+2026-05-11 00:21:28,893 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2349.900000 exit=2349.850000 net=$-0.0583 hold=1s z_reversion
+2026-05-11 00:21:28,903 INFO __main__ [CLOSE] MeanReversionKalman ETH BUY @ 2349.850000 | net=$-0.0583 | z_reversion
+2026-05-11 00:21:28,905 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=95.568000 exit=95.567500 net=$-0.0550 hold=1s z_reversion
+2026-05-11 00:21:28,906 INFO __main__ [CLOSE] MeanReversionKalman SOL BUY @ 95.567500 | net=$-0.0550 | z_reversion
+2026-05-11 00:21:29,223 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.660000 notional=$200
+2026-05-11 00:21:30,427 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.660000 exit=10.658500 net=$-0.0821 hold=1s z_reversion
+2026-05-11 00:21:30,429 WARNING risk.adverse_selection_monitor [LINK] Adverse selection: pick_rate=100% > 85% → suspend 1200s
+2026-05-11 00:21:30,429 INFO __main__ [CLOSE] MeanReversionKalman LINK BUY @ 10.658500 | net=$-0.0821 | z_reversion
+2026-05-11 00:21:35,190 INFO execution.high_freq_executor [FILL] ETH BUY @ 2349.600000 notional=$200
+2026-05-11 00:21:35,191 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2349.600000 exit=2349.550000 net=$-0.0583 hold=0s imbalance_reversed
+2026-05-11 00:21:35,193 INFO __main__ [CLOSE] OBImbalanceScalper ETH BUY @ 2349.550000 | net=$-0.0583 | imbalance_reversed
+2026-05-11 00:21:35,195 INFO execution.high_freq_executor [FILL] SOL BUY @ 95.547000 notional=$200
+2026-05-11 00:21:35,196 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=95.547000 exit=95.546500 net=$-0.0550 hold=0s imbalance_reversed
+2026-05-11 00:21:35,198 WARNING risk.adverse_selection_monitor [SOL] Adverse selection: pick_rate=86% > 85% → suspend 1200s
+2026-05-11 00:21:35,199 INFO __main__ [CLOSE] OBImbalanceScalper SOL BUY @ 95.546500 | net=$-0.0550 | imbalance_reversed
+2026-05-11 00:21:36,269 INFO execution.high_freq_executor [FILL] BTC SELL @ 81231.000000 notional=$200
+2026-05-11 00:21:44,128 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=81231.000000 exit=81231.500000 net=$-0.0552 hold=8s imbalance_reversed
+2026-05-11 00:21:44,130 INFO __main__ [CLOSE] OBImbalanceScalper BTC SELL @ 81231.500000 | net=$-0.0552 | imbalance_reversed
+2026-05-11 00:37:21,710 INFO execution.high_freq_executor [FILL] AAVE BUY @ 101.490000 notional=$125
+2026-05-11 00:37:21,710 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.144480 notional=$125
+2026-05-11 00:37:21,711 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.144480 exit=0.144475 net=$-0.0381 hold=0s stop_loss
+2026-05-11 00:37:21,711 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-11 00:37:21,712 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=101.490000 exit=101.480000 net=$-0.0461 hold=0s loss_streak
+2026-05-11 00:37:21,713 WARNING risk.kill_switch Loss streak 8 reached -> 30 min suspend
+2026-05-11 00:37:21,713 INFO __main__ [CLOSE] VolatilityRegimeBreakout ARB BUY @ 0.144475 | net=$-0.0381 | stop_loss
+2026-05-11 00:45:50,700 WARNING strategies.funding_arbitrage FundingArbitrage: API fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x0000021FFFE7AB90>, 'Connection to api.hyperliquid.xyz timed out. (connect timeout=5.0)'))
+2026-05-11 00:45:50,720 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 1s (attempt 1)
+2026-05-11 00:45:56,306 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000021F8B39E1D0>: Failed to establish a new connection: [WinError 10065] Une opération a été tentée sur un hôte impossible à atteindre'))
+2026-05-11 00:45:56,327 WARNING data.orderbook_manager WS error (Multiple exceptions: [WinError 1236] La connexion réseau a été arrêtée par le système local, [WinError 1232] L’emplacement réseau ne peut pas être atteint. Pour obtenir des informations concernant la résolution des problèmes du réseau, consultez l’aide de Windows, [WinError 1232] L’emplacement réseau ne peut pas être atteint. Pour obtenir des informations concernant la résolution des problèmes du réseau, consultez l’aide de Windows, [WinError 1232] L’emplacement réseau ne peut pas être atteint. Pour obtenir des informations concernant la résolution des problèmes du réseau, consultez l’aide de Windows). Reconnect in 2s (attempt 2)
+2026-05-11 00:45:56,329 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001AFC4DC0E90>: Failed to establish a new connection: [WinError 10065] Une opération a été tentée sur un hôte impossible à atteindre'))
+2026-05-11 00:45:57,014 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-05-11 00:45:57,016 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021F8B39D050>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 00:45:56,883 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 1s (attempt 1)
+2026-05-11 00:45:56,875 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x00000238D5DB7510>: Failed to establish a new connection: [WinError 10065] Une opération a été tentée sur un hôte impossible à atteindre'))
+2026-05-11 00:45:58,063 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-11 00:45:58,336 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-11 00:45:58,869 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-11 00:46:00,077 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-11 00:46:04,242 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-11 00:46:04,268 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-11 00:46:04,999 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-11 00:46:07,911 INFO data.orderbook_manager All subscriptions sent.
+2026-05-11 00:46:07,982 INFO data.orderbook_manager All subscriptions sent.
+2026-05-11 00:46:08,859 INFO data.orderbook_manager All subscriptions sent.
+2026-05-11 01:00:24,531 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 4s (attempt 3)
+2026-05-11 01:01:15,097 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 8s (attempt 4)
+2026-05-11 01:01:15,139 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001AFC3547050>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 01:01:15,287 WARNING strategies.funding_arbitrage FundingArbitrage: API fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021FFFE731D0>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 01:01:15,324 CRITICAL risk.kill_switch HARD KILL: network_timeout=74s
+2026-05-11 01:01:15,336 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=74s
+2026-05-11 01:01:15,336 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-11 01:01:15,620 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 8s (attempt 4)
+2026-05-11 01:01:15,623 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021FFFF64F10>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 01:01:15,628 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000238D440E1D0>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 01:01:15,684 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 8s (attempt 4)
+2026-05-11 01:01:15,798 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021F8B86CE90>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 02:06:38,036 CRITICAL risk.kill_switch HARD KILL: network_timeout=3974s
+2026-05-11 02:06:38,036 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=3974s
+2026-05-11 02:06:38,036 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-11 02:06:38,093 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021FFFEA8410>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 02:06:38,193 WARNING strategies.funding_arbitrage FundingArbitrage: API fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021FFFEA8610>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 02:06:38,266 CRITICAL risk.kill_switch HARD KILL: network_timeout=3923s
+2026-05-11 02:06:38,266 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=3923s
+2026-05-11 02:06:38,266 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-11 02:06:38,336 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021FFFE426D0>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 02:06:38,340 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 16s (attempt 5)
+2026-05-11 02:06:38,367 WARNING strategies.funding_carry_hedged FundingCarryHedged: fetch failed: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001AFC48B21D0>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-11 02:06:38,368 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 16s (attempt 5)
+2026-05-11 02:06:40,666 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 16s (attempt 5)
+2026-05-11 02:06:55,288 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-11 02:06:55,316 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-11 02:06:57,443 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-11 02:06:59,076 INFO data.orderbook_manager All subscriptions sent.
+2026-05-11 02:06:59,092 INFO data.orderbook_manager All subscriptions sent.
+2026-05-11 02:06:59,146 INFO __main__ Shutting down v9...
+2026-05-11 02:06:59,168 INFO __main__ Shutting down v9...
+2026-05-11 02:07:01,209 INFO data.orderbook_manager All subscriptions sent.
+2026-05-11 02:07:01,977 INFO __main__ Shutting down v9...
+2026-05-11 20:20:42,132 ERROR asyncio Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\jeanb\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionAbortedError: [WinError 10053] Une connexion établie a été abandonnée par un logiciel de votre ordinateur hôte
+2026-05-11 20:20:46,032 INFO monitoring.pnl_tracker PnL tracker daily reset

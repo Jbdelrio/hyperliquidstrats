@@ -464,6 +464,16 @@
       }
     }
   ],
+  "execution_filters": {
+    "enabled": true,
+    "min_expected_net_profit_usd": 3.0,
+    "min_reward_risk_ratio": 1.4,
+    "taker_fee_bps": 3.0,
+    "slippage_bps": 4.0,
+    "min_hold_seconds": 90,
+    "cooldown_win_s": 300,
+    "cooldown_loss_s": 900
+  },
   "risk": {
     "max_dd_daily_pct": 0.03,
     "max_dd_total_pct": 0.06,

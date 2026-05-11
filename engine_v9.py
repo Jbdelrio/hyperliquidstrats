@@ -215,6 +215,18 @@ class EngineV9:
         self._dashboard_interval = log_cfg.get("dashboard_interval_s", 60)
         self._running            = False
 
+        # ── Execution filter settings ──────────────────────────────────
+        ef = self.cfg.get("execution_filters", {})
+        self._ef_enabled      = ef.get("enabled", True)
+        self._min_net_profit  = float(ef.get("min_expected_net_profit_usd", 3.0))
+        self._min_rr          = float(ef.get("min_reward_risk_ratio", 1.4))
+        self._ef_fee_bps      = float(ef.get("taker_fee_bps", 3.0))
+        self._ef_slippage_bps = float(ef.get("slippage_bps", 4.0))
+        self._min_hold_s      = float(ef.get("min_hold_seconds", 90.0))
+        self._cooldown_win_s  = float(ef.get("cooldown_win_s", 300.0))
+        self._cooldown_loss_s = float(ef.get("cooldown_loss_s", 900.0))
+        self._cooldown: dict[tuple[str, str], float] = {}
+
         # ── OHLCV bars history (for LLM feature builder) ───────────────
         from llm_agents.config import LLM_MAX_OHLCV_ROWS as _LLM_MAX_BARS
         self._bars_history: dict[str, list] = {s: [] for s in self.symbols}
@@ -247,6 +259,16 @@ class EngineV9:
         except Exception:
             pass
 
+        # Write initial status immediately in __init__ so GUI sees strategies
+        # even before the WebSocket connects (avoids "Moteur non démarré" during startup)
+        try:
+            _sf0 = Path(self._runtime_cfg.get("status_file", "runtime/strategy_status.json"))
+            _sf0.parent.mkdir(parents=True, exist_ok=True)
+            with open(_sf0, "w", encoding="utf-8") as _f0:
+                json.dump(self.manager.get_status(), _f0, default=str)
+        except Exception:
+            pass
+
         log.info("EngineV9 | paper=%s | symbols=%s | equity=%.2f | strategies=%s",
                  paper, self.symbols, self.equity,
                  list(self.manager.strategies.keys()))
@@ -262,8 +284,7 @@ class EngineV9:
         log.info("Engine V9 running. exchange=%s paper=%s strategies=%s",
                  self.exchange, self.paper,
                  [n for n, s in self.manager.strategies.items() if s.enabled])
-        # Write proper strategy list immediately so GUI shows correct ACTIF/INACTIF
-        # (never write a dict — load_strategy_status() only accepts lists)
+        # Refresh status after connect (adds any runtime-enriched state)
         try:
             _sf = Path(self._runtime_cfg.get("status_file", "runtime/strategy_status.json"))
             _sf.parent.mkdir(parents=True, exist_ok=True)
@@ -425,6 +446,8 @@ class EngineV9:
                     self.adv_mon.record_close(sym, net_pnl < 0)
                     self.adv_mon.check_and_suspend(sym, ts)
                     self.tracker.record_trade(net_pnl, hold_s, ex_reason)
+                    cooldown_s = self._cooldown_win_s if net_pnl >= 0 else self._cooldown_loss_s
+                    self._cooldown[(sname, sym)] = ts + cooldown_s
                     if strat := self.manager.get(sname):
                         strat.on_position_closed(sym, net_pnl, ex_reason)
 
@@ -591,7 +614,21 @@ class EngineV9:
                 self.ledger.release_reserved(strat_name, requested_notional)
                 return
 
-            # Gate 3: LLM overlay (optional)
+            # Gate 3: execution filter (min net profit + cooldown)
+            ok_ef, ef_reason = self._check_execution_filter(
+                strat_name, decision, ts, book)
+            if not ok_ef:
+                self.ledger.release_reserved(strat_name, requested_notional)
+                log.debug("[EXEC_FILTER] BLOCK %s %s: %s",
+                          strat_name, sym, ef_reason)
+                if self.decision_logger:
+                    self.decision_logger.log_filter_skip(
+                        symbol=sym, strategy=strat_name,
+                        blocked_reason=ef_reason,
+                        notional_usd=requested_notional, timestamp=ts)
+                return
+
+            # Gate 4: LLM overlay (optional)
             if self._llm_overlay is not None:
                 import random as _random
                 if _random.random() < self._llm_sample_rate:
@@ -691,6 +728,46 @@ class EngineV9:
             self._apply_close_action(strat_name, decision, ts)
 
     # ------------------------------------------------------------------
+    # Execution filter gate
+    # ------------------------------------------------------------------
+
+    def _check_execution_filter(self, strat_name: str,
+                                 decision: StrategyDecision,
+                                 ts: float, book) -> "tuple[bool, str]":
+        if not self._ef_enabled:
+            return True, ""
+
+        key = (strat_name, decision.symbol)
+        resume_ts = self._cooldown.get(key, 0.0)
+        if ts < resume_ts:
+            return False, f"cooldown:{resume_ts - ts:.0f}s_remaining"
+
+        if decision.action == "PLACE_QUOTES":
+            return True, ""
+
+        tp       = decision.take_profit
+        sl       = decision.stop_loss
+        notional = decision.notional_usd
+        if tp is None or sl is None or notional is None or notional <= 0:
+            return True, ""
+
+        strat = self.manager.get(strat_name)
+        if strat is None or book is None:
+            return True, ""
+
+        side  = "long" if decision.action == "PLACE_BUY" else "short"
+        entry = (book.best_ask if side == "long" else book.best_bid) or book.mid
+        if not entry:
+            return True, ""
+
+        passes, blocked, econ = strat.passes_min_edge_filter(
+            entry=entry, tp=tp, sl=sl, notional=notional, side=side,
+            min_net_profit=self._min_net_profit, min_rr=self._min_rr,
+            fee_bps=self._ef_fee_bps, slippage_bps=self._ef_slippage_bps,
+        )
+        return passes, blocked
+
+    # ------------------------------------------------------------------
     # Close a strategy position
     # ------------------------------------------------------------------
 
@@ -726,9 +803,9 @@ class EngineV9:
         _reason_l     = (reason or "").lower()
         _is_protective = any(k in _reason_l for k in
                              ("stop", "manual", "emergency", "flatten", "shutdown"))
-        if not _is_protective and (ts - pos.entry_ts) < 60.0:
-            log.debug("Skip early close %s %s after %.1fs (min_hold=60s)",
-                      strat_name, sym, ts - pos.entry_ts)
+        if not _is_protective and (ts - pos.entry_ts) < self._min_hold_s:
+            log.debug("Skip early close %s %s after %.1fs (min_hold=%.0fs)",
+                      strat_name, sym, ts - pos.entry_ts, self._min_hold_s)
             return
 
         exit_price = meta.get("exit_price")
@@ -755,6 +832,9 @@ class EngineV9:
         strat = self.manager.get(strat_name)
         if strat:
             strat.on_position_closed(sym, net_pnl, reason)
+
+        cooldown_s = self._cooldown_win_s if net_pnl >= 0 else self._cooldown_loss_s
+        self._cooldown[(strat_name, sym)] = ts + cooldown_s
 
         log.info("[CLOSE] %s %s %s @ %.6f | net=$%.4f | %s",
                  strat_name, sym, pos.side, exit_price, net_pnl, reason)
@@ -1261,14 +1341,11 @@ class EngineV9:
             self._print_dashboard()
         except Exception:
             pass
-        # Write empty list so GUI knows engine has stopped (avoids stale capitals)
+        # Delete status file on shutdown so GUI stale-detection kicks in immediately
+        # (age > 30s → ENGINE OFF badge) without showing all-DISABLED from [] list
         try:
-            import os as _os
             _sf = Path(self._runtime_cfg.get("status_file", "runtime/strategy_status.json"))
-            _tmp = _sf.with_suffix(".tmp")
-            with open(_tmp, "w", encoding="utf-8") as _f:
-                json.dump([], _f)
-            _os.replace(_tmp, _sf)
+            _sf.unlink(missing_ok=True)
         except Exception:
             pass
 
