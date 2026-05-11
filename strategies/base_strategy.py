@@ -139,6 +139,63 @@ class BaseStrategy(ABC):
         """Live feature values for the Calibration tab."""
         return {}
 
+    def estimate_trade_economics(
+        self,
+        entry: float,
+        tp: float,
+        sl: float,
+        notional: float,
+        side: str,
+        fee_bps: float = 3.0,
+        slippage_bps: float = 4.0,
+    ) -> dict:
+        """Estimate expected P&L after round-trip fees and slippage."""
+        if side == "long":
+            tp_move = (tp - entry) / entry if entry > 0 else 0.0
+            sl_move = (sl - entry) / entry if entry > 0 else 0.0
+        else:
+            tp_move = (entry - tp) / entry if entry > 0 else 0.0
+            sl_move = (entry - sl) / entry if entry > 0 else 0.0
+
+        gross_tp = tp_move * notional
+        round_trip_cost = 2 * ((fee_bps + slippage_bps) / 10_000.0) * notional
+        expected_net = gross_tp - round_trip_cost
+        risk_usd = abs(sl_move * notional) + round_trip_cost
+        rr = expected_net / risk_usd if risk_usd > 0 else 0.0
+
+        return {
+            "gross_profit_usd":      gross_tp,
+            "estimated_fees_usd":    round_trip_cost,
+            "expected_net_profit_usd": expected_net,
+            "risk_usd":              risk_usd,
+            "reward_risk_ratio":     rr,
+            "tp_pct":                tp_move * 100,
+            "sl_pct":                sl_move * 100,
+        }
+
+    def passes_min_edge_filter(
+        self,
+        entry: float,
+        tp: float,
+        sl: float,
+        notional: float,
+        side: str,
+        min_net_profit: float = 3.0,
+        min_rr: float = 1.4,
+        fee_bps: float = 3.0,
+        slippage_bps: float = 4.0,
+    ) -> "tuple[bool, str, dict]":
+        """Return (passes, blocked_reason, economics_dict)."""
+        econ = self.estimate_trade_economics(
+            entry, tp, sl, notional, side, fee_bps, slippage_bps)
+        net = econ["expected_net_profit_usd"]
+        rr  = econ["reward_risk_ratio"]
+        if net < min_net_profit:
+            return False, f"net_too_low:{net:.2f}<{min_net_profit:.2f}", econ
+        if rr < min_rr:
+            return False, f"rr_too_low:{rr:.2f}<{min_rr:.2f}", econ
+        return True, "", econ
+
     def get_stats(self) -> dict:
         now = time.time()
         return {

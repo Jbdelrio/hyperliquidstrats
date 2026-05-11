@@ -672,6 +672,10 @@ def register_callbacks(app) -> None:
                     + (f"  |  PID {pid}" if pid else "")
                     + f"  |  heartbeat {st['age_s']}s")
             dot = html.Span(className="conn-dot-live")
+        elif st.get("starting"):
+            c, b = COLORS["warning"], f"1px solid {COLORS['warning']}55"
+            txt  = f"En démarrage… connexion WebSocket  |  {st['age_s']}s"
+            dot = html.Span(className="conn-dot-warn")
         elif st["running"]:
             c, b = COLORS["warning"], f"1px solid {COLORS['warning']}55"
             txt  = f"En attente — Hyperliquid  |  {st['age_s']}s"
@@ -687,16 +691,26 @@ def register_callbacks(app) -> None:
              "display": "flex", "alignItems": "center", "gap": "8px"},
         )
 
-    # ── Select all / none ─────────────────────────────────────────────────
+    # ── Select all / none / preset auto-clear ────────────────────────────────
 
     @app.callback(
         Output("engine-strat-select", "value"),
         Input("engine-select-all-btn",  "n_clicks"),
         Input("engine-select-none-btn", "n_clicks"),
+        Input("engine-config-select",   "value"),
         prevent_initial_call=True,
     )
-    def _select_strats(_all, _none):
-        return _ALL if dash.ctx.triggered_id == "engine-select-all-btn" else []
+    def _select_strats(_all, _none, config_val):
+        trig = dash.ctx.triggered_id
+        if trig == "engine-select-all-btn":
+            return _ALL
+        if trig == "engine-select-none-btn":
+            return []
+        # When a preset config is chosen, clear the dropdown so users know
+        # the preset controls which strategies run (not this dropdown)
+        if trig == "engine-config-select":
+            return [] if (config_val and config_val != "config_v9.json") else dash.no_update
+        return dash.no_update
 
     # ── Engine start / stop ───────────────────────────────────────────────
 
@@ -712,13 +726,18 @@ def register_callbacks(app) -> None:
     def _engine(_a, _b, strats, exchange, config_path):
         trig = dash.ctx.triggered_id
         if trig == "engine-start-btn":
+            cfg = config_path or "config_v9.json"
+            # When using a preset config, let the config decide which strategies
+            # are enabled — don't override with the dropdown selection
+            strat_override = (strats or []) if cfg == "config_v9.json" else []
             r = engine_ctrl.start(
-                strategies=strats or [], paper=True,
+                strategies=strat_override, paper=True,
                 exchange=exchange or "hyperliquid",
-                config=config_path or "config_v9.json",
+                config=cfg,
             )
-            cfg_short = (config_path or "").split("/")[-1]
-            return (_ok(f"✓ PID {r['pid']} [{exchange}] [{cfg_short}]")
+            cfg_short = cfg.split("/")[-1]
+            strat_note = f" strats={strat_override}" if strat_override else ""
+            return (_ok(f"✓ PID {r['pid']} [{exchange}] [{cfg_short}]{strat_note}")
                     if r["ok"] else _err(f"✗ {r['error']}"))
         r = engine_ctrl.stop()
         return _ok("✓ Arrêté.") if r["ok"] else _err(f"✗ {r['error']}")

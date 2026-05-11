@@ -14,10 +14,15 @@ from gui.theme import COLORS, apply_dark_theme, no_data
 _ALL_COINS = ["ALL", "BTC", "ETH", "SOL", "HYPE", "AVAX", "LINK",
               "ARB", "OP", "AAVE", "LTC", "BCH", "XRP"]
 _ALL_REASONS = ["ALL", "take_profit", "stop_loss", "max_hold",
+                "z_reversion", "imbalance_reversed", "time_stop",
                 "shutdown", "emergency", "flatten_strategy",
                 "flatten_all", "manual_close"]
-_ALL_STRATS  = ["ALL", "S8EMS", "MomentumLS", "BreakoutControlled",
-                "MeanReversionKalman", "FundingArbitrage"]
+_ALL_STRATS  = ["ALL",
+                "S8EMS", "MomentumLS", "BreakoutControlled",
+                "MeanReversionKalman", "FundingArbitrage", "DonchianTrend",
+                "RSIBollingerReversion", "RotationMomentum", "RelativeValue",
+                "SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
+                "VolatilityRegimeBreakout", "MetaAlpha"]
 
 _HDR = {"backgroundColor": "#1a1a1a", "color": COLORS["accent"], "fontWeight": "bold"}
 _CEL = {"backgroundColor": COLORS["card_bg"], "color": COLORS["text"],

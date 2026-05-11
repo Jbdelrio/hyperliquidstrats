@@ -13,10 +13,11 @@ from typing import Optional
 
 
 _FIELDNAMES = [
-    "timestamp", "symbol", "decision", "reason",
+    "timestamp", "symbol", "strategy", "decision", "reason",
     "mid", "spread_bps", "hurst", "har_rv_forecast",
     "kalman_fv", "obi",
     "buy_price", "sell_price", "size", "notional_usd",
+    "blocked_reason", "expected_net_profit_usd", "expected_rr",
 ]
 
 _AUTO_FLUSH_ROWS = 500
@@ -94,6 +95,25 @@ class DecisionLogger:
             "sell_price":     sell_price,
             "size":           size,
             "notional_usd":   notional_usd,
+        })
+
+    def log_filter_skip(self, symbol: str, strategy: str, blocked_reason: str,
+                        expected_net_profit_usd: float = None,
+                        expected_rr: float = None,
+                        notional_usd: float = None,
+                        timestamp: float = None) -> None:
+        if not self.enabled:
+            return
+        self._append({
+            "timestamp":               timestamp if timestamp is not None else time.time(),
+            "symbol":                  symbol,
+            "strategy":                strategy,
+            "decision":                "FILTER_SKIP",
+            "reason":                  blocked_reason,
+            "blocked_reason":          blocked_reason,
+            "expected_net_profit_usd": expected_net_profit_usd,
+            "expected_rr":             expected_rr,
+            "notional_usd":            notional_usd,
         })
 
     def flush(self) -> None:
