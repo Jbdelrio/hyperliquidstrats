@@ -47,6 +47,7 @@ from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from risk.kill_switch import KillSwitch
 from risk.adverse_selection_monitor import AdverseSelectionMonitor
 from risk.strategy_capital_ledger import StrategyCapitalLedger
+from risk.portfolio_risk_manager import PortfolioRiskManager
 from monitoring.pnl_tracker import PnLTracker
 from monitoring.decision_logger import DecisionLogger
 
@@ -83,6 +84,49 @@ class EngineV9:
         with open(cfg_file, encoding="utf-8", errors="replace") as f:
             self.cfg = json.load(f)
 
+        # ── Phase 4: micro-live safe mode guards ──────────────────────
+        # When mode=="micro_live" and paper_mode is false, the bot only
+        # starts after several explicit safety checks pass. Live order
+        # routing is NOT implemented in this codebase — HighFreqExecutor
+        # raises NotImplementedError on paper=False. The checks below are
+        # defense-in-depth so the engine never even initialises in an
+        # ambiguous "almost-live" state.
+        _mode = self.cfg.get("mode", "paper")
+        if _mode == "micro_live" and not self.cfg.get("paper_mode", True):
+            import os as _os_micro
+            arm_var = self.cfg.get("require_env_arm", "ARTEMISIA_ALLOW_MICRO_LIVE")
+            if str(_os_micro.environ.get(arm_var, "")).lower() != "true":
+                raise RuntimeError(
+                    f"Micro-live mode requires env var {arm_var}=true. "
+                    f"Refusing to start."
+                )
+            max_notional = float(self.cfg.get("max_order_notional_usd", 0))
+            if max_notional <= 0 or max_notional > 5:
+                raise RuntimeError(
+                    f"Micro-live mode: max_order_notional_usd must be ≤ 5 USD, "
+                    f"got {max_notional}. Refusing to start."
+                )
+            # Loud safety banner — repeated in the engine log
+            banner = (
+                "\n" + "=" * 72 + "\n"
+                "  ARTEMISIA MICRO-LIVE SAFE MODE ARMED\n"
+                f"  max_order_notional_usd : ${max_notional:.2f}\n"
+                f"  max_daily_loss_usd     : ${float(self.cfg.get('max_daily_loss_usd', 0)):.2f}\n"
+                f"  max_total_loss_usd     : ${float(self.cfg.get('max_total_loss_usd', 0)):.2f}\n"
+                f"  max_open_positions     : {self.cfg.get('max_open_positions', 0)}\n"
+                f"  max_trades_per_hour    : {self.cfg.get('max_trades_per_hour', 0)}\n"
+                f"  allow_only_symbols     : {self.cfg.get('allow_only_symbols', [])}\n"
+                "  Live execution is currently NOT IMPLEMENTED — engine will\n"
+                "  refuse to instantiate a live executor (NotImplementedError).\n"
+                + "=" * 72
+            )
+            for line in banner.splitlines():
+                log.warning(line)
+            try:
+                print(banner, flush=True)
+            except Exception:
+                pass
+
         self.paper      = paper
         self.exchange   = exchange
         risk_p          = self.cfg.get("risk", {})
@@ -110,10 +154,18 @@ class EngineV9:
             subscription_delay_s=self.cfg.get("subscription_delay_s", 0.15),
             ws_url=self.cfg.get("websocket_url", "wss://api.hyperliquid.xyz/ws"),
         )
+        # Realistic-fill knobs (Phase 1) — read from config or use defaults
+        _paper_sim = self.cfg.get("paper_simulation", {}) or {}
         self.executor = HighFreqExecutor(
             paper=paper,
             trade_log=log_cfg.get("trade_log", "logs/fills_v9.csv"),
             on_fill_cb=self._on_fill,
+            config={
+                "paper_latency_ms":           _paper_sim.get("paper_latency_ms", 150),
+                "max_pending_seconds_taker":  _paper_sim.get("max_pending_seconds_taker", 30),
+                "max_pending_seconds_maker":  _paper_sim.get("max_pending_seconds_maker", 120),
+                "base_slippage_bps":          _paper_sim.get("base_slippage_bps", 2.0),
+            },
         )
         self.ks = KillSwitch(
             initial_capital=self.equity,
@@ -195,6 +247,15 @@ class EngineV9:
             if name:
                 self.ledger.register_strategy(name, cap)
 
+        # ── Portfolio risk manager (concentration / family / net limits) ──
+        _pf = self.cfg.get("portfolio_risk", {}) or {}
+        self.portfolio_risk = PortfolioRiskManager(
+            max_coin_exposure_pct=float(_pf.get("max_coin_exposure_pct", 0.35)),
+            max_net_exposure_pct=float(_pf.get("max_net_exposure_pct", 0.60)),
+            max_family_exposure_pct=float(_pf.get("max_family_exposure_pct", 0.40)),
+            max_correlated_same_dir=int(_pf.get("max_correlated_same_dir", 2)),
+        )
+
         # ── Multi-strategy position tracking ──────────────────────────
         self._pair_to_strategy: dict[str, str] = {}    # pair_id  → strat_name
         self._pos_to_strategy:  dict[str, str] = {}    # pos_id   → strat_name
@@ -222,6 +283,11 @@ class EngineV9:
         ef = self.cfg.get("execution_filters", {})
         self._ef_enabled      = ef.get("enabled", True)
         self._min_net_profit  = float(ef.get("min_expected_net_profit_usd", 3.0))
+        # Phase 5: percentage-of-notional floor so small trades aren't always
+        # rejected by a fixed absolute USD floor. Effective required net is
+        # max(absolute, pct_of_notional * notional).
+        self._min_profit_pct  = float(ef.get("min_expected_net_profit_pct_of_notional",
+                                             0.004))
         self._min_rr          = float(ef.get("min_reward_risk_ratio", 1.4))
         self._ef_fee_bps      = float(ef.get("taker_fee_bps", 3.0))
         self._ef_slippage_bps = float(ef.get("slippage_bps", 4.0))
@@ -426,6 +492,35 @@ class EngineV9:
         while self._running:
             await asyncio.sleep(0.5)
             ts = time.time()
+
+            # Phase 1: expire stale orders and release reserved capital.
+            # We dedupe per pair so we only release reserve once per pair_id
+            # (BUY+SELL siblings share the same pair_id and reserve).
+            try:
+                expired = self.executor.expire_stale_orders(ts)
+            except Exception as _exp_exc:
+                expired = []
+                log.debug("expire_stale_orders error (ignored): %s", _exp_exc)
+            _seen_expired_pairs: set[str] = set()
+            for o in expired:
+                pid = o.pair_id
+                if pid in _seen_expired_pairs:
+                    continue
+                _seen_expired_pairs.add(pid)
+                # Release reservation; ignore strategies that don't own the pair
+                if pid in self._pair_to_reserved:
+                    sname, rnotional = self._pair_to_reserved.pop(pid)
+                    self.ledger.release_reserved(sname, rnotional)
+                # Clear strategy mapping + clear strategy-side pending tracking
+                sname2 = self._pair_to_strategy.pop(pid, "")
+                if sname2:
+                    st = self.manager.get(sname2)
+                    if st and hasattr(st, "clear_pending"):
+                        st.clear_pending(o.symbol)
+                log.info("[EXPIRE] %s %s pair=%s type=%s age=%.1fs",
+                         o.symbol, o.side, pid, o.order_type,
+                         ts - o.placed_at)
+
             for sym in self.symbols:
                 book = self.obm.get_book(sym)
                 if not book or not book.mid:
@@ -445,6 +540,10 @@ class EngineV9:
                     self.ks.record_trade(net_pnl)
                     if sname:
                         self.ledger.register_close(sname, pos.notional_usd, net_pnl)
+                        self.portfolio_risk.register_close(
+                            strategy=sname, symbol=pos.symbol,
+                            side=pos.side, notional=pos.notional_usd,
+                        )
                     self._pos_to_strategy.pop(pos.pos_id, None)
                     self.adv_mon.record_close(sym, net_pnl < 0)
                     self.adv_mon.check_and_suspend(sym, ts)
@@ -560,6 +659,14 @@ class EngineV9:
                             pair_id, strat_name, fill.symbol)
                 self.ledger.register_open(strat_name, fill.notional_usd)
 
+            # Portfolio-level open registration (Phase 3)
+            self.portfolio_risk.register_open(
+                strategy=strat_name,
+                symbol=fill.symbol,
+                side=fill.side,
+                notional=fill.notional_usd,
+            )
+
             strat = self.manager.get(strat_name)
             if strat:
                 result = strat.on_fill(
@@ -600,8 +707,8 @@ class EngineV9:
             )
 
             if requested_notional <= 0:
-                log.warning("[BLOCK] %s %s zero notional — strategy has no allocated capital",
-                            strat_name, sym)
+                log.debug("[BLOCK] %s %s zero notional — no capital allocated",
+                          strat_name, sym)
                 return
 
             # Gate 1: per-strategy ledger (budget + state)
@@ -616,13 +723,32 @@ class EngineV9:
                 return
             self.ledger.reserve_notional(strat_name, requested_notional)
 
-            # Gate 2: global KillSwitch
+            # Gate 2: portfolio-level concentration / family / net limits.
+            # Determine intended side for the directional case; PLACE_QUOTES
+            # quotes both sides so we treat them as net-neutral and only
+            # enforce coin & family limits (side="BUY" probe is a no-op for
+            # the net check when both sides are quoted).
+            _side = "BUY" if action in ("PLACE_BUY", "PLACE_QUOTES") else "SELL"
+            ok_pf, pf_reason = self.portfolio_risk.can_open(
+                strategy=strat_name, symbol=sym, side=_side,
+                notional=requested_notional,
+                total_capital=self.equity,
+            )
+            if not ok_pf:
+                self.ledger.release_reserved(strat_name, requested_notional)
+                log.info("[PORTFOLIO] BLOCK %s %s $%.0f → %s",
+                         strat_name, sym, requested_notional, pf_reason)
+                self._log_risk_event(strat_name, sym, action,
+                                     requested_notional, False, pf_reason)
+                return
+
+            # Gate 3: global KillSwitch
             ok_ks, _ = self.ks.can_open()
             if not ok_ks:
                 self.ledger.release_reserved(strat_name, requested_notional)
                 return
 
-            # Gate 3: execution filter (min net profit + cooldown)
+            # Gate 4: execution filter (min net profit + cooldown)
             ok_ef, ef_reason = self._check_execution_filter(
                 strat_name, decision, ts, book)
             if not ok_ef:
@@ -636,7 +762,7 @@ class EngineV9:
                         notional_usd=requested_notional, timestamp=ts)
                 return
 
-            # Gate 4: LLM overlay (optional)
+            # Gate 5: LLM overlay (optional)
             if self._llm_overlay is not None:
                 import random as _random
                 if _random.random() < self._llm_sample_rate:
@@ -658,9 +784,11 @@ class EngineV9:
             # ── Place ──────────────────────────────────────────────────
             if action == "PLACE_QUOTES":
                 notional_for_order = decision.notional_usd or requested_notional
+                # PLACE_QUOTES comes from S8EMS-style market-making strategies
                 pair_id = self.executor.place_quotes(
                     sym, decision.buy_price, decision.sell_price,
-                    decision.size, notional_for_order)
+                    decision.size, notional_for_order,
+                    order_type="MAKER_SIM")
                 if pair_id:
                     self._pair_to_strategy[pair_id] = strat_name
                     self._pair_to_reserved[pair_id] = (strat_name,
@@ -701,8 +829,10 @@ class EngineV9:
                     buy_p  = 0.000_001
                     sell_p = bid * 0.9999
                     size   = decision.size or (notional / max(sell_p, 1e-9))
+                # PLACE_BUY/PLACE_SELL → directional taker order with latency + slippage
                 pair_id = self.executor.place_quotes(sym, buy_p, sell_p,
-                                                     size, notional)
+                                                     size, notional,
+                                                     order_type="TAKER_SIM")
                 if pair_id:
                     self._pair_to_strategy[pair_id] = strat_name
                     self._pair_to_reserved[pair_id] = (strat_name, notional)
@@ -768,9 +898,16 @@ class EngineV9:
         if not entry:
             return True, ""
 
+        # Phase 5: effective minimum-net-profit is the larger of
+        #   - absolute USD floor (default 3.0)
+        #   - pct-of-notional floor (default 0.4% of position size)
+        # This unblocks small positions (e.g. $3 micro-live) while still
+        # keeping large positions (e.g. $250) under a meaningful absolute floor.
+        min_required = max(self._min_net_profit,
+                           self._min_profit_pct * float(notional))
         passes, blocked, econ = strat.passes_min_edge_filter(
             entry=entry, tp=tp, sl=sl, notional=notional, side=side,
-            min_net_profit=self._min_net_profit, min_rr=self._min_rr,
+            min_net_profit=min_required, min_rr=self._min_rr,
             fee_bps=self._ef_fee_bps, slippage_bps=self._ef_slippage_bps,
         )
         return passes, blocked
@@ -831,6 +968,10 @@ class EngineV9:
         self.ks.record_trade(net_pnl)
 
         self.ledger.register_close(strat_name, pos.notional_usd, net_pnl)
+        self.portfolio_risk.register_close(
+            strategy=strat_name, symbol=pos.symbol,
+            side=pos.side, notional=pos.notional_usd,
+        )
         self._pos_to_strategy.pop(pos.pos_id, None)
 
         self.adv_mon.record_close(sym, net_pnl < 0)
@@ -1111,18 +1252,29 @@ class EngineV9:
                 self.ledger.update_unrealized(name, total_upnl)
                 s["ledger"] = self.ledger.get_strategy_status(name)
 
-            # Atomic write
-            _tmp_s = status_file.with_suffix(".tmp")
-            with open(_tmp_s, "w", encoding="utf-8") as f:
-                json.dump(status, f, default=str)
-            import os as _os; _os.replace(_tmp_s, status_file)
+            import os as _os
 
-            _tmp_c = calib_file.with_suffix(".tmp")
-            with open(_tmp_c, "w", encoding="utf-8") as f:
-                json.dump(self.manager.get_calibration_data(), f, default=str)
-            _os.replace(_tmp_c, calib_file)
+            def _atomic_write(path: Path, data) -> None:
+                tmp = path.with_suffix(".tmp")
+                with open(tmp, "w", encoding="utf-8") as f:
+                    json.dump(data, f, default=str)
+                try:
+                    _os.replace(tmp, path)
+                except OSError:
+                    # Windows: destination locked by GUI reader — write directly
+                    try:
+                        with open(path, "w", encoding="utf-8") as f:
+                            json.dump(data, f, default=str)
+                    finally:
+                        try:
+                            tmp.unlink(missing_ok=True)
+                        except OSError:
+                            pass
+
+            _atomic_write(status_file, status)
+            _atomic_write(calib_file, self.manager.get_calibration_data())
         except Exception as e:
-            log.error("Status write failed: %s", e)
+            log.debug("Status write failed: %s", e)
 
     # ------------------------------------------------------------------
     # Control command processor
@@ -1276,6 +1428,10 @@ class EngineV9:
             self.ks.register_close(pos.notional_usd)
             self.ks.record_trade(net)
             self.ledger.register_close(strategy_name, pos.notional_usd, net)
+            self.portfolio_risk.register_close(
+                strategy=strategy_name, symbol=pos.symbol,
+                side=pos.side, notional=pos.notional_usd,
+            )
             self._pos_to_strategy.pop(pos.pos_id, None)
             hold_s = ts - pos.entry_ts
             self.tracker.record_trade(net, hold_s, reason)

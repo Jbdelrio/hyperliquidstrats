@@ -241,3 +241,80 @@ def test_wins_losses_tracking():
     assert s["wins"]         == 2
     assert s["losses"]       == 1
     assert s["trades_today"] == 3
+
+
+# ---------------------------------------------------------------------------
+# Phase 2: Unrealized PnL drives peak-DD suspension
+# ---------------------------------------------------------------------------
+
+def test_unrealized_loss_suspends_before_realized_close():
+    """A large unrealized loss must suspend the strategy BEFORE any close."""
+    # Tighter DD threshold so we hit it quickly
+    ledger = StrategyCapitalLedger(risk_log_path="logs/risk_events_test.csv",
+                                   max_drawdown_pct=10.0,
+                                   suspend_on_dd_minutes=60)
+    ledger.register_strategy("MomentumLS", 500.0)
+
+    # Open a position, then mark the unrealized PnL deep underwater.
+    ledger.reserve_notional("MomentumLS", 200.0)
+    ledger.register_open("MomentumLS", 200.0)
+
+    # 12% unrealized loss on initial capital → peak-DD = 12% > 10%
+    ledger.update_unrealized("MomentumLS", -60.0)
+
+    s = ledger.get_strategy_status("MomentumLS")
+    assert s["state"] == "suspended", f"Expected suspended, got {s['state']}"
+    assert s["realized_pnl"] == 0.0, "No realized close should have happened"
+    assert s["unrealized_pnl"] == pytest.approx(-60.0, abs=1e-6)
+
+    ok, reason = ledger.can_open("MomentumLS", 50.0)
+    assert not ok
+    assert "suspended" in reason and "peak_dd" in reason
+
+
+def test_unrealized_gain_lifts_peak_equity():
+    """When equity rises, peak_equity must rise too."""
+    ledger = fresh_ledger()
+    ledger.reserve_notional("MomentumLS", 200.0)
+    ledger.register_open("MomentumLS", 200.0)
+
+    ledger.update_unrealized("MomentumLS", +50.0)
+    s = ledger.get_strategy_status("MomentumLS")
+    assert s["peak_equity"] == pytest.approx(550.0, abs=1e-6)
+    assert s["state"] == "active"
+
+
+def test_peak_dd_uses_peak_not_initial():
+    """Peak-to-trough drawdown must use peak, not initial capital."""
+    ledger = StrategyCapitalLedger(risk_log_path="logs/risk_events_test.csv",
+                                   max_drawdown_pct=15.0,
+                                   suspend_on_dd_minutes=60)
+    ledger.register_strategy("MomentumLS", 500.0)
+
+    # First, equity rises to 600
+    ledger.update_unrealized("MomentumLS", +100.0)
+    s = ledger.get_strategy_status("MomentumLS")
+    assert s["peak_equity"] == pytest.approx(600.0, abs=1e-6)
+
+    # Now equity = 510 → drawdown = (600 - 510)/600 = 15.0% → suspend
+    ledger.update_unrealized("MomentumLS", +10.0)
+    s = ledger.get_strategy_status("MomentumLS")
+    assert s["state"] == "suspended"
+
+
+def test_configurable_max_dd_threshold():
+    """The max_drawdown_pct parameter is honored."""
+    # Tight: 5% peak-DD
+    ledger_tight = StrategyCapitalLedger(risk_log_path="logs/risk_events_test.csv",
+                                          max_drawdown_pct=5.0)
+    ledger_tight.register_strategy("S", 500.0)
+    # 6% UPnL loss
+    ledger_tight.update_unrealized("S", -30.0)
+    assert ledger_tight.get_strategy_status("S")["state"] == "suspended"
+
+    # Loose: 30% peak-DD — same loss should NOT suspend
+    ledger_loose = StrategyCapitalLedger(risk_log_path="logs/risk_events_test.csv",
+                                          max_drawdown_pct=30.0)
+    ledger_loose.register_strategy("S", 500.0)
+    ledger_loose.update_unrealized("S", -30.0)
+    assert ledger_loose.get_strategy_status("S")["state"] == "active"

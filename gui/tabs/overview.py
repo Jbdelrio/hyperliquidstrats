@@ -217,6 +217,151 @@ def _pos_table(positions):
               "borderRadius": "4px", "padding": "8px 12px", "marginTop": "10px"})
 
 
+def _build_alerts(live_list: list, now: float) -> list[dict]:
+    """
+    Phase 8: derive operational alerts from runtime files.
+    Each alert is a dict {level, text} where level is "warning" or "critical".
+    Read-only — never mutates engine state.
+    """
+    alerts: list[dict] = []
+
+    # 1. Strategy suspended / killed and 2. drawdown > 15%
+    for s in live_list:
+        name = s.get("name", "?")
+        state = (s.get("state") or "").upper()
+        ledger = s.get("ledger") or {}
+        if state in ("SUSPENDED", "suspended", "Suspended"):
+            reason = ledger.get("suspend_reason", "") or s.get("suspend_reason", "")
+            alerts.append({
+                "level": "warning",
+                "text":  f"{name}: SUSPENDED ({reason or 'see logs'})",
+            })
+        if state in ("KILLED", "killed"):
+            reason = ledger.get("kill_reason", "") or s.get("kill_reason", "")
+            alerts.append({
+                "level": "critical",
+                "text":  f"{name}: KILLED ({reason or 'see logs'})",
+            })
+        dd_pct = ledger.get("drawdown_pct")
+        if isinstance(dd_pct, (int, float)) and dd_pct > 15.0:
+            alerts.append({
+                "level": "critical" if dd_pct > 20.0 else "warning",
+                "text":  f"{name}: drawdown {dd_pct:.1f}% > 15%",
+            })
+
+        # 5. Zero-capital strategies with enabled=true (config warning)
+        cap = s.get("capital_allocated_usd")
+        enabled = s.get("enabled", state not in ("DISABLED", "disabled"))
+        if enabled and isinstance(cap, (int, float)) and cap == 0:
+            alerts.append({
+                "level": "warning",
+                "text":  f"{name}: enabled but capital_allocated_usd=0 (config check)",
+            })
+
+    # 3. Kill switch proximity — read engine_config.json or runtime kill-switch
+    # status. For now we estimate from the aggregate realized PnL of all
+    # strategies, compared against the daily-DD limit recorded in
+    # engine_config.json (max_dd_daily_pct × total_capital).
+    try:
+        _ecfg_path = _REPO / "runtime" / "engine_config.json"
+        ecfg = {}
+        if _ecfg_path.exists():
+            ecfg = json.load(open(_ecfg_path, encoding="utf-8"))
+        total_cap = sum(float(s.get("capital_allocated_usd", 0) or 0)
+                        for s in live_list) or _DFLT_TOTAL_CAP
+        # Daily realized PnL aggregated from ledger snapshots
+        daily_pnl = sum(
+            float((s.get("ledger") or {}).get("daily_pnl", 0) or 0)
+            for s in live_list
+        )
+        # Default daily-DD limit if engine_config doesn't expose it
+        daily_dd_pct = float(ecfg.get("max_dd_daily_pct", 0.03))
+        daily_limit_usd = total_cap * daily_dd_pct
+        if daily_limit_usd > 0 and daily_pnl < 0:
+            loss_ratio = abs(daily_pnl) / daily_limit_usd
+            if loss_ratio >= 0.70:
+                level = "critical" if loss_ratio >= 0.90 else "warning"
+                alerts.append({
+                    "level": level,
+                    "text":  (f"Kill switch proximity: realized losses "
+                              f"${abs(daily_pnl):.2f} = {loss_ratio*100:.0f}% "
+                              f"of daily DD limit (${daily_limit_usd:.2f})"),
+                })
+    except Exception:
+        pass
+
+    # 4. WebSocket stale — last_heartbeat_ts > 30s ago from strategy_status mtime
+    try:
+        _sf = _REPO / "runtime" / "strategy_status.json"
+        if _sf.exists():
+            age = now - _sf.stat().st_mtime
+            if age > 30:
+                level = "critical" if age > 120 else "warning"
+                alerts.append({
+                    "level": level,
+                    "text":  f"Status feed stale: last update {age:.0f}s ago (>30s)",
+                })
+    except Exception:
+        pass
+
+    return alerts
+
+
+_ALERT_COLORS = {
+    "warning":  COLORS["warning"],
+    "critical": COLORS["danger"],
+}
+
+
+def _alerts_card(alerts: list[dict]) -> html.Div:
+    """Render an alerts panel. Returns an empty div if no alerts."""
+    if not alerts:
+        return html.Div([
+            html.P("ALERTES", style={"color": COLORS["text"],
+                                      "letterSpacing": "2px",
+                                      "fontSize": "10px",
+                                      "marginBottom": "4px",
+                                      "fontWeight": "700"}),
+            html.Div("Aucune alerte active.",
+                     style={"color": COLORS["success"],
+                            "fontSize": "11px",
+                            "fontFamily": "Consolas,monospace"}),
+        ], style={"backgroundColor": COLORS["card_bg"], "border": _BDR,
+                  "borderRadius": "4px", "padding": "8px 12px",
+                  "marginTop": "10px"})
+
+    rows = []
+    for a in alerts:
+        color = _ALERT_COLORS.get(a.get("level"), COLORS["text"])
+        rows.append(html.Div([
+            html.Span(a.get("level", "warning").upper(),
+                      style={"color": color, "fontWeight": "700",
+                             "fontSize": "10px", "marginRight": "8px",
+                             "letterSpacing": "1px",
+                             "fontFamily": "Consolas,monospace"}),
+            html.Span(a.get("text", ""),
+                      style={"color": COLORS["text_light"],
+                             "fontSize": "11px",
+                             "fontFamily": "Consolas,monospace"}),
+        ], style={
+            "padding":      "4px 8px",
+            "marginBottom": "2px",
+            "borderLeft":   f"3px solid {color}",
+            "backgroundColor": "#0a0a0a",
+            "borderRadius": "3px",
+        }))
+
+    return html.Div([
+        html.P("ALERTES",
+               style={"color": COLORS["warning"],
+                      "letterSpacing": "2px", "fontSize": "10px",
+                      "marginBottom": "4px", "fontWeight": "700"}),
+        html.Div(rows),
+    ], style={"backgroundColor": COLORS["card_bg"], "border": _BDR,
+              "borderRadius": "4px", "padding": "8px 12px",
+              "marginTop": "10px"})
+
+
 def _health_row(live_list: list, decisions_today: int, now: float) -> html.Div:
     """Small health bar: engine feed age + active strategies + signals today."""
     # Feed freshness from strategy_status.json timestamp
@@ -398,9 +543,13 @@ def register_callbacks(app) -> None:
         phase2    = ["SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
                      "VolatilityRegimeBreakout", "MetaAlpha"]
 
+        # Phase 8: operational alerts derived from runtime state
+        alerts = _build_alerts(live_list, now)
+
         cards = html.Div([
             g_cards,
             _health_row(live_list, decisions_today, now),
+            _alerts_card(alerts),
             _grp("Stratégies existantes"),
             _make_row(existing),
             _grp("Phase 1"),

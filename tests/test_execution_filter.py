@@ -154,3 +154,71 @@ def test_short_trade_economics():
     assert econ["tp_pct"] > 0
     assert econ["sl_pct"] < 0
     assert passes, f"Short 2%/1% RR should pass: {reason}"
+
+
+# ---------------------------------------------------------------------------
+# Phase 5: small-size trades unblocked by pct-of-notional floor
+# ---------------------------------------------------------------------------
+
+def test_small_trade_passes_with_pct_floor():
+    """
+    Verify the engine-level computation: a $3 trade with 2% TP and 1% SL
+    should pass when min_net=0.02 absolute and pct=0.004 → effective req
+    = max(0.02, 0.004*3) = 0.02, and net profit > 0.02.
+
+    gross_tp = 0.02 * 3 = 0.06
+    cost     = 2 * 7/10000 * 3 = 0.0042
+    net      = 0.0558 ≥ 0.02 ✓
+    """
+    strat = _make_strat(notional=3.0)
+    notional = 3.0
+    abs_floor = 0.02
+    pct_floor = 0.004
+    min_required = max(abs_floor, pct_floor * notional)
+    assert min_required == pytest.approx(0.02, abs=1e-6)
+
+    passes, reason, econ = strat.passes_min_edge_filter(
+        entry=100.0, tp=102.0, sl=99.0, notional=notional, side="long",
+        min_net_profit=min_required, min_rr=1.3,
+        fee_bps=3.0, slippage_bps=4.0,
+    )
+    assert passes, f"$3 trade should pass with pct floor: {reason}"
+    assert econ["expected_net_profit_usd"] >= 0.02
+
+
+def test_large_trade_still_filtered_by_pct_floor():
+    """
+    For a $250 trade with pct=0.004, effective floor = max(1.0, 1.0) = 1.0.
+    A trade with 0.5% TP and 0.4% SL would net ~$0.90 → below the $1 abs
+    floor → blocked.
+    """
+    strat = _make_strat(notional=250.0)
+    notional = 250.0
+    abs_floor = 1.0
+    pct_floor = 0.004
+    min_required = max(abs_floor, pct_floor * notional)  # = 1.0
+
+    # 0.5% gross = 1.25 ; cost = 2*(7/10000)*250 = 0.35 → net 0.90 < 1.0
+    passes, reason, econ = strat.passes_min_edge_filter(
+        entry=100.0, tp=100.5, sl=99.6, notional=notional, side="long",
+        min_net_profit=min_required, min_rr=1.3,
+        fee_bps=3.0, slippage_bps=4.0,
+    )
+    assert not passes, "Small-edge $250 trade should be blocked"
+    assert "net_too_low" in reason
+
+
+def test_pct_floor_dominates_for_huge_notional():
+    """For a $10k trade, pct=0.004 → $40 absolute floor (dominates)."""
+    notional = 10_000.0
+    abs_floor = 1.0
+    pct_floor = 0.004
+    min_required = max(abs_floor, pct_floor * notional)
+    assert min_required == pytest.approx(40.0, abs=1e-6)
+
+
+def test_micro_trade_zero_pct_disables_floor():
+    """If pct=0, only the absolute floor applies."""
+    notional = 3.0
+    min_required = max(0.02, 0.0 * notional)
+    assert min_required == 0.02
