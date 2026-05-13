@@ -12894,3 +12894,193 @@ ConnectionAbortedError: [WinError 10053] Une connexion établie a été abandonn
 2026-05-13 23:04:02,238 ERROR __main__ Status write failed: [WinError 32] Le processus ne peut pas accéder au fichier car ce fichier est utilisé par un autre processus: 'runtime\\strategy_status.tmp' -> 'runtime\\strategy_status.json'
 2026-05-13 23:04:43,395 ERROR __main__ Status write failed: [WinError 32] Le processus ne peut pas accéder au fichier car ce fichier est utilisé par un autre processus: 'runtime\\calibration_data.tmp' -> 'runtime\\calibration_data.json'
 2026-05-13 23:09:39,293 ERROR __main__ Status write failed: [WinError 5] Accès refusé: 'runtime\\strategy_status.tmp' -> 'runtime\\strategy_status.json'
+2026-05-13 23:21:02,759 INFO execution.high_freq_executor [FILL] SOL BUY @ 90.924000 notional=$250
+2026-05-13 23:21:03,259 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=90.924000 exit=93.197100 net=$6.2650 hold=0s take_profit
+2026-05-13 23:21:03,259 WARNING risk.kill_switch Anti-rampage: 24 trades/h > 20 → 10 min suspend
+2026-05-13 23:21:28,636 INFO execution.high_freq_executor [FILL] SOL BUY @ 90.914000 notional=$250
+2026-05-13 23:26:35,178 INFO execution.high_freq_executor [FILL] BTC BUY @ 79412.000000 notional=$250
+2026-05-13 23:28:34,323 ERROR __main__ Status write failed: [WinError 5] Accès refusé: 'runtime\\strategy_status.tmp' -> 'runtime\\strategy_status.json'
+2026-05-13 23:35:22,275 INFO execution.high_freq_executor [FILL] BTC BUY @ 79421.000000 notional=$250
+2026-05-13 23:35:22,275 INFO execution.high_freq_executor [FILL] ETH BUY @ 2256.500000 notional=$250
+2026-05-13 23:35:22,774 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79421.000000 exit=81406.525000 net=$6.2650 hold=0s take_profit
+2026-05-13 23:35:22,776 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2256.500000 exit=2312.912500 net=$6.2650 hold=1s take_profit
+2026-05-13 23:38:01,774 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-05-13 23:38:03,540 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-13 23:38:08,757 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-13 23:38:11,684 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-05-13 23:38:12,877 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 8s (attempt 4)
+2026-05-13 23:38:13,123 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-13 23:38:18,612 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-13 23:38:21,477 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 16s (attempt 5)
+2026-05-13 23:38:33,432 WARNING data.hyperliquid_funding fetch_hyperliquid_funding_rates: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000155F6B6B810>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-13 23:38:33,674 WARNING data.hyperliquid_funding fetch_hyperliquid_funding_rates: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000155F6E44350>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-13 23:38:33,679 WARNING data.orderbook_manager WS error (timed out during handshake). Reconnect in 8s (attempt 4)
+2026-05-13 23:38:40,550 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-13 23:38:44,396 INFO data.orderbook_manager All subscriptions sent.
+2026-05-13 23:38:47,751 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-13 23:38:51,575 INFO data.orderbook_manager All subscriptions sent.
+2026-05-13 23:39:35,310 INFO execution.high_freq_executor [FILL] LTC BUY @ 56.646000 notional=$250
+2026-05-13 23:39:35,810 INFO execution.high_freq_executor [CLOSE] LTC BUY entry=56.646000 exit=58.062150 net=$6.2650 hold=1s take_profit
+2026-05-13 23:40:37,458 INFO execution.high_freq_executor [FILL] BTC BUY @ 79442.000000 notional=$250
+2026-05-13 23:40:37,956 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79442.000000 exit=81428.050000 net=$6.2650 hold=0s take_profit
+2026-05-13 23:43:43,857 INFO execution.high_freq_executor [FILL] BCH BUY @ 433.150000 notional=$250
+2026-05-13 23:43:44,332 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=433.150000 exit=443.978750 net=$6.2650 hold=0s take_profit
+2026-05-13 23:44:45,876 INFO execution.high_freq_executor [FILL] HYPE BUY @ 38.773000 notional=$250
+2026-05-13 23:44:46,369 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=38.773000 exit=39.742325 net=$6.2650 hold=0s take_profit
+2026-05-13 23:48:58,728 INFO execution.high_freq_executor [FILL] ETH BUY @ 2256.700000 notional=$250
+2026-05-13 23:48:59,072 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2256.700000 exit=2313.117500 net=$6.2650 hold=0s take_profit
+2026-05-13 23:49:08,090 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 32s (attempt 6)
+2026-05-13 23:49:42,482 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-13 23:49:46,217 INFO data.orderbook_manager All subscriptions sent.
+2026-05-13 23:50:02,261 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 16s (attempt 5)
+2026-05-13 23:50:19,391 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-13 23:50:23,092 INFO data.orderbook_manager All subscriptions sent.
+2026-05-13 23:50:23,108 INFO execution.high_freq_executor [FILL] AAVE BUY @ 95.493000 notional=$250
+2026-05-13 23:50:23,123 INFO execution.high_freq_executor [FILL] BTC BUY @ 79459.000000 notional=$250
+2026-05-13 23:50:23,552 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=95.493000 exit=97.880325 net=$6.2650 hold=0s take_profit
+2026-05-13 23:50:23,552 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79459.000000 exit=81445.475000 net=$6.2650 hold=0s take_profit
+2026-05-13 23:51:03,718 INFO __main__ [LEDGER] BLOCK BreakoutControlled XRP $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:51:03,722 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.727200 notional=$250
+2026-05-13 23:51:03,725 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.167000 notional=$250
+2026-05-13 23:51:04,191 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.727200 exit=9.970380 net=$6.2650 hold=0s take_profit
+2026-05-13 23:51:04,197 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.167000 exit=10.421175 net=$6.2650 hold=0s take_profit
+2026-05-13 23:52:07,219 INFO execution.high_freq_executor [FILL] XRP BUY @ 1.419700 notional=$250
+2026-05-13 23:52:07,220 INFO execution.high_freq_executor [FILL] HYPE BUY @ 38.794000 notional=$250
+2026-05-13 23:52:07,725 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=38.794000 exit=39.763850 net=$6.2650 hold=1s take_profit
+2026-05-13 23:52:07,727 INFO execution.high_freq_executor [CLOSE] XRP BUY entry=1.419700 exit=1.455192 net=$6.2650 hold=1s take_profit
+2026-05-13 23:53:09,314 INFO __main__ [LEDGER] BLOCK BreakoutControlled BTC $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:53:09,324 INFO __main__ [LEDGER] BLOCK BreakoutControlled ETH $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:53:09,330 INFO __main__ [LEDGER] BLOCK BreakoutControlled HYPE $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:53:09,334 INFO __main__ [LEDGER] BLOCK BreakoutControlled LINK $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:53:09,336 INFO __main__ [LEDGER] BLOCK BreakoutControlled LTC $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:53:09,343 INFO __main__ [LEDGER] BLOCK BreakoutControlled OP $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:53:09,384 INFO __main__ [LEDGER] BLOCK BreakoutControlled XRP $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 23:53:09,390 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.131980 notional=$250
+2026-05-13 23:53:09,413 INFO execution.high_freq_executor [FILL] BCH BUY @ 433.250000 notional=$250
+2026-05-13 23:53:09,801 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.131980 exit=0.135279 net=$6.2650 hold=0s take_profit
+2026-05-13 23:53:09,801 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=433.250000 exit=444.081250 net=$6.2650 hold=0s take_profit
+2026-05-13 23:56:06,987 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config/presets/paper_500_improved.json selected_strategies=None
+2026-05-13 23:56:07,003 INFO risk.kill_switch KillSwitch init: capital=2000 daily_dd=2.5% total_dd=6.0%
+2026-05-13 23:56:07,003 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-13 23:56:07,003 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-13 23:56:07,003 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-13 23:56:07,003 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-13 23:56:07,003 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 23:56:07,007 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 23:56:07,007 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,007 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,007 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,007 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,007 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,007 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,009 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,009 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,009 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,009 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=False, coins=['BTC', 'ETH'])
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MomentumLS'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BreakoutControlled'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RSIBollingerReversion'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'VolatilityRegimeBreakout'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'S8EMS'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MeanReversionKalman'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbitrage'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'DonchianTrend'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RotationMomentum'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RelativeValue'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SpotPerpBasis'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingCarryHedged'
+2026-05-13 23:56:07,009 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'OBImbalanceScalper'
+2026-05-13 23:56:07,009 INFO __main__ MetaAlpha wired with 13 peers: ['MomentumLS', 'BreakoutControlled', 'RSIBollingerReversion', 'VolatilityRegimeBreakout', 'S8EMS', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper']
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
+2026-05-13 23:56:07,012 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
+2026-05-13 23:56:07,019 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2000.00 | strategies=['MomentumLS', 'BreakoutControlled', 'RSIBollingerReversion', 'VolatilityRegimeBreakout', 'S8EMS', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-13 23:56:07,938 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-13 23:56:09,999 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-13 23:56:09,999 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'RSIBollingerReversion', 'VolatilityRegimeBreakout']
+2026-05-13 23:56:11,730 INFO data.orderbook_manager All subscriptions sent.
+2026-05-13 23:56:12,016 INFO risk.strategy_capital_ledger [Ledger] disabled MeanReversionKalman
+2026-05-13 23:56:12,016 INFO __main__ [ENGINE] disable_strategy MeanReversionKalman mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}
+2026-05-14 00:00:29,846 WARNING data.hyperliquid_funding fetch_hyperliquid_funding_rates: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Read timed out. (read timeout=5.0)
+2026-05-14 00:00:34,387 INFO execution.high_freq_executor [FILL] BCH BUY @ 433.490000 notional=$250
+2026-05-14 00:00:34,857 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=433.490000 exit=444.327250 net=$6.2650 hold=0s take_profit
+2026-05-14 00:02:47,991 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 1s (attempt 1)
+2026-05-14 00:02:52,519 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-14 00:02:56,312 INFO data.orderbook_manager All subscriptions sent.
+2026-05-14 00:02:59,598 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 64s (attempt 7)
+2026-05-14 00:03:02,958 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 32s (attempt 6)
+2026-05-14 00:03:35,620 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-14 00:03:39,330 INFO data.orderbook_manager All subscriptions sent.
+2026-05-14 00:03:39,600 CRITICAL risk.kill_switch HARD KILL: network_timeout=60s
+2026-05-14 00:03:39,600 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=60s
+2026-05-14 00:03:39,601 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=90.914000 exit=90.874500 net=$-0.1761 hold=2531s network_timeout=60s
+2026-05-14 00:03:39,605 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79412.000000 exit=79390.500000 net=$-0.1352 hold=2224s network_timeout=60s
+2026-05-14 00:03:39,605 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-14 00:04:06,808 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-14 00:04:10,574 INFO data.orderbook_manager All subscriptions sent.
+2026-05-14 00:04:10,591 INFO __main__ Shutting down v9...
+2026-05-14 00:04:38,647 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config_v9.json selected_strategies=None
+2026-05-14 00:04:38,647 INFO risk.kill_switch KillSwitch init: capital=7000 daily_dd=3.0% total_dd=6.0%
+2026-05-14 00:04:38,650 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-14 00:04:38,650 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-14 00:04:38,650 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-14 00:04:38,650 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-14 00:04:38,650 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-14 00:04:38,652 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'S8EMS'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MomentumLS'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BreakoutControlled'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MeanReversionKalman'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbitrage'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'DonchianTrend'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RSIBollingerReversion'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RotationMomentum'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RelativeValue'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SpotPerpBasis'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingCarryHedged'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'OBImbalanceScalper'
+2026-05-14 00:04:38,652 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'VolatilityRegimeBreakout'
+2026-05-14 00:04:38,652 INFO __main__ MetaAlpha wired with 13 peers: ['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'VolatilityRegimeBreakout']
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
+2026-05-14 00:04:38,652 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$500
+2026-05-14 00:04:38,662 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=7000.00 | strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'VolatilityRegimeBreakout', 'MetaAlpha']
+2026-05-14 00:04:39,781 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-14 00:04:41,659 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-14 00:04:41,659 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum']
+2026-05-14 00:04:43,531 INFO data.orderbook_manager All subscriptions sent.
+2026-05-14 00:04:43,683 INFO risk.strategy_capital_ledger [Ledger] disabled MeanReversionKalman
+2026-05-14 00:04:43,683 INFO __main__ [ENGINE] disable_strategy MeanReversionKalman mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}

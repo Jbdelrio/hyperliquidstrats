@@ -27,7 +27,11 @@
       "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\\\\docs\")",
       "Bash(Out-Null)",
       "PowerShell(New-Item *)",
-      "Bash(Remove-Item \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\\\\runtime\\\\strategy_status.json\" -ErrorAction SilentlyContinue)"
+      "Bash(Remove-Item \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\\\\runtime\\\\strategy_status.json\" -ErrorAction SilentlyContinue)",
+      "Skill(update-config)",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(Get-Content logs\\\\engine_v9.log -Tail 20)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
