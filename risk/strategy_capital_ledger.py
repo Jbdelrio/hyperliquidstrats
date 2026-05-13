@@ -26,6 +26,10 @@ _DAILY_DD_SUSPEND_PCT = 0.025   # 2.5% daily DD → suspend
 _TOTAL_DD_KILL_PCT    = 0.060   # 6.0% total DD → kill
 _SUSPEND_DURATION_S   = 3600    # 1h default suspension on daily-DD breach
 
+# Phase 2: peak-to-trough drawdown (incl. unrealized) → time-limited suspension
+_PEAK_DD_SUSPEND_PCT  = 20.0    # default 20% peak-to-trough drawdown → suspend
+_PEAK_DD_SUSPEND_S    = 3600    # default 60min suspension on peak-DD breach
+
 
 # ---------------------------------------------------------------------------
 # Per-strategy record
@@ -65,7 +69,12 @@ class StrategyLedger:
 
     @property
     def equity(self) -> float:
-        return self.initial_capital_usd + self.realized_pnl
+        """
+        Mark-to-market equity = initial + realized + unrealized.
+        Phase 2: includes unrealized PnL so peak/trough drawdown is
+        protective against large open losses, not just realized closes.
+        """
+        return self.initial_capital_usd + self.realized_pnl + self.unrealized_pnl
 
     @property
     def available_capital(self) -> float:
@@ -73,12 +82,30 @@ class StrategyLedger:
         return max(0.0, self.initial_capital_usd - used)
 
     @property
-    def drawdown_pct(self) -> float:
+    def realized_equity(self) -> float:
+        """Realized-only equity (used for permanent KILL gate)."""
+        return self.initial_capital_usd + self.realized_pnl
+
+    @property
+    def realized_drawdown_pct(self) -> float:
+        """Drawdown of realized equity vs initial capital (kill-switch metric)."""
         if self.initial_capital_usd <= 0:
             return 0.0
         return max(0.0,
-                   (self.initial_capital_usd - self.equity)
+                   (self.initial_capital_usd - self.realized_equity)
                    / self.initial_capital_usd * 100)
+
+    @property
+    def drawdown_pct(self) -> float:
+        """
+        Peak-to-trough drawdown of mark-to-market equity, in %.
+        Falls back to initial_capital when peak hasn't been recorded yet.
+        Used for the time-limited peak-DD suspension gate.
+        """
+        peak = max(self.peak_equity, self.initial_capital_usd)
+        if peak <= 0:
+            return 0.0
+        return max(0.0, (peak - self.equity) / peak * 100)
 
     @property
     def daily_dd_pct(self) -> float:
@@ -115,9 +142,18 @@ class StrategyCapitalLedger:
     Designed for single-threaded asyncio use — no locks needed.
     """
 
-    def __init__(self, risk_log_path: str = "logs/risk_events.csv") -> None:
+    def __init__(self, risk_log_path: str = "logs/risk_events.csv",
+                 max_drawdown_pct: float = _PEAK_DD_SUSPEND_PCT,
+                 suspend_on_dd_minutes: float = _PEAK_DD_SUSPEND_S / 60.0) -> None:
+        """
+        max_drawdown_pct       — peak-to-trough drawdown (incl. unrealized)
+                                  threshold to suspend the strategy.
+        suspend_on_dd_minutes  — duration of the auto-suspension.
+        """
         self._ledgers: dict[str, StrategyLedger] = {}
         self._risk_log_path = risk_log_path
+        self._max_dd_pct = float(max_drawdown_pct)
+        self._dd_suspend_s = float(suspend_on_dd_minutes) * 60.0
         Path(risk_log_path).parent.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------
@@ -216,10 +252,18 @@ class StrategyCapitalLedger:
         self._maybe_daily_reset(ledger)
 
     def update_unrealized(self, name: str, unrealized_pnl: float) -> None:
-        """Update mark-to-market PnL for display purposes."""
+        """
+        Update mark-to-market PnL. Phase 2: also bumps peak_equity when
+        equity rises and runs risk-limit checks so a large open loss can
+        auto-suspend the strategy before any realized close.
+        """
         ledger = self._ledgers.get(name)
-        if ledger:
-            ledger.unrealized_pnl = unrealized_pnl
+        if not ledger:
+            return
+        ledger.unrealized_pnl = float(unrealized_pnl)
+        if ledger.equity > ledger.peak_equity:
+            ledger.peak_equity = ledger.equity
+        self._check_risk_limits(ledger)
 
     # ------------------------------------------------------------------
     # Admin
@@ -281,25 +325,27 @@ class StrategyCapitalLedger:
         else:
             state = "active"
         return {
-            "initial_capital_usd": round(ledger.initial_capital_usd, 2),
-            "equity":              round(ledger.equity,               2),
-            "realized_pnl":        round(ledger.realized_pnl,         4),
-            "unrealized_pnl":      round(ledger.unrealized_pnl,       4),
-            "open_notional":       round(ledger.open_notional,         2),
-            "reserved_notional":   round(ledger.reserved_notional,     2),
-            "available_capital":   round(ledger.available_capital,     2),
-            "daily_pnl":           round(ledger.daily_pnl,            4),
-            "drawdown_pct":        round(ledger.drawdown_pct,          3),
-            "daily_dd_pct":        round(ledger.daily_dd_pct,          3),
-            "peak_equity":         round(ledger.peak_equity,           2),
-            "trades_today":        ledger.trades_today,
-            "wins":                ledger.wins,
-            "losses":              ledger.losses,
-            "state":               state,
-            "kill_reason":         ledger.kill_reason,
-            "suspend_reason":      ledger.suspend_reason,
-            "suspended_until":     ledger.suspended_until,
-            "last_update_ts":      ledger.last_update_ts,
+            "initial_capital_usd":   round(ledger.initial_capital_usd, 2),
+            "equity":                round(ledger.equity,               2),
+            "realized_equity":       round(ledger.realized_equity,      2),
+            "realized_pnl":          round(ledger.realized_pnl,         4),
+            "unrealized_pnl":        round(ledger.unrealized_pnl,       4),
+            "open_notional":         round(ledger.open_notional,         2),
+            "reserved_notional":     round(ledger.reserved_notional,     2),
+            "available_capital":     round(ledger.available_capital,     2),
+            "daily_pnl":             round(ledger.daily_pnl,            4),
+            "drawdown_pct":          round(ledger.drawdown_pct,          3),
+            "realized_drawdown_pct": round(ledger.realized_drawdown_pct, 3),
+            "daily_dd_pct":          round(ledger.daily_dd_pct,          3),
+            "peak_equity":           round(ledger.peak_equity,           2),
+            "trades_today":          ledger.trades_today,
+            "wins":                  ledger.wins,
+            "losses":                ledger.losses,
+            "state":                 state,
+            "kill_reason":           ledger.kill_reason,
+            "suspend_reason":        ledger.suspend_reason,
+            "suspended_until":       ledger.suspended_until,
+            "last_update_ts":        ledger.last_update_ts,
         }
 
     def get_all_status(self) -> dict:
@@ -352,13 +398,26 @@ class StrategyCapitalLedger:
         if ledger.killed:
             return
 
-        # Total DD → permanent kill
-        if ledger.drawdown_pct >= _TOTAL_DD_KILL_PCT * 100:
+        # Total realized DD → permanent kill. We use realized-only here so a
+        # temporary mark-to-market dip never permanently kills the strategy.
+        if ledger.realized_drawdown_pct >= _TOTAL_DD_KILL_PCT * 100:
             ledger.killed      = True
-            ledger.kill_reason = f"total_dd={ledger.drawdown_pct:.2f}%"
+            ledger.kill_reason = f"total_dd={ledger.realized_drawdown_pct:.2f}%"
             log.critical("[Ledger] KILL %s: total DD %.2f%% >= %.1f%%",
-                         ledger.name, ledger.drawdown_pct,
+                         ledger.name, ledger.realized_drawdown_pct,
                          _TOTAL_DD_KILL_PCT * 100)
+            return
+
+        # Phase 2: peak-to-trough drawdown (incl. unrealized) → suspension
+        # This catches large open losses BEFORE any realized close.
+        # Configurable per-ledger via __init__ (default 20% / 60min).
+        if (ledger.drawdown_pct >= self._max_dd_pct
+                and not ledger.suspended):
+            ledger.suspended       = True
+            ledger.suspended_until = time.time() + self._dd_suspend_s
+            ledger.suspend_reason  = f"peak_dd={ledger.drawdown_pct:.2f}%"
+            log.warning("[Ledger] SUSPEND %s: peak DD %.2f%% >= %.1f%%",
+                        ledger.name, ledger.drawdown_pct, self._max_dd_pct)
             return
 
         # Daily DD → time-limited suspension
