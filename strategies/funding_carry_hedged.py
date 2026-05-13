@@ -11,35 +11,10 @@ import time
 from collections import deque
 from typing import Optional
 
-import requests
-
+from data.hyperliquid_funding import fetch_hyperliquid_funding_rates
 from strategies.base_strategy import BarData, BaseStrategy, StrategyConfig, StrategyDecision
 
 log = logging.getLogger(__name__)
-
-_API_URL     = "https://api.hyperliquid.xyz/info"
-_API_TIMEOUT = 5.0
-
-
-def _fetch_all_funding() -> dict[str, float]:
-    """Return {coin: funding_rate_per_hour} or {} on error."""
-    try:
-        resp = requests.post(_API_URL, json={"type": "metaAndAssetCtxs"},
-                             timeout=_API_TIMEOUT)
-        data = resp.json()
-        meta, ctxs = data[0], data[1]
-        result = {}
-        for i, ctx in enumerate(ctxs):
-            if i >= len(meta.get("universe", [])):
-                break
-            coin = meta["universe"][i]["name"]
-            # Hyperliquid funding is per 8h period; convert to per hour
-            rate_8h = float(ctx.get("funding", 0.0))
-            result[coin] = rate_8h / 8.0   # per-hour
-        return result
-    except Exception as exc:
-        log.warning("FundingCarryHedged: fetch failed: %s", exc)
-        return {}
 
 
 class FundingCarryHedgedStrategy(BaseStrategy):
@@ -80,12 +55,13 @@ class FundingCarryHedgedStrategy(BaseStrategy):
         self._bar_closes[symbol].append(bar.close)
 
         if ts - self._last_fetch >= 60:
-            rates = _fetch_all_funding()
-            if rates:
-                for coin, rate in rates.items():
+            raw = fetch_hyperliquid_funding_rates(list(self._funding_raw.keys()))
+            if raw:
+                for coin, info in raw.items():
                     if coin in self._funding_raw:
-                        self._funding_raw[coin]  = rate
-                        self._funding_hist[coin].append(rate)
+                        hourly = info["hourly_rate"]
+                        self._funding_raw[coin]  = hourly
+                        self._funding_hist[coin].append(hourly)
             self._last_fetch = ts
 
         return self._check_entry(symbol, bar, ts)
@@ -134,16 +110,18 @@ class FundingCarryHedgedStrategy(BaseStrategy):
         buf_bps      = p.get("safety_buffer_bps", 2.0)
         entry_h      = p.get("funding_entry_bps_per_hour", 0.5)
 
+        expected_hold_h = float(p.get("expected_hold_hours", 4))
         expected_edge = None
         if funding_bps is not None:
-            expected_edge = abs(funding_bps) * 1 - taker_bps - slip_bps - buf_bps
+            expected_edge = abs(funding_bps) * expected_hold_h - taker_bps - slip_bps - buf_bps
 
         return {
             "funding_bps_per_hour":  round(funding_bps, 4) if funding_bps else None,
             "funding_smoothed_bps":  round(sum(h * 10_000 for h in hist) / len(hist), 4) if hist else None,
-            "expected_edge_bps":     round(expected_edge, 3) if expected_edge else None,
+            "expected_edge_bps":     round(expected_edge, 3) if expected_edge is not None else None,
             "entry_threshold_bps":   entry_h,
-            "action_bias":           self._action_bias(funding_bps, entry_h * 10_000 if False else entry_h),
+            "expected_hold_hours":   expected_hold_h,
+            "action_bias":           self._action_bias(funding_bps, entry_h),
             "allow_unhedged_perp":   p.get("allow_unhedged_perp", False),
             "hedge_mode_available":  False,
             "in_position":           symbol in self._positions,
@@ -180,7 +158,9 @@ class FundingCarryHedgedStrategy(BaseStrategy):
         min_edge          = p.get("min_expected_edge_bps", 3.0)
         allow_unhedged    = p.get("allow_unhedged_perp", False)
 
-        expected_edge = abs(funding_bps_per_h) - taker_bps - slip_bps - buf_bps
+        # Edge = funding collected over expected hold - round-trip costs
+        expected_hold_h = float(p.get("expected_hold_hours", 4))
+        expected_edge = abs(funding_bps_per_h) * expected_hold_h - taker_bps - slip_bps - buf_bps
 
         if abs(funding_bps_per_h) < entry_thr:
             return None

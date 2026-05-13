@@ -77,7 +77,8 @@ class RelativeValueStrategy(BaseStrategy):
         self._sl_pct        = float(p.get("stop_loss_pct",      0.06))
         self._tp_pct        = float(p.get("take_profit_pct",    0.03))
         self._max_hold_s    = float(p.get("max_hold_hours",     48)) * 3600
-        self._cost_filter   = CostFilter(min_ratio=float(p.get("min_cost_ratio", 3.0)))
+        self._cost_filter      = CostFilter(min_ratio=float(p.get("min_cost_ratio", 3.0)))
+        self._require_hedge    = bool(p.get("require_beta_hedge", True))
 
         # Build pair states (both legs needed in coins list)
         self._pairs: dict[str, _PairState] = {}   # key = "A/B"
@@ -184,13 +185,15 @@ class RelativeValueStrategy(BaseStrategy):
             if ps.leg_a != symbol:
                 continue
             data[key] = {
-                "bars_1h_a":   len(ps.agg_a),
-                "bars_1h_b":   len(ps.agg_b),
-                "beta":        round(ps.beta,  4) if ps.beta  is not None else None,
-                "alpha":       round(ps.alpha, 4) if ps.alpha is not None else None,
-                "z_score":     round(ps.z_score, 3) if ps.z_score is not None else None,
-                "correlation": round(ps.correlation, 3) if ps.correlation is not None else None,
+                "bars_1h_a":    len(ps.agg_a),
+                "bars_1h_b":    len(ps.agg_b),
+                "beta":         round(ps.beta,  4) if ps.beta  is not None else None,
+                "alpha":        round(ps.alpha, 4) if ps.alpha is not None else None,
+                "z_score":      round(ps.z_score, 3) if ps.z_score is not None else None,
+                "correlation":  round(ps.correlation, 3) if ps.correlation is not None else None,
                 "has_position": ps.has_position,
+                "hedge_required": self._require_hedge,
+                "executable":     not self._require_hedge,
             }
         return {"pairs": data} if data else {}
 
@@ -256,6 +259,15 @@ class RelativeValueStrategy(BaseStrategy):
         ok, cost_reason, _ = self._cost_filter.is_worth_taking(expected_bps)
         if not ok:
             return StrategyDecision(action="SKIP", symbol=symbol, reason=cost_reason)
+
+        # require_beta_hedge=True → scanner only (no hedge leg on Hyperliquid perps)
+        if self._require_hedge:
+            return StrategyDecision(
+                action="SKIP", symbol=symbol,
+                reason=f"rv_scanner_only pair={key} z={ps.z_score:.3f} hedge_required=True",
+                metadata={"pair": key, "z_score": ps.z_score, "beta": ps.beta,
+                          "hedge_required": True, "executable": False},
+            )
 
         notional = min(
             self.config.capital_allocated_usd / max(len(self._pairs), 1),

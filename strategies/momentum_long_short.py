@@ -28,7 +28,8 @@ class MomentumLongShort(BaseStrategy):
         self._closes:  dict[str, deque] = {c: deque(maxlen=_NEED_BARS + 5) for c in config.coins}
         self._volumes: dict[str, deque] = {c: deque(maxlen=1440) for c in config.coins}
 
-        self._scores:  dict[str, float] = {}
+        self._scores:      dict[str, float] = {}   # percentile 0-1
+        self._raw_scores:  dict[str, float] = {}   # composite z-score
         self._longs:   set[str] = set()
         self._shorts:  set[str] = set()
         self._last_rerank_ts: float = 0.0
@@ -75,8 +76,14 @@ class MomentumLongShort(BaseStrategy):
             self._log_skip(symbol, "spread_too_wide", ts, mid, spread_bps)
             return None
 
-        score = self._scores.get(symbol, 0.0)
-        if abs(score) < p.get("score_threshold", 75) / 100.0:
+        pct = self._scores.get(symbol, 0.5)
+        # Longs: need high percentile; shorts: need low percentile
+        long_pct_min  = p.get("long_percentile_min",  p.get("score_threshold", 75) / 100.0)
+        short_pct_max = p.get("short_percentile_max", 1.0 - p.get("score_threshold", 75) / 100.0)
+        if in_long  and pct < long_pct_min:
+            self._log_skip(symbol, "score_too_low", ts, mid, spread_bps)
+            return None
+        if in_short and pct > short_pct_max:
             self._log_skip(symbol, "score_too_low", ts, mid, spread_bps)
             return None
 
@@ -182,20 +189,24 @@ class MomentumLongShort(BaseStrategy):
         super().on_position_closed(symbol, pnl_net, exit_reason)
 
     def get_calibration_data(self, symbol: str) -> dict:
-        score = self._scores.get(symbol, None)
+        pct   = self._scores.get(symbol, None)
+        raw   = self._raw_scores.get(symbol, None)
         closes = list(self._closes.get(symbol, []))
         r15m = r1h = r4h = None
         if len(closes) >= 241:
             if closes[-16] > 0:  r15m = np.log(closes[-1] / closes[-16])
             if closes[-61] > 0:  r1h  = np.log(closes[-1] / closes[-61])
             if closes[-241] > 0: r4h  = np.log(closes[-1] / closes[-241])
+        side = "long" if symbol in self._longs else ("short" if symbol in self._shorts else "none")
         return {
-            "momentum_score": float(score) if score is not None else None,
+            "momentum_score":    float(pct) if pct is not None else None,
+            "raw_score":         float(raw) if raw is not None else None,
             "r_15m": float(r15m) if r15m is not None else None,
             "r_1h":  float(r1h)  if r1h  is not None else None,
             "r_4h":  float(r4h)  if r4h  is not None else None,
             "in_longs":  symbol in self._longs,
             "in_shorts": symbol in self._shorts,
+            "candidate_side": side,
         }
 
     # ------------------------------------------------------------------
@@ -243,7 +254,8 @@ class MomentumLongShort(BaseStrategy):
             for c in coins_with_data
         }
 
-        # Convert to 0-1 percentile score
+        # Keep raw composite z-scores AND convert to 0-1 percentile
+        self._raw_scores = raw_scores.copy()
         sorted_coins = sorted(raw_scores, key=raw_scores.get)
         n = len(sorted_coins)
         self._scores = {c: i / max(n - 1, 1) for i, c in enumerate(sorted_coins)}

@@ -9,6 +9,7 @@ If imbalance < −imbalance_entry                                              �
 Uses book.imbalance(n_levels) which the Hyperliquid OrderBook already exposes.
 """
 import logging
+import time
 from collections import deque
 from typing import Optional
 
@@ -28,8 +29,10 @@ class OrderBookImbalanceScalper(BaseStrategy):
         p = config.params
         n_hist = max(int(p.get("min_persistence_updates", 3)) + 1, 10)
         self._imb_hist:   dict[str, deque] = {c: deque(maxlen=n_hist) for c in config.coins}
+        self._mid_hist:   dict[str, deque] = {c: deque(maxlen=n_hist) for c in config.coins}
         self._positions:  dict[str, dict]  = {}
         self._last_mid:   dict[str, Optional[float]] = {c: None for c in config.coins}
+        self._cooldowns:  dict[str, float]           = {}
 
     # ── BaseStrategy interface ───────────────────────────────────────────────
 
@@ -40,6 +43,7 @@ class OrderBookImbalanceScalper(BaseStrategy):
             return None
         mid = (bid + ask) / 2
         self._last_mid[symbol] = mid
+        self._mid_hist[symbol].append(mid)
 
         p       = self.config.params
         n_lev   = int(p.get("imbalance_levels", 5))
@@ -97,6 +101,8 @@ class OrderBookImbalanceScalper(BaseStrategy):
 
     def on_position_closed(self, symbol: str, pnl_net: float, exit_reason: str) -> None:
         self._positions.pop(symbol, None)
+        cooldown_s = float(self.config.params.get("cooldown_s", 30.0))
+        self._cooldowns[symbol] = time.time() + cooldown_s
         super().on_position_closed(symbol, pnl_net, exit_reason)
 
     def get_calibration_data(self, symbol: str) -> dict:
@@ -129,19 +135,46 @@ class OrderBookImbalanceScalper(BaseStrategy):
         if len(self._positions) >= self.config.max_positions:
             return None
 
-        p        = self.config.params
-        thr      = p.get("imbalance_entry_threshold", 0.30)
-        persist  = int(p.get("min_persistence_updates", 3))
-        hist     = list(self._imb_hist[symbol])
+        p         = self.config.params
+        thr       = p.get("imbalance_entry_threshold", 0.30)
+        persist   = int(p.get("min_persistence_updates", 3))
+        hist      = list(self._imb_hist[symbol])
 
         if len(hist) < persist:
             return None
 
-        recent = hist[-persist:]
-        notional  = self.compute_order_notional()
+        # Spread filter
+        spread_bps = (ask - bid) / mid * 10_000 if mid > 0 else 999.0
+        max_spread = float(p.get("max_spread_bps", 8.0))
+        if spread_bps > max_spread:
+            return None
+
+        # Cooldown guard
+        if ts < self._cooldowns.get(symbol, 0.0):
+            return None
+
+        # Cost sanity: expected move must cover round-trip fees
+        tp_pct      = p.get("take_profit_pct", 0.003)
+        taker_bps   = float(p.get("taker_fee_bps", 3.5))
+        slip_bps    = float(p.get("slippage_bps", 2.0))
+        round_trip  = 2.0 * (taker_bps + slip_bps)
+        exp_move_bps = tp_pct * 10_000
+        min_ratio   = float(p.get("min_cost_ratio", 2.0))
+        if exp_move_bps < round_trip * min_ratio:
+            return None
+
+        recent     = hist[-persist:]
+        notional   = self.compute_order_notional()
         max_hold_s = int(p.get("max_hold_seconds", 120))
 
+        # Mid confirmation: mid trend should align with imbalance direction
+        require_mid = p.get("require_mid_confirmation", True)
+        mid_hist    = list(self._mid_hist.get(symbol, []))
+
         if all(x > thr for x in recent):
+            # Mid must not be declining (would indicate fake buy-side imbalance)
+            if require_mid and len(mid_hist) >= 2 and mid_hist[-1] < mid_hist[0]:
+                return None
             reason = f"obimb_buy imb={imb:.3f} (>{thr})"
             return StrategyDecision(
                 action="PLACE_BUY", symbol=symbol, reason=reason,
@@ -151,6 +184,9 @@ class OrderBookImbalanceScalper(BaseStrategy):
             )
 
         if all(x < -thr for x in recent):
+            # Mid must not be rising (would indicate fake sell-side imbalance)
+            if require_mid and len(mid_hist) >= 2 and mid_hist[-1] > mid_hist[0]:
+                return None
             reason = f"obimb_sell imb={imb:.3f} (<-{thr})"
             return StrategyDecision(
                 action="PLACE_SELL", symbol=symbol, reason=reason,

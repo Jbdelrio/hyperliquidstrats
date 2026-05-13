@@ -516,8 +516,8 @@ def static_layout() -> html.Div:
                         width="auto", className="d-flex align-items-center"),
                 dbc.Col(dcc.Dropdown(
                     id="engine-strat-select", options=strat_opts,
-                    value=["DonchianTrend", "RSIBollingerReversion", "MomentumLS"],
-                    multi=True, placeholder="Stratégies...",
+                    value=[],
+                    multi=True, placeholder="Toutes (selon config)...",
                     className="dropdown-dark",
                 ), width=7),
                 dbc.Col(dbc.Button("☑ Tout",   id="engine-select-all-btn",
@@ -609,6 +609,17 @@ def static_layout() -> html.Div:
             dbc.Col(html.Div(id="global-cmd-result", style={"fontSize": "12px"}),
                     className="d-flex align-items-center"),
         ], className="g-2 align-items-center mb-3"),
+
+        # ── Quick strategy toggles ─────────────────────────────────────
+        html.Div(style={"backgroundColor": "#0a0a0a", "padding": "8px 14px",
+                        "border": _BDR, "borderRadius": "4px", "marginBottom": "10px"},
+                 children=[
+            html.Small("TOGGLES RAPIDES — activer / désactiver une stratégie en un clic",
+                       style={"color": COLORS["text"], "letterSpacing": "1px",
+                              "fontSize": "9px", "fontWeight": "700",
+                              "textTransform": "uppercase"}),
+            html.Div(id="strat-quick-toggles", style={"marginTop": "6px"}),
+        ]),
 
         # ── Engine log (last lines) ────────────────────────────────────
         html.Details([
@@ -706,10 +717,10 @@ def register_callbacks(app) -> None:
             return _ALL
         if trig == "engine-select-none-btn":
             return []
-        # When a preset config is chosen, clear the dropdown so users know
-        # the preset controls which strategies run (not this dropdown)
+        # When any config is chosen, clear the dropdown — the config controls
+        # which strategies are enabled; the dropdown is only for manual overrides
         if trig == "engine-config-select":
-            return [] if (config_val and config_val != "config_v9.json") else dash.no_update
+            return []
         return dash.no_update
 
     # ── Engine start / stop ───────────────────────────────────────────────
@@ -727,9 +738,9 @@ def register_callbacks(app) -> None:
         trig = dash.ctx.triggered_id
         if trig == "engine-start-btn":
             cfg = config_path or "config_v9.json"
-            # When using a preset config, let the config decide which strategies
-            # are enabled — don't override with the dropdown selection
-            strat_override = (strats or []) if cfg == "config_v9.json" else []
+            # Empty dropdown = let the config decide which strategies are enabled.
+            # Populated dropdown = explicit override via --strategy flag.
+            strat_override = strats or []
             r = engine_ctrl.start(
                 strategies=strat_override, paper=True,
                 exchange=exchange or "hyperliquid",
@@ -766,6 +777,84 @@ def register_callbacks(app) -> None:
             txt   = "LLM INACTIF"
             color = COLORS["text"]
         return txt, {"fontSize": "11px", "color": color, "fontWeight": "700"}
+
+    # ── Quick strategy toggles panel ──────────────────────────────────────
+
+    @app.callback(
+        Output("strat-quick-toggles", "children"),
+        Input("refresh-interval", "n_intervals"),
+        Input({"type": "qt-toggle", "index": ALL}, "n_clicks"),
+    )
+    def _quick_toggles(_n, _clicks):
+        # Handle toggle click first
+        trig = dash.ctx.triggered_id
+        if isinstance(trig, dict) and trig.get("type") == "qt-toggle":
+            name = trig["index"]
+            live = {s.get("name"): s for s in load_strategy_status()}
+            s = live.get(name, {})
+            currently_active = s.get("state", "DISABLED") in ("ACTIVE", "SUSPENDED")
+            if currently_active:
+                _api.disable_strategy(name)
+            else:
+                _api.enable_strategy(name)
+
+        # Render current state
+        live = {s.get("name"): s for s in load_strategy_status()}
+        _STATE_C = {
+            "ACTIVE":    COLORS["success"],
+            "SUSPENDED": COLORS["warning"],
+            "DISABLED":  "#444",
+            "KILLED":    COLORS["danger"],
+            "ENGINE OFF": "#333",
+        }
+        now = time.time()
+        status_age = None
+        try:
+            _sf = _REPO / "runtime" / "strategy_status.json"
+            if _sf.exists():
+                status_age = now - _sf.stat().st_mtime
+        except Exception:
+            pass
+        stale = status_age is not None and status_age > 30
+
+        pills = []
+        for name in _ALL:
+            s = live.get(name, {})
+            if stale and not s:
+                state = "ENGINE OFF"
+            elif s:
+                state = s.get("state", "DISABLED")
+            else:
+                state = "DISABLED"
+            active = state in ("ACTIVE", "SUSPENDED")
+            c = _STATE_C.get(state, "#444")
+            accent = STRAT_COLORS.get(name, COLORS["accent"])
+            pills.append(
+                dbc.Button(
+                    [
+                        html.Span("●  " if active else "○  ",
+                                  style={"color": c, "fontSize": "10px"}),
+                        html.Span(name, style={"fontSize": "10px", "fontWeight": "600",
+                                               "color": accent if active else "#666"}),
+                        html.Span(f"  [{state}]",
+                                  style={"fontSize": "9px", "color": c,
+                                         "marginLeft": "4px", "fontWeight": "400"}),
+                    ],
+                    id={"type": "qt-toggle", "index": name},
+                    color="link",
+                    style={
+                        "border": f"1px solid {c if active else '#333'}",
+                        "borderRadius": "3px",
+                        "backgroundColor": "#111" if active else "#080808",
+                        "padding": "3px 8px",
+                        "margin": "2px",
+                        "cursor": "pointer",
+                        "textDecoration": "none",
+                    },
+                    title=f"Cliquer pour {'désactiver' if active else 'activer'} {name}",
+                )
+            )
+        return html.Div(pills, style={"display": "flex", "flexWrap": "wrap"})
 
     # ── Engine log viewer ─────────────────────────────────────────────────
 

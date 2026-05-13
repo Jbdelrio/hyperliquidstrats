@@ -8,8 +8,8 @@
     {
       "name": "S8EMS",
       "class": "S8EconophysicsMakerScalping",
-      "_comment": "Maker scalping — spread plancher 8bps, positions grandes, hold plus long. Fees Hyperliquid taker=3.5bps maker=-1bps : il faut au moins 10bps net pour couvrir slippage+fees.",
-      "enabled": true,
+      "_comment": "Maker scalping — disabled by default (requires careful live tuning).",
+      "enabled": false,
       "capital_allocated_usd": 500,
       "max_positions": 2,
       "max_position_size_usd": 200,
@@ -63,7 +63,8 @@
         "rerank_seconds": 60,
         "top_k_long": 4,
         "bottom_k_short": 4,
-        "score_threshold": 8,
+        "long_percentile_min": 0.75,
+        "short_percentile_max": 0.25,
         "spread_bps_max": 30.0,
         "r_15m_max_pct": 8.0,
         "stop_loss_pct": 3.0,
@@ -109,28 +110,29 @@
     {
       "name": "MeanReversionKalman",
       "class": "MeanReversionKalman",
-      "_comment": "z_entry=0.8 pour entrer plus vite, exit=0.0 (full reversion), hold 4h.",
-      "enabled": true,
+      "_comment": "z_entry=1.5 (tighter than before), trend_guard blocks momentum entries.",
+      "enabled": false,
       "capital_allocated_usd": 500,
-      "max_positions": 3,
+      "max_positions": 2,
       "max_position_size_usd": 200,
-      "kill_after_consecutive_losses": 6,
-      "suspend_minutes_on_kill": 20,
+      "kill_after_consecutive_losses": 5,
+      "suspend_minutes_on_kill": 30,
       "coins": [
         "BTC",
         "ETH",
-        "SOL",
-        "AVAX",
-        "LINK"
+        "SOL"
       ],
       "params": {
-        "warmup_seconds": 60,
-        "z_entry": 0.8,
-        "z_exit": 0.0,
-        "z_stop": 4.5,
-        "spread_bps_max": 15.0,
-        "vol_max_pct_per_min": 1.5,
-        "max_hold_minutes": 240,
+        "warmup_seconds": 300,
+        "min_innovation_samples": 200,
+        "z_entry": 1.5,
+        "z_exit": 0.2,
+        "z_stop": 3.5,
+        "spread_bps_max": 10.0,
+        "vol_max_pct_per_min": 0.8,
+        "max_hold_minutes": 60,
+        "trend_guard": true,
+        "trend_guard_15m_pct": 1.5,
         "kalman_process_noise": 1e-06,
         "kalman_obs_noise": 0.0001
       }
@@ -138,13 +140,13 @@
     {
       "name": "FundingArbitrage",
       "class": "FundingArbitrage",
-      "_comment": "Seuil abaissé à 0.003%/h, hold 20 cycles pour capter plus de funding.",
-      "enabled": true,
-      "capital_allocated_usd": 500,
-      "max_positions": 3,
-      "max_position_size_usd": 200,
+      "_comment": "Scanner only (allow_unhedged_perp=false). Corrected to use per-hour rates.",
+      "enabled": false,
+      "capital_allocated_usd": 0,
+      "max_positions": 1,
+      "max_position_size_usd": 0,
       "kill_after_consecutive_losses": 5,
-      "suspend_minutes_on_kill": 20,
+      "suspend_minutes_on_kill": 30,
       "coins": [
         "BTC",
         "ETH",
@@ -152,11 +154,12 @@
         "HYPE"
       ],
       "params": {
-        "funding_entry_threshold_pct_per_hour": 0.003,
-        "funding_exit_threshold_pct_per_hour": 0.001,
-        "r_24h_min_pct": 0.0,
-        "stop_loss_pct": 4.0,
-        "max_hold_cycles": 20
+        "funding_entry_threshold_pct_per_hour": 0.03,
+        "funding_exit_threshold_pct_per_hour": 0.005,
+        "r_24h_min_pct": 5.0,
+        "stop_loss_pct": 3.0,
+        "max_hold_cycles": 3,
+        "allow_unhedged_perp": false
       }
     },
     {
@@ -232,11 +235,11 @@
     {
       "name": "RotationMomentum",
       "class": "RotationMomentumStrategy",
-      "_comment": "Scanner uniquement — pas de capital propre.",
+      "_comment": "Scanner only (autonomous=false). Capital=0 intentional — it ranks coins for other strategies.",
       "enabled": true,
-      "capital_allocated_usd": 500,
-      "max_positions": 3,
-      "max_position_size_usd": 200,
+      "capital_allocated_usd": 0,
+      "max_positions": 0,
+      "max_position_size_usd": 0,
       "kill_after_consecutive_losses": 5,
       "suspend_minutes_on_kill": 30,
       "coins": [
@@ -314,7 +317,8 @@
         "stop_loss_pct": 0.05,
         "take_profit_pct": 0.03,
         "max_hold_hours": 48,
-        "min_cost_ratio": 2.5
+        "min_cost_ratio": 2.5,
+        "require_beta_hedge": true
       }
     },
     {
@@ -340,6 +344,7 @@
         "stop_loss_pct": 0.015,
         "take_profit_pct": 0.01,
         "max_hold_minutes": 240,
+        "max_spot_age_seconds": 5.0,
         "trade_when_external_spot_missing": false,
         "external_spot_prices": {}
       }
@@ -362,6 +367,7 @@
       "params": {
         "funding_entry_bps_per_hour": 0.5,
         "funding_exit_bps_per_hour": 0.1,
+        "expected_hold_hours": 4,
         "taker_fee_bps": 3.5,
         "slippage_bps": 2.0,
         "safety_buffer_bps": 2.0,
@@ -389,12 +395,18 @@
         "SOL"
       ],
       "params": {
-        "imbalance_entry_threshold": 0.3,
+        "imbalance_entry_threshold": 0.35,
         "imbalance_exit_threshold": 0.05,
         "imbalance_levels": 5,
-        "min_persistence_updates": 3,
-        "stop_loss_pct": 0.004,
-        "take_profit_pct": 0.003,
+        "min_persistence_updates": 5,
+        "max_spread_bps": 8.0,
+        "require_mid_confirmation": true,
+        "taker_fee_bps": 3.5,
+        "slippage_bps": 2.0,
+        "min_cost_ratio": 2.0,
+        "cooldown_s": 30,
+        "stop_loss_pct": 0.005,
+        "take_profit_pct": 0.004,
         "max_hold_seconds": 120
       }
     },

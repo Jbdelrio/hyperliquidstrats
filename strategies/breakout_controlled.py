@@ -23,8 +23,10 @@ class BreakoutControlled(BaseStrategy):
         self._vol24h:  dict[str, deque] = {c: deque(maxlen=1440) for c in config.coins}
 
         # Active signals: {symbol: {"resistance": float, "vr": float, "ts": float}}
-        self._signals:   dict[str, dict] = {}
-        self._positions: dict[str, dict] = {}
+        self._signals:         dict[str, dict] = {}
+        self._positions:       dict[str, dict] = {}
+        # Bridge: stores resistance/vr between PLACE_BUY decision and on_fill
+        self._pending_entries: dict[str, dict] = {}
 
     # ------------------------------------------------------------------
     # BaseStrategy interface
@@ -88,8 +90,9 @@ class BreakoutControlled(BaseStrategy):
                 notional_usd=notional,
             )
 
-        # Consume signal
+        # Consume signal; save resistance so on_fill can read it after the pop
         self._signals.pop(symbol, None)
+        self._pending_entries[symbol] = {"resistance": resistance, "vr": signal["vr"]}
 
         return StrategyDecision(
             action="PLACE_BUY", symbol=symbol,
@@ -117,7 +120,8 @@ class BreakoutControlled(BaseStrategy):
     def on_fill(self, symbol: str, side: str, price: float, size: float,
                 ts: float, pos_id: str = "") -> Optional[dict]:
         p = self.config.params
-        resistance = self._signals.get(symbol, {}).get("resistance", price * 0.995)
+        pending = self._pending_entries.pop(symbol, None)
+        resistance = (pending or {}).get("resistance", price * 0.995)
         tp_pct   = p.get("take_profit_pct", 5.0) / 100.0
         stop_pct = p.get("stop_below_resistance_pct", 0.5) / 100.0
         tp    = price * (1 + tp_pct)
@@ -178,6 +182,7 @@ class BreakoutControlled(BaseStrategy):
             "bo_pct":        bo_pct,
             "volume_ratio":  vr,
             "signal_active": symbol in self._signals,
+            "pending_entry": symbol in self._pending_entries,
         }
 
     # ------------------------------------------------------------------
