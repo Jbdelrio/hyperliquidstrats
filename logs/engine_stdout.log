@@ -1,56 +1,67 @@
-2026-05-11 23:40:00,157 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config/presets/paper_500_clean.json selected_strategies=['DonchianTrend', 'RSIBollingerReversion', 'MomentumLS']
-2026-05-11 23:40:00,160 INFO risk.kill_switch KillSwitch init: capital=2500 daily_dd=2.5% total_dd=6.0%
-2026-05-11 23:40:00,165 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
-2026-05-11 23:40:00,165 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
-2026-05-11 23:40:00,168 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
-2026-05-11 23:40:00,168 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
-2026-05-11 23:40:00,168 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
-2026-05-11 23:40:00,189 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
-2026-05-11 23:40:00,191 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
-2026-05-11 23:40:00,192 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
-2026-05-11 23:40:00,192 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-11 23:40:00,192 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH'])
-2026-05-11 23:40:00,193 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-11 23:40:00,193 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
-2026-05-11 23:40:00,193 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-11 23:40:00,193 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=False, coins=['BTC', 'ETH'])
-2026-05-11 23:40:00,193 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=False, coins=['BTC', 'ETH'])
-2026-05-11 23:40:00,194 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=False, coins=['BTC', 'ETH'])
-2026-05-11 23:40:00,194 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
-2026-05-11 23:40:00,196 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
-2026-05-11 23:40:00,198 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
-2026-05-11 23:40:00,198 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
-2026-05-11 23:40:00,209 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2500.00 | strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
-2026-05-11 23:40:00,982 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
-2026-05-11 23:40:03,221 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
-2026-05-11 23:40:03,221 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'DonchianTrend', 'RSIBollingerReversion']
-2026-05-11 23:40:04,761 INFO data.orderbook_manager All subscriptions sent.
-2026-05-11 23:40:05,205 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:40:05,224 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:40:17,220 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:40:29,219 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:40:41,234 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:40:51,253 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:41:01,289 ERROR __main__ Status write failed: float division by zero
+2026-05-13 22:15:36,258 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config/presets/paper_500_clean.json selected_strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'VolatilityRegimeBreakout', 'MetaAlpha']
+2026-05-13 22:15:36,261 INFO risk.kill_switch KillSwitch init: capital=2500 daily_dd=2.5% total_dd=6.0%
+2026-05-13 22:15:36,263 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-13 22:15:36,264 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-13 22:15:36,265 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-13 22:15:36,265 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-13 22:15:36,266 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-13 22:15:36,294 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 22:15:36,324 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 22:15:36,325 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 22:15:36,326 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:15:36,326 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:15:36,327 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:15:36,327 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-13 22:15:36,327 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:15:36,327 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:15:36,327 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:15:36,327 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:15:36,329 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:15:36,329 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MomentumLS'
+2026-05-13 22:15:36,329 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BreakoutControlled'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'DonchianTrend'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'VolatilityRegimeBreakout'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RSIBollingerReversion'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'S8EMS'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbitrage'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MeanReversionKalman'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RotationMomentum'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RelativeValue'
+2026-05-13 22:15:36,330 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SpotPerpBasis'
+2026-05-13 22:15:36,332 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingCarryHedged'
+2026-05-13 22:15:36,332 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'OBImbalanceScalper'
+2026-05-13 22:15:36,332 INFO __main__ MetaAlpha wired with 13 peers: ['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper']
+2026-05-13 22:15:36,333 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
+2026-05-13 22:15:36,334 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
+2026-05-13 22:15:36,334 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
+2026-05-13 22:15:36,334 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
+2026-05-13 22:15:36,335 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
+2026-05-13 22:15:36,335 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
+2026-05-13 22:15:36,335 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
+2026-05-13 22:15:36,335 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
+2026-05-13 22:15:36,335 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
+2026-05-13 22:15:36,336 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
+2026-05-13 22:15:36,336 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
+2026-05-13 22:15:36,339 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
+2026-05-13 22:15:36,340 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
+2026-05-13 22:15:36,340 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
+2026-05-13 22:15:36,417 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2500.00 | strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-13 22:15:37,464 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-13 22:15:39,418 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-13 22:15:39,418 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-13 22:15:41,229 INFO data.orderbook_manager All subscriptions sent.
+2026-05-13 22:15:42,048 INFO execution.high_freq_executor [FILL] BTC SELL @ 79625.000000 notional=$0
+2026-05-13 22:15:42,049 INFO execution.high_freq_executor [FILL] ETH SELL @ 2258.900000 notional=$0
+2026-05-13 22:15:42,552 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79625.000000 exit=79386.125000 net=$0.0000 hold=1s take_profit
+2026-05-13 22:15:42,560 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2258.900000 exit=2252.123300 net=$0.0000 hold=1s take_profit
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 2     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:2    Stop:0    Hold:0   1s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -60,19 +71,14 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:41:11,353 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:41:21,408 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:41:33,405 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:41:43,437 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:41:53,470 ERROR __main__ Status write failed: float division by zero
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 2     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:2    Stop:0    Hold:0   1s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -82,20 +88,14 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:42:03,479 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:42:13,487 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:42:23,496 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:42:33,500 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:42:43,539 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:42:53,573 ERROR __main__ Status write failed: float division by zero
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 2     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:2    Stop:0    Hold:0   1s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -105,20 +105,14 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:43:03,637 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:43:13,686 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:43:23,702 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:43:33,735 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:43:43,765 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:43:53,816 ERROR __main__ Status write failed: float division by zero
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 2     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:2    Stop:0    Hold:0   1s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -128,20 +122,14 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:44:03,837 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:44:13,869 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:44:23,935 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:44:35,920 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:44:45,968 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:44:56,025 ERROR __main__ Status write failed: float division by zero
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 2     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:2    Stop:0    Hold:0   1s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -151,20 +139,24 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:45:06,052 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:45:16,117 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:45:26,172 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:45:36,181 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:45:46,243 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:45:56,304 ERROR __main__ Status write failed: float division by zero
+2026-05-13 22:21:01,840 INFO execution.high_freq_executor [FILL] SOL BUY @ 91.213000 notional=$0
+2026-05-13 22:21:02,015 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=91.213000 exit=91.214951 net=$0.0000 hold=0s take_profit
+2026-05-13 22:21:04,103 INFO execution.high_freq_executor [FILL] ETH SELL @ 2260.900000 notional=$0
+2026-05-13 22:21:04,437 INFO execution.high_freq_executor [FILL] ETH BUY @ 2261.000000 notional=$0
+2026-05-13 22:21:04,532 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2260.900000 exit=2254.117300 net=$0.0000 hold=0s take_profit
+2026-05-13 22:21:04,533 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2261.000000 exit=2261.005629 net=$0.0000 hold=0s take_profit
+2026-05-13 22:21:05,536 INFO execution.high_freq_executor [FILL] BTC SELL @ 79678.000000 notional=$0
+2026-05-13 22:21:06,036 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79678.000000 exit=79438.966000 net=$0.0000 hold=0s take_profit
+2026-05-13 22:21:32,759 INFO execution.high_freq_executor [FILL] BTC BUY @ 79673.000000 notional=$0
+2026-05-13 22:21:32,995 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79673.000000 exit=79674.078431 net=$0.0000 hold=0s take_profit
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 7     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:7    Stop:0    Hold:0   0s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -174,20 +166,14 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:46:06,370 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:46:16,437 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:46:28,436 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:46:38,484 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:46:48,533 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:46:58,574 ERROR __main__ Status write failed: float division by zero
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 7     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:7    Stop:0    Hold:0   0s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -197,20 +183,14 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:47:10,603 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:47:20,648 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:47:30,697 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:47:40,703 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:47:50,723 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:48:00,732 ERROR __main__ Status write failed: float division by zero
 
 ┌───────────────────────────────────────────────────────────────┐
 │ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
+│ MomentumLS(ON) | BreakoutControlled(ON) | DonchianTrend(ON) | │
 ├───────────────────────────────────────────────────────────────┤
 │ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
+│ PnL today: $    +0.00  │  Trades: 7     │  WR: 0.0%        │
+│ PnL 1h:   $    +0.00  │  TP:7    Stop:0    Hold:0   0s   │
 ├───────────────────────────────────────────────────────────────┤
 │ Wavelet alerts: 0     Pick rate:  0.0%                         │
 │ Open: none                                                     │
@@ -220,852 +200,3 @@
 ├───────────────────────────────────────────────────────────────┤
 │ Suspend: none                                                  │
 └───────────────────────────────────────────────────────────────┘
-2026-05-11 23:48:10,800 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:48:20,859 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:48:30,891 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:48:40,962 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:48:51,005 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:49:01,070 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:49:11,104 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:49:21,167 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:49:31,208 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:49:41,254 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:49:51,273 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:50:01,290 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:50:11,348 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:50:21,370 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:50:31,395 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:50:41,476 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:50:51,550 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:51:01,590 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:51:11,652 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:51:21,678 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:51:31,709 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:51:41,749 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:51:51,798 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:52:01,828 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:52:11,829 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:52:21,843 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:52:31,847 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:52:43,819 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:52:53,845 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:53:05,841 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:53:15,876 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:53:25,885 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:53:35,946 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:53:45,960 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:53:55,984 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:54:05,998 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:54:16,011 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:54:26,061 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:54:36,105 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:54:46,142 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:54:56,145 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:55:08,143 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:55:18,178 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:55:28,222 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:55:38,228 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:55:48,296 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:55:58,303 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:56:08,335 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:56:18,393 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:56:28,452 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:56:38,527 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:56:48,558 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:56:58,582 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:57:08,600 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:57:18,658 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:57:28,694 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:57:38,702 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:57:48,741 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:57:58,744 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:58:08,770 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:58:18,820 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:58:28,850 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:58:38,891 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:58:48,923 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:58:58,983 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-11 23:59:09,054 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:59:19,125 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:59:29,149 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:59:39,173 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:59:49,204 ERROR __main__ Status write failed: float division by zero
-2026-05-11 23:59:59,204 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:00:09,209 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:00:19,273 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:00:29,320 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:00:39,349 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:00:49,396 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:00:59,467 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:01:09,523 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:01:19,579 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:01:29,620 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:01:39,640 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:01:49,675 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:01:59,685 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:02:09,704 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:02:19,740 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:02:29,758 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:02:39,823 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:02:49,854 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:02:59,941 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:03:09,969 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:03:19,981 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:03:30,048 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:03:40,052 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:03:50,100 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:04:00,137 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:04:10,182 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:04:22,164 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:04:32,195 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:04:42,286 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:04:52,305 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:05:04,313 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:05:14,351 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:05:24,395 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:05:34,400 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:05:44,450 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:05:54,489 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:06:04,518 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:06:14,533 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:06:24,572 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:06:34,635 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:06:44,703 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:06:54,730 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:07:04,768 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:07:14,800 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:07:24,817 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:07:36,800 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:07:46,825 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:07:56,833 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:08:06,885 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:08:16,927 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:08:26,961 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:08:37,031 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:08:47,049 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:08:57,079 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:09:07,083 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:09:17,113 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:09:27,142 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:09:37,165 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:09:47,239 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:09:57,267 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:10:07,296 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:10:17,332 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:10:27,336 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:10:37,366 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:10:47,414 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:10:57,436 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:11:07,478 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:11:17,507 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:11:27,565 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:11:37,599 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:11:47,617 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:11:57,677 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:12:07,694 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:12:17,739 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:12:27,787 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:12:37,819 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:12:47,856 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:12:57,914 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:13:07,945 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:13:17,979 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:13:28,012 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:13:38,088 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:13:48,147 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:13:58,159 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:14:08,196 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:14:18,233 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:14:28,294 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:14:38,339 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:14:48,392 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:14:58,449 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:15:08,482 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:15:18,542 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:15:28,552 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:15:38,579 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:15:48,622 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:15:58,638 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:16:08,678 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:16:18,741 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:16:28,803 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:16:38,826 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:16:48,895 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:16:58,934 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:17:08,967 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:17:18,997 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:17:29,023 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:17:39,065 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:17:49,099 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:17:59,146 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:18:09,149 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:18:19,188 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:18:29,193 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:18:39,237 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:18:49,243 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:18:59,295 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:19:09,344 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:19:19,382 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:19:29,403 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:19:39,443 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:19:49,475 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:19:59,482 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:20:09,562 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:20:21,556 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:20:31,603 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:20:41,608 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:20:51,622 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:21:01,652 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:21:11,700 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:21:21,722 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:21:31,743 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:21:41,804 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:21:53,811 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:22:03,822 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:22:13,823 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:22:23,862 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:22:33,904 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:22:43,940 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:22:53,955 ERROR __main__ Status write failed: float division by zero
-
-┌───────────────────────────────────────────────────────────────┐
-│ ARTEMISIA v9 — MULTI-STRATEGY  [PAPER]                        │
-│ MomentumLS(ON) | BreakoutControlled(OFF) | DonchianTrend(ON)  │
-├───────────────────────────────────────────────────────────────┤
-│ Equity: $ 2500.00  │  Quotes: 0     │  Pos: 0            │
-│ PnL today: $    +0.00  │  Trades: 0     │  WR: —           │
-│ PnL 1h:   $    +0.00  │  TP:0    Stop:0    Hold:0   —    │
-├───────────────────────────────────────────────────────────────┤
-│ Wavelet alerts: 0     Pick rate:  0.0%                         │
-│ Open: none                                                     │
-├───────────────────────────────────────────────────────────────┤
-│ Daily DD:  ░░░░░░░░░░  0.00% / 3.0%                        │
-│ Total DD:  ░░░░░░░░░░  0.00% / 6.0%                        │
-├───────────────────────────────────────────────────────────────┤
-│ Suspend: none                                                  │
-└───────────────────────────────────────────────────────────────┘
-2026-05-12 00:23:05,962 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:15,995 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:26,024 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:28,072 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:38,098 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:48,123 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:58,138 ERROR __main__ Status write failed: float division by zero
- 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
-2026-05-12 00:23:25,642 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
-2026-05-12 00:23:25,643 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
-2026-05-12 00:23:25,643 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
-2026-05-12 00:23:25,643 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
-2026-05-12 00:23:25,644 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
-2026-05-12 00:23:25,644 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
-2026-05-12 00:23:25,645 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
-2026-05-12 00:23:25,645 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-12 00:23:25,645 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH'])
-2026-05-12 00:23:25,645 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-12 00:23:25,645 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
-2026-05-12 00:23:25,645 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-12 00:23:25,645 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=False, coins=['BTC', 'ETH'])
-2026-05-12 00:23:25,646 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=False, coins=['BTC', 'ETH'])
-2026-05-12 00:23:25,646 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=False, coins=['BTC', 'ETH'])
-2026-05-12 00:23:25,646 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=False, coins=['BTC', 'ETH', 'SOL'])
-2026-05-12 00:23:25,646 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
-2026-05-12 00:23:25,646 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
-2026-05-12 00:23:25,646 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
-2026-05-12 00:23:25,646 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
-2026-05-12 00:23:25,647 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
-2026-05-12 00:23:25,658 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2500.00 | strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
-2026-05-12 00:23:26,244 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
-2026-05-12 00:23:28,676 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
-2026-05-12 00:23:28,676 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion']
-2026-05-12 00:23:29,998 INFO data.orderbook_manager All subscriptions sent.
-2026-05-12 00:23:30,702 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:30,709 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:40,749 ERROR __main__ Status write failed: float division by zero
-2026-05-12 00:23:50,785 ERROR __main__ Status write failed: float division by zero

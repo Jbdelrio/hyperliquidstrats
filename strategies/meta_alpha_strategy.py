@@ -24,8 +24,18 @@ from strategies.base_strategy import BarData, BaseStrategy, StrategyConfig, Stra
 
 log = logging.getLogger(__name__)
 
-_BUY_LABELS  = {"buy_pressure", "long_perp_collect", "bullish", "long"}
-_SELL_LABELS = {"sell_pressure", "short_perp_collect", "bearish", "short"}
+_BUY_LABELS  = {
+    "buy_pressure", "long_perp_collect", "bullish", "long",
+    "long_perp",           # SpotPerpBasis action_bias
+    "rotation_top",        # RotationMomentum
+    "vol_breakout_long",   # VolatilityRegimeBreakout
+}
+_SELL_LABELS = {
+    "sell_pressure", "short_perp_collect", "bearish", "short",
+    "short_perp",          # SpotPerpBasis action_bias
+    "rotation_bottom",     # RotationMomentum
+    "vol_breakout_short",  # VolatilityRegimeBreakout
+}
 
 
 class MetaAlphaStrategy(BaseStrategy):
@@ -108,6 +118,7 @@ class MetaAlphaStrategy(BaseStrategy):
             "quorum_reached":      abs(net_score) >= min_agr,
             "direction":           "BUY" if net_score >= min_agr else ("SELL" if net_score <= -min_agr else "NEUTRAL"),
             "peers_registered":    list(self._peers.keys()),
+            "no_peers":            len(self._peers) == 0,
             "in_position":         symbol in self._positions,
         }
 
@@ -124,8 +135,13 @@ class MetaAlphaStrategy(BaseStrategy):
         votes = {}
         for name, strat in self._peers.items():
             try:
-                cal   = strat.get_calibration_data(symbol)
-                bias  = cal.get("action_bias") or cal.get("signal") or ""
+                cal  = strat.get_calibration_data(symbol)
+                # Check several field names in order of specificity
+                bias = (cal.get("action_bias") or
+                        cal.get("signal") or
+                        cal.get("basis_status") or
+                        cal.get("regime") or
+                        "")
                 votes[name] = self._label_to_vote(str(bias).lower())
             except Exception as exc:
                 log.debug("MetaAlpha: peer '%s' error: %s", name, exc)

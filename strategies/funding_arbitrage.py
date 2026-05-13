@@ -11,14 +11,11 @@ from collections import deque
 from typing import Optional
 
 import numpy as np
-import requests
 
+from data.hyperliquid_funding import fetch_hyperliquid_funding_rates
 from strategies.base_strategy import BarData, BaseStrategy, StrategyConfig, StrategyDecision
 
 log = logging.getLogger(__name__)
-
-_API_URL = "https://api.hyperliquid.xyz/info"
-_API_TIMEOUT = 5.0
 
 
 class FundingArbitrage(BaseStrategy):
@@ -107,24 +104,13 @@ class FundingArbitrage(BaseStrategy):
     # ------------------------------------------------------------------
 
     def _fetch_funding(self) -> None:
-        try:
-            resp = requests.post(
-                _API_URL,
-                json={"type": "metaAndAssetCtxs"},
-                timeout=_API_TIMEOUT,
-            )
-            data = resp.json()
-            meta, ctxs = data[0], data[1]
-            for i, ctx in enumerate(ctxs):
-                if i >= len(meta.get("universe", [])):
-                    break
-                coin = meta["universe"][i]["name"]
-                if coin in self._funding:
-                    rate = float(ctx.get("funding", 0.0))
-                    self._raw_funding[coin] = rate
-                    self._funding[coin].append(rate)
-        except Exception as e:
-            log.warning("FundingArbitrage: API fetch failed: %s", e)
+        rates = fetch_hyperliquid_funding_rates(list(self._funding.keys()))
+        for coin, info in rates.items():
+            if coin in self._funding:
+                # Store per-hour rate (API returns per-8h; shared helper divides by 8)
+                hourly = info["hourly_rate"]
+                self._raw_funding[coin] = hourly
+                self._funding[coin].append(hourly)
 
     def _check_entry(self, symbol: str, ts: float) -> Optional[StrategyDecision]:
         if symbol in self._positions:
@@ -133,13 +119,14 @@ class FundingArbitrage(BaseStrategy):
             return None
 
         p         = self.config.params
-        raw_rate  = self._raw_funding.get(symbol)
+        raw_rate  = self._raw_funding.get(symbol)   # per-hour
         rates_buf = list(self._funding.get(symbol, []))
 
         if raw_rate is None or len(rates_buf) < 3:
             return None
 
-        smoothed = float(np.mean(rates_buf))
+        smoothed  = float(np.mean(rates_buf))
+        # Threshold is per-hour; raw_rate is already per-hour (divided by 8 in _fetch_funding)
         entry_thr = p.get("funding_entry_threshold_pct_per_hour", 0.03) / 100.0
 
         if raw_rate < entry_thr:
@@ -156,6 +143,10 @@ class FundingArbitrage(BaseStrategy):
         if r24h < p.get("r_24h_min_pct", 5.0):
             if self.decision_logger:
                 self.decision_logger.log_skip(symbol, "r24h_too_low", timestamp=ts)
+            return None
+
+        # Scanner mode: do not trade if allow_unhedged_perp=false
+        if not p.get("allow_unhedged_perp", False):
             return None
 
         notional = self.compute_order_notional()

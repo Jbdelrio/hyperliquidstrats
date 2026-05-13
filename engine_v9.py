@@ -181,6 +181,9 @@ class EngineV9:
             strat = cls(strat_cfg, decision_logger=self.decision_logger)
             self.manager.register(strat)
 
+        # ── Wire MetaAlpha peer references ────────────────────────────
+        self._wire_meta_alpha_peers()
+
         # ── Per-strategy capital ledger (first risk gate) ──────────────
         self.ledger = StrategyCapitalLedger(
             risk_log_path=log_cfg.get("risk_events_log",
@@ -1027,6 +1030,18 @@ class EngineV9:
     # Emergency close (called by KillSwitch)
     # ------------------------------------------------------------------
 
+    def _wire_meta_alpha_peers(self) -> None:
+        """Register all non-MetaAlpha strategies as peers of MetaAlphaStrategy."""
+        meta = self.manager.get("MetaAlpha")
+        if meta is None or not hasattr(meta, "register_peer"):
+            return
+        for name, strat in self.manager.strategies.items():
+            if name == "MetaAlpha":
+                continue
+            meta.register_peer(name, strat)
+        log.info("MetaAlpha wired with %d peers: %s",
+                 len(meta._peers), list(meta._peers.keys()))
+
     def _emergency_close(self, reason: str = "kill_switch") -> None:
         log.critical("EMERGENCY CLOSE ALL: %s", reason)
         self.executor.cancel_all()
@@ -1050,10 +1065,14 @@ class EngineV9:
                 sname = self._pos_to_strategy.get(pos.pos_id, "unknown")
                 mid   = (getattr(self._last_book.get(pos.symbol), "mid", None)
                          or pos.entry_price)
-                if pos.side == "BUY":
-                    upnl = (mid - pos.entry_price) / pos.entry_price * pos.notional_usd
+                ep = pos.entry_price or 0.0
+                if ep > 0:
+                    if pos.side == "BUY":
+                        upnl = (mid - ep) / ep * pos.notional_usd
+                    else:
+                        upnl = (ep - mid) / ep * pos.notional_usd
                 else:
-                    upnl = (pos.entry_price - mid) / pos.entry_price * pos.notional_usd
+                    upnl = 0.0
                 upnl_by_strat[sname] = upnl_by_strat.get(sname, 0.0) + upnl
                 pos_by_strat.setdefault(sname, []).append({
                     "pos_id":         pos.pos_id,

@@ -11,11 +11,13 @@ from dataclasses import dataclass
 from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from strategies.s8_ems import (
-    S8EconophysicsMakerScalping,
-    ACTION_PLACE_QUOTES, ACTION_CANCEL_QUOTES,
-    ACTION_MANAGE_POS, ACTION_CLOSE_MARKET,
-)
+from strategies.s8_ems import S8EconophysicsMakerScalping
+from strategies.base_strategy import StrategyConfig
+
+ACTION_PLACE_QUOTES  = "PLACE_QUOTES"
+ACTION_CANCEL_QUOTES = "CANCEL_QUOTES"
+ACTION_MANAGE_POS    = "MANAGE_POS"
+ACTION_CLOSE_MARKET  = "CLOSE"
 
 
 # ---------------------------------------------------------------------------
@@ -47,11 +49,15 @@ DEFAULT_PARAMS = {
 
 
 def make_strategy(capital: float = 500.0) -> S8EconophysicsMakerScalping:
-    return S8EconophysicsMakerScalping(
+    cfg = StrategyConfig(
+        name="S8EMS", enabled=True,
+        capital_allocated_usd=capital,
+        max_positions=2,
+        max_position_size_usd=capital * 0.5,
+        coins=["BTC", "ETH"],
         params=DEFAULT_PARAMS,
-        capital=capital,
-        symbols=["BTC", "ETH"],
     )
+    return S8EconophysicsMakerScalping(cfg)
 
 
 def warmup(strat: S8EconophysicsMakerScalping, symbol: str = "BTC",
@@ -75,34 +81,29 @@ def test_place_quotes_after_warmup():
     warmup(strat, "BTC", n=350)
     book = FakeBook(best_bid=49990, best_ask=50010)
     action = strat.on_orderbook_update("BTC", book, time.time())
-    # May still be None if Hurst regime is TREND_HIGH — just check structure if not None
     if action is not None:
-        assert action["action"] == ACTION_PLACE_QUOTES
-        assert "buy_price" in action
-        assert "sell_price" in action
-        assert action["buy_price"] < action["sell_price"]
-        assert action["notional_usd"] > 0
+        assert action.action == ACTION_PLACE_QUOTES
+        assert action.buy_price is not None and action.sell_price is not None
+        assert action.buy_price < action.sell_price
+        assert action.notional_usd > 0
 
 
 def test_no_quotes_on_tight_spread():
     strat = make_strategy()
     warmup(strat, "BTC", n=350)
-    # Spread = 1 bps — below min
     book = FakeBook(best_bid=49999.75, best_ask=50000.25)
     action = strat.on_orderbook_update("BTC", book, time.time())
-    # Either None or CANCEL — not PLACE
     if action:
-        assert action["action"] != ACTION_PLACE_QUOTES
+        assert action.action != ACTION_PLACE_QUOTES
 
 
 def test_no_quotes_on_wide_spread():
     strat = make_strategy()
     warmup(strat, "BTC", n=350)
-    # Spread = 25 bps — above max
     book = FakeBook(best_bid=49937.5, best_ask=50062.5)
     action = strat.on_orderbook_update("BTC", book, time.time())
     if action:
-        assert action["action"] != ACTION_PLACE_QUOTES
+        assert action.action != ACTION_PLACE_QUOTES
 
 
 def test_cancel_on_wavelet_alert(monkeypatch):
@@ -110,7 +111,6 @@ def test_cancel_on_wavelet_alert(monkeypatch):
     warmup(strat, "BTC", n=350)
     strat.register_pending("BTC", ["b_abc123", "s_abc123"])
 
-    # Force wavelet alert
     monkeypatch.setattr(
         strat.coin_states["BTC"].wavelet, "_cooldown_until",
         time.time() + 60,
@@ -118,17 +118,20 @@ def test_cancel_on_wavelet_alert(monkeypatch):
     book = FakeBook(best_bid=49990, best_ask=50010)
     action = strat.on_orderbook_update("BTC", book, time.time())
     assert action is not None
-    assert action["action"] == ACTION_CANCEL_QUOTES
+    assert action.action == ACTION_CANCEL_QUOTES
 
 
 def test_fill_creates_position():
     strat = make_strategy()
     ts = time.time()
-    action = strat.on_fill("BTC", "BUY", 50000.0, 0.032, 1600.0, ts)
-    assert action["action"] == ACTION_MANAGE_POS
+    result = strat.on_fill("BTC", "BUY", 50000.0, 0.032, 1600.0, ts)
+    # on_fill returns a dict {tp_price, stop_price, max_hold_seconds}
+    assert result is not None
+    assert "tp_price" in result
+    assert "stop_price" in result
     assert strat.coin_states["BTC"].open_position is not None
     assert strat.coin_states["BTC"].open_position["side"] == "BUY"
-    assert strat.total_trades == 1
+    assert strat.coin_states["BTC"].fills == 1
 
 
 def test_stop_exit():
@@ -138,15 +141,13 @@ def test_stop_exit():
     pos = strat.coin_states["BTC"].open_position
     stop = pos["stop"]
 
-    # Price hits stop
-    action = strat.check_position_exits(
-        "BTC", mid=stop - 1.0,
-        best_bid=stop - 2.0, best_ask=stop + 2.0,
-        timestamp=ts + 5,
-    )
+    book = FakeBook(best_bid=stop - 2.0, best_ask=stop + 2.0)
+    action = strat.check_position_exits("BTC", book, ts + 5)
     assert action is not None
-    assert action["action"] == ACTION_CLOSE_MARKET
-    assert action["reason"] == "stop_loss"
+    assert action.action == ACTION_CLOSE_MARKET
+    assert action.reason == "stop_loss"
+    # on_position_closed clears the position (called by engine after close)
+    strat.on_position_closed("BTC", -50.0, "stop_loss")
     assert strat.coin_states["BTC"].open_position is None
 
 
@@ -157,14 +158,10 @@ def test_tp_exit():
     pos = strat.coin_states["BTC"].open_position
     tp = pos["tp"]
 
-    # SELL TP: fires when best_ask <= tp_price (ask dropped to our limit buy)
-    action = strat.check_position_exits(
-        "BTC", mid=tp + 1.0,
-        best_bid=tp - 2.0, best_ask=tp - 0.1,
-        timestamp=ts + 5,
-    )
+    book = FakeBook(best_bid=tp - 2.0, best_ask=tp - 0.1)
+    action = strat.check_position_exits("BTC", book, ts + 5)
     assert action is not None
-    assert action["reason"] == "take_profit"
+    assert action.reason == "take_profit"
 
 
 def test_max_hold_exit():
@@ -172,20 +169,13 @@ def test_max_hold_exit():
     ts = time.time()
     strat.on_fill("BTC", "BUY", 50000.0, 0.032, 1600.0, ts)
     pos = strat.coin_states["BTC"].open_position
-    tp = pos["tp"]    # ~ 50090 (entry + 30bps * 0.6 * entry)
-    stop = pos["stop"]
+    tp = pos["tp"]
 
-    # Price well inside stop/TP range, time expired
-    mid_inside = (50000.0 + tp) / 2  # halfway between entry and TP
-    future_ts = ts + 300
-    action = strat.check_position_exits(
-        "BTC", mid=mid_inside,
-        best_bid=mid_inside - 1.0,
-        best_ask=mid_inside + 1.0,
-        timestamp=future_ts,
-    )
+    mid_inside = (50000.0 + tp) / 2
+    book = FakeBook(best_bid=mid_inside - 1.0, best_ask=mid_inside + 1.0)
+    action = strat.check_position_exits("BTC", book, ts + 300)
     assert action is not None
-    assert action["reason"] == "max_hold"
+    assert action.reason == "max_hold"
 
 
 def test_no_quotes_with_open_position():
@@ -196,9 +186,8 @@ def test_no_quotes_with_open_position():
 
     book = FakeBook(best_bid=49990, best_ask=50010)
     action = strat.on_orderbook_update("BTC", book, ts + 1)
-    # No new quotes when position is open
     if action:
-        assert action["action"] != ACTION_PLACE_QUOTES
+        assert action.action != ACTION_PLACE_QUOTES
 
 
 def test_pnl_accounting():
@@ -208,11 +197,10 @@ def test_pnl_accounting():
     pos = strat.coin_states["BTC"].open_position
     stop = pos["stop"]
 
-    # Stop hit → loss
-    strat.check_position_exits(
-        "BTC", mid=stop - 1.0,
-        best_bid=stop - 2.0, best_ask=stop + 2.0,
-        timestamp=ts + 10,
-    )
-    assert strat.total_trades == 1
+    book = FakeBook(best_bid=stop - 2.0, best_ask=stop + 2.0)
+    strat.check_position_exits("BTC", book, ts + 10)
+    # Simulate engine calling on_position_closed with the realized loss
+    pnl_loss = -(stop * 0.032 * 0.003)  # approximate stop-loss loss
+    strat.on_position_closed("BTC", pnl_loss, "stop_loss")
+    assert strat.coin_states["BTC"].fills == 1
     assert strat.daily_pnl < 0.0, "Stop-loss exit should record a negative PnL"

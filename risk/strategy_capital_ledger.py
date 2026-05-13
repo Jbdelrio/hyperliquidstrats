@@ -74,12 +74,16 @@ class StrategyLedger:
 
     @property
     def drawdown_pct(self) -> float:
+        if self.initial_capital_usd <= 0:
+            return 0.0
         return max(0.0,
                    (self.initial_capital_usd - self.equity)
                    / self.initial_capital_usd * 100)
 
     @property
     def daily_dd_pct(self) -> float:
+        if self.initial_capital_usd <= 0:
+            return 0.0
         return max(0.0, -self.daily_pnl / self.initial_capital_usd * 100)
 
     def is_active(self) -> bool:

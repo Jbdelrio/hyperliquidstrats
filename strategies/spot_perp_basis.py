@@ -98,18 +98,39 @@ class SpotPerpBasisStrategy(BaseStrategy):
         super().on_position_closed(symbol, pnl_net, exit_reason)
 
     def get_calibration_data(self, symbol: str) -> dict:
-        p = self.config.params
-        spot = self._get_spot(symbol)
-        mid  = self._mid.get(symbol)
+        p     = self.config.params
+        spot  = self._get_spot(symbol)
+        mid   = self._mid.get(symbol)
         basis = self._basis_bps.get(symbol)
+
+        # Compute spot age for diagnostics
+        ext = p.get("external_spot_prices", {})
+        v   = ext.get(symbol) if isinstance(ext, dict) else None
+        spot_age = None
+        if isinstance(v, dict) and v.get("ts") is not None:
+            spot_age = round(time.time() - float(v["ts"]), 1)
+
+        action_bias = "no_data"
+        if basis is not None:
+            entry = p.get("basis_entry_bps", 20.0)
+            if basis > entry:
+                action_bias = "short_perp"
+            elif basis < -entry:
+                action_bias = "long_perp"
+            else:
+                action_bias = "neutral"
+
         return {
-            "perp_mid":       round(mid,   6) if mid   else None,
-            "spot_price":     round(spot,  6) if spot  else None,
-            "basis_bps":      round(basis, 3) if basis else None,
-            "basis_status":   self._basis_label(basis, p),
-            "spot_available": spot is not None,
-            "in_position":    symbol in self._positions,
-            "mode":           "perp_only_basis_proxy",
+            "perp_mid":          round(mid,   6) if mid   else None,
+            "spot_price":        round(spot,  6) if spot  else None,
+            "basis_bps":         round(basis, 3) if basis else None,
+            "basis_status":      self._basis_label(basis, p),
+            "spot_available":    spot is not None,
+            "spot_age_seconds":  spot_age,
+            "spot_stale":        spot is None and v is not None,
+            "action_bias":       action_bias,
+            "in_position":       symbol in self._positions,
+            "mode":              "perp_only_basis_proxy",
         }
 
     def get_stats(self) -> dict:
@@ -120,16 +141,37 @@ class SpotPerpBasisStrategy(BaseStrategy):
     # ── Internal ─────────────────────────────────────────────────────────────
 
     def _get_spot(self, symbol: str) -> Optional[float]:
-        """Return external spot price if configured, else None."""
-        ext = self.config.params.get("external_spot_prices", {})
-        if isinstance(ext, dict):
-            v = ext.get(symbol)
-            if v is not None:
-                try:
-                    return float(v)
-                except (TypeError, ValueError):
-                    pass
-        return None
+        """Return external spot price if configured and not stale, else None.
+
+        Supports two formats:
+          {"BTC": 99500}                            — legacy, no staleness check
+          {"BTC": {"price": 99500, "ts": 1234...}}  — with timestamp for staleness
+        """
+        p   = self.config.params
+        ext = p.get("external_spot_prices", {})
+        if not isinstance(ext, dict):
+            return None
+        v = ext.get(symbol)
+        if v is None:
+            return None
+        if isinstance(v, dict):
+            price = v.get("price")
+            entry_ts = v.get("ts")
+            if price is None:
+                return None
+            if entry_ts is not None:
+                age = time.time() - float(entry_ts)
+                max_age = float(p.get("max_spot_age_seconds", 5.0))
+                if age > max_age:
+                    return None  # stale
+            try:
+                return float(price)
+            except (TypeError, ValueError):
+                return None
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
 
     def _check_entry(self, symbol: str, bid: float, ask: float,
                      mid: float, ts: float) -> Optional[StrategyDecision]:

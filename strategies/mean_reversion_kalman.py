@@ -35,6 +35,8 @@ class MeanReversionKalman(BaseStrategy):
         self._fv_cache:    dict[str, float] = {}
         self._positions:   dict[str, dict]  = {}
         self._last_vol:    dict[str, deque] = {c: deque(maxlen=60) for c in config.coins}
+        # For trend_guard: recent bar closes (updated in on_bar_minute)
+        self._close_buf:   dict[str, deque] = {c: deque(maxlen=16) for c in config.coins}
         # Warmup: per-symbol timestamp of first book update seen
         self._first_seen:  dict[str, float] = {}
 
@@ -66,12 +68,13 @@ class MeanReversionKalman(BaseStrategy):
         inno_buf   = self._innovations[symbol]
         inno_buf.append(innovation)
 
-        warmup_s = p.get("warmup_seconds", 300)
+        warmup_s    = p.get("warmup_seconds", 300)
+        min_samples = int(p.get("min_innovation_samples", 200))
         if symbol not in self._first_seen:
             self._first_seen[symbol] = ts
         if ts - self._first_seen[symbol] < warmup_s:
             return None
-        if len(inno_buf) < 200:
+        if len(inno_buf) < min_samples:
             return None
 
         sigma = float(np.std(list(inno_buf)))
@@ -89,8 +92,20 @@ class MeanReversionKalman(BaseStrategy):
                 self._log_skip(symbol, "volatility_too_high", ts, mid, spread_bps)
                 return None
 
-        z_entry = p.get("z_entry", 2.0)
-        z_exit  = p.get("z_exit",  0.0)
+        # trend_guard: skip mean-reversion entries when 15m trend is strong
+        if p.get("trend_guard", False):
+            closes_buf = list(self._close_buf.get(symbol, []))
+            if len(closes_buf) >= 16:
+                ref = closes_buf[-16]
+                if ref > 0:
+                    r15m = abs(closes_buf[-1] / ref - 1)
+                    thr  = p.get("trend_guard_15m_pct", 1.5) / 100.0
+                    if r15m > thr and symbol not in self._positions:
+                        self._log_skip(symbol, "trend_guard_active", ts, mid, spread_bps)
+                        return None
+
+        z_entry = p.get("z_entry", 1.5)
+        z_exit  = p.get("z_exit",  0.2)
         z_stop  = p.get("z_stop",  3.5)
 
         # ── Exit check ──────────────────────────────────────────────
@@ -149,6 +164,7 @@ class MeanReversionKalman(BaseStrategy):
 
     def on_bar_minute(self, symbol: str, bar: BarData, ts: float) -> Optional[StrategyDecision]:
         self._last_vol[symbol].append(bar.return_1m)
+        self._close_buf[symbol].append(bar.close)
         return None
 
     def on_fill(self, symbol: str, side: str, price: float, size: float,
@@ -183,9 +199,21 @@ class MeanReversionKalman(BaseStrategy):
         super().on_position_closed(symbol, pnl_net, exit_reason)
 
     def get_calibration_data(self, symbol: str) -> dict:
-        z  = self._z_cache.get(symbol, None)
-        fv = self._fv_cache.get(symbol, None)
-        return {"z_score": z, "kalman_fv": fv}
+        p    = self.config.params
+        z    = self._z_cache.get(symbol, None)
+        fv   = self._fv_cache.get(symbol, None)
+        inno = list(self._innovations.get(symbol, []))
+        samples = len(inno)
+        sigma   = float(np.std(inno)) if samples >= 2 else None
+        return {
+            "z_score":                z,
+            "kalman_fv":              fv,
+            "innovation_sigma":       sigma,
+            "samples":                samples,
+            "min_innovation_samples": int(p.get("min_innovation_samples", 200)),
+            "trend_guard":            p.get("trend_guard", False),
+            "in_position":            symbol in self._positions,
+        }
 
     # ------------------------------------------------------------------
 
