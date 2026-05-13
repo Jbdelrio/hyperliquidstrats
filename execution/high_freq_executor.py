@@ -215,13 +215,13 @@ class HighFreqExecutor:
             elif pos.side == "BUY":
                 if mid <= pos.stop_price:
                     reason, exit_price = "stop_loss", best_bid
-                elif best_ask <= pos.tp_price:
+                elif pos.tp_price > 0 and mid >= pos.tp_price:
                     reason, exit_price = "take_profit", pos.tp_price
 
             elif pos.side == "SELL":
                 if mid >= pos.stop_price:
                     reason, exit_price = "stop_loss", best_ask
-                elif best_bid >= pos.tp_price:
+                elif pos.tp_price > 0 and mid <= pos.tp_price:
                     reason, exit_price = "take_profit", pos.tp_price
 
             if reason:

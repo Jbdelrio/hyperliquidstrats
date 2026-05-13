@@ -12651,3 +12651,246 @@ ConnectionAbortedError: [WinError 10053] Une connexion établie a été abandonn
 2026-05-13 22:21:06,036 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79678.000000 exit=79438.966000 net=$0.0000 hold=0s take_profit
 2026-05-13 22:21:32,759 INFO execution.high_freq_executor [FILL] BTC BUY @ 79673.000000 notional=$0
 2026-05-13 22:21:32,995 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79673.000000 exit=79674.078431 net=$0.0000 hold=0s take_profit
+2026-05-13 22:26:06,427 INFO execution.high_freq_executor [FILL] ETH BUY @ 2260.100000 notional=$0
+2026-05-13 22:26:06,929 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2260.100000 exit=2266.880300 net=$0.0000 hold=1s take_profit
+2026-05-13 22:26:08,281 INFO execution.high_freq_executor [FILL] BTC SELL @ 79640.000000 notional=$0
+2026-05-13 22:26:08,461 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79640.000000 exit=79401.080000 net=$0.0000 hold=0s take_profit
+2026-05-13 22:26:15,524 INFO execution.high_freq_executor [FILL] ETH SELL @ 2260.100000 notional=$0
+2026-05-13 22:26:15,610 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2260.100000 exit=2260.093913 net=$0.0000 hold=0s take_profit
+2026-05-13 22:26:16,575 INFO execution.high_freq_executor [FILL] SOL SELL @ 91.163000 notional=$0
+2026-05-13 22:26:16,604 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=91.163000 exit=91.153715 net=$0.0000 hold=0s take_profit
+2026-05-13 22:27:25,664 INFO execution.high_freq_executor [FILL] BTC BUY @ 79624.000000 notional=$0
+2026-05-13 22:27:25,744 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79624.000000 exit=79624.612583 net=$0.0000 hold=0s take_profit
+2026-05-13 22:31:08,784 INFO execution.high_freq_executor [FILL] ETH BUY @ 2260.700000 notional=$0
+2026-05-13 22:31:08,943 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2260.700000 exit=2267.482100 net=$0.0000 hold=0s take_profit
+2026-05-13 22:31:12,637 INFO execution.high_freq_executor [FILL] BTC SELL @ 79626.000000 notional=$0
+2026-05-13 22:31:12,961 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79626.000000 exit=79387.122000 net=$0.0000 hold=0s take_profit
+2026-05-13 22:31:19,127 INFO execution.high_freq_executor [FILL] SOL BUY @ 91.146000 notional=$0
+2026-05-13 22:31:19,592 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=91.146000 exit=91.148604 net=$0.0000 hold=0s take_profit
+2026-05-13 22:32:29,058 INFO execution.high_freq_executor [FILL] BTC SELL @ 79633.000000 notional=$0
+2026-05-13 22:32:29,059 INFO execution.high_freq_executor [FILL] ETH SELL @ 2260.800000 notional=$0
+2026-05-13 22:32:29,060 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2260.800000 exit=2260.850000 net=$0.0000 hold=0s stop_z
+2026-05-13 22:32:29,062 INFO __main__ [CLOSE] MeanReversionKalman ETH SELL @ 2260.850000 | net=$0.0000 | stop_z
+2026-05-13 22:32:29,539 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79633.000000 exit=79629.052980 net=$0.0000 hold=0s take_profit
+2026-05-13 22:33:02,618 INFO execution.high_freq_executor [FILL] ETH BUY @ 2261.300000 notional=$250
+2026-05-13 22:33:03,123 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2261.300000 exit=2317.832500 net=$6.2650 hold=1s take_profit
+2026-05-13 22:34:03,573 INFO __main__ [LEDGER] BLOCK BreakoutControlled LTC $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 22:34:03,573 INFO __main__ [LEDGER] BLOCK BreakoutControlled SOL $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 22:34:03,577 INFO __main__ [LEDGER] BLOCK BreakoutControlled XRP $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-13 22:34:03,577 INFO execution.high_freq_executor [FILL] BTC BUY @ 79666.000000 notional=$250
+2026-05-13 22:34:03,577 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.213000 notional=$250
+2026-05-13 22:34:04,071 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79666.000000 exit=81657.650000 net=$6.2650 hold=0s take_profit
+2026-05-13 22:34:04,073 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.213000 exit=10.468325 net=$6.2650 hold=0s take_profit
+2026-05-13 22:35:04,604 INFO execution.high_freq_executor [FILL] SOL BUY @ 91.246000 notional=$250
+2026-05-13 22:35:04,606 INFO execution.high_freq_executor [FILL] XRP BUY @ 1.423900 notional=$250
+2026-05-13 22:35:05,104 INFO execution.high_freq_executor [CLOSE] SOL BUY entry=91.246000 exit=93.527150 net=$6.2650 hold=1s take_profit
+2026-05-13 22:35:05,106 WARNING risk.kill_switch Anti-rampage: 21 trades/h > 20 → 10 min suspend
+2026-05-13 22:35:05,107 INFO execution.high_freq_executor [CLOSE] XRP BUY entry=1.423900 exit=1.459497 net=$6.2650 hold=1s take_profit
+2026-05-13 22:35:05,107 WARNING risk.kill_switch Anti-rampage: 22 trades/h > 20 → 10 min suspend
+2026-05-13 22:45:06,293 INFO execution.high_freq_executor [FILL] BTC BUY @ 79690.000000 notional=$0
+2026-05-13 22:45:06,294 INFO execution.high_freq_executor [FILL] SOL SELL @ 91.142000 notional=$0
+2026-05-13 22:45:06,771 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79690.000000 exit=79929.070000 net=$0.0000 hold=0s take_profit
+2026-05-13 22:45:06,772 WARNING risk.kill_switch Anti-rampage: 23 trades/h > 20 → 10 min suspend
+2026-05-13 22:45:06,773 INFO execution.high_freq_executor [CLOSE] SOL SELL entry=91.142000 exit=91.121612 net=$0.0000 hold=0s take_profit
+2026-05-13 22:45:06,774 WARNING risk.kill_switch Anti-rampage: 24 trades/h > 20 → 10 min suspend
+2026-05-13 22:55:07,476 INFO execution.high_freq_executor [FILL] BTC SELL @ 79656.000000 notional=$0
+2026-05-13 22:55:07,477 INFO execution.high_freq_executor [FILL] ETH SELL @ 2261.800000 notional=$0
+2026-05-13 22:55:07,706 INFO execution.high_freq_executor [CLOSE] BTC SELL entry=79656.000000 exit=79417.032000 net=$0.0000 hold=0s take_profit
+2026-05-13 22:55:07,707 WARNING risk.kill_switch Anti-rampage: 25 trades/h > 20 → 10 min suspend
+2026-05-13 22:55:07,708 INFO execution.high_freq_executor [CLOSE] ETH SELL entry=2261.800000 exit=2255.014600 net=$0.0000 hold=0s take_profit
+2026-05-13 22:55:07,708 WARNING risk.kill_switch Anti-rampage: 26 trades/h > 20 → 10 min suspend
+2026-05-13 22:55:50,929 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config/presets/paper_500_clean.json selected_strategies=['S8EMS', 'MomentumLS', 'BreakoutControlled', 'MeanReversionKalman', 'FundingArbitrage', 'DonchianTrend', 'RSIBollingerReversion', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'VolatilityRegimeBreakout', 'MetaAlpha']
+2026-05-13 22:55:50,930 INFO risk.kill_switch KillSwitch init: capital=2500 daily_dd=2.5% total_dd=6.0%
+2026-05-13 22:55:50,931 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-13 22:55:50,931 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-13 22:55:50,932 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-13 22:55:50,932 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-13 22:55:50,932 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-13 22:55:50,935 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 22:55:50,936 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 22:55:50,936 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-13 22:55:50,936 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:55:50,936 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:55:50,937 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:55:50,937 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-13 22:55:50,937 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:55:50,937 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:55:50,937 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:55:50,937 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=True, coins=['BTC', 'ETH'])
+2026-05-13 22:55:50,937 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=True, coins=['BTC', 'ETH', 'SOL'])
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MomentumLS'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BreakoutControlled'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'DonchianTrend'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'VolatilityRegimeBreakout'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RSIBollingerReversion'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'S8EMS'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbitrage'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MeanReversionKalman'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RotationMomentum'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RelativeValue'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SpotPerpBasis'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingCarryHedged'
+2026-05-13 22:55:50,938 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'OBImbalanceScalper'
+2026-05-13 22:55:50,938 INFO __main__ MetaAlpha wired with 13 peers: ['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper']
+2026-05-13 22:55:50,939 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
+2026-05-13 22:55:50,939 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
+2026-05-13 22:55:50,939 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
+2026-05-13 22:55:50,939 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
+2026-05-13 22:55:50,939 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
+2026-05-13 22:55:50,939 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
+2026-05-13 22:55:50,940 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
+2026-05-13 22:55:50,950 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2500.00 | strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-13 22:55:51,520 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-13 22:55:53,962 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-13 22:55:53,962 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-13 22:55:55,234 INFO data.orderbook_manager All subscriptions sent.
+2026-05-13 22:55:55,252 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:55,253 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:55,254 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:55,708 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:56,122 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:56,625 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:57,180 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:57,738 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:58,242 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:58,900 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:55:59,349 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:00,262 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:00,698 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:00,961 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:01,453 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:02,101 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:02,560 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:03,122 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:03,637 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:04,204 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:04,665 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:05,588 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:05,804 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:06,276 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:06,873 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:07,363 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:07,897 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:08,450 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:08,985 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:09,517 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:10,534 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:10,749 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:11,164 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:11,650 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:12,217 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:12,727 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:13,299 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:13,843 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:14,378 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:14,910 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:15,828 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:16,045 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:16,521 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:17,055 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:17,572 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:18,097 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:18,638 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:20,909 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:20,909 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:21,126 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:21,126 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:21,362 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:21,362 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:21,876 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:21,878 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:22,358 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:22,359 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:22,849 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:22,850 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:23,416 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:23,417 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:23,935 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:23,936 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:24,558 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:24,559 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:25,004 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:25,005 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:25,818 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:25,819 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:26,085 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:26,086 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:26,611 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:26,612 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:27,133 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:27,133 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:27,740 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:27,741 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:28,255 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:28,256 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:28,862 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:28,863 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:29,325 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:29,326 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:29,855 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:29,855 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:31,024 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:31,025 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:31,244 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:31,245 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:31,538 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:31,539 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:32,047 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:32,049 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:32,655 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:32,656 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:33,124 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:33,125 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:33,696 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:33,697 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:34,237 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:34,237 WARNING __main__ [BLOCK] OBImbalanceScalper ETH zero notional — strategy has no allocated capital
+2026-05-13 22:56:34,742 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:35,794 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:36,010 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:36,397 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:36,918 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:37,464 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:37,983 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:38,299 INFO risk.strategy_capital_ledger [Ledger] disabled OBImbalanceScalper
+2026-05-13 22:56:38,299 INFO __main__ [ENGINE] disable_strategy OBImbalanceScalper mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}
+2026-05-13 22:56:38,315 INFO risk.strategy_capital_ledger [Ledger] disabled OBImbalanceScalper
+2026-05-13 22:56:38,316 INFO __main__ [ENGINE] disable_strategy OBImbalanceScalper mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}
+2026-05-13 22:56:40,344 INFO risk.strategy_capital_ledger [Ledger] enabled OBImbalanceScalper
+2026-05-13 22:56:40,350 INFO risk.strategy_capital_ledger [Ledger] enabled OBImbalanceScalper
+2026-05-13 22:56:40,827 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:41,153 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:41,673 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:42,226 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:42,859 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:43,339 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:44,046 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:44,419 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:44,920 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:46,022 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:46,239 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:46,475 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:47,145 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:47,641 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:48,173 WARNING __main__ [BLOCK] OBImbalanceScalper BTC zero notional — strategy has no allocated capital
+2026-05-13 22:56:48,413 INFO risk.strategy_capital_ledger [Ledger] disabled OBImbalanceScalper
+2026-05-13 22:56:48,413 INFO __main__ [ENGINE] disable_strategy OBImbalanceScalper mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}
+2026-05-13 22:56:48,413 INFO risk.strategy_capital_ledger [Ledger] disabled OBImbalanceScalper
+2026-05-13 22:56:48,413 INFO __main__ [ENGINE] disable_strategy OBImbalanceScalper mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}
+2026-05-13 22:56:48,637 ERROR __main__ Status write failed: [WinError 32] Le processus ne peut pas accéder au fichier car ce fichier est utilisé par un autre processus: 'runtime\\strategy_status.tmp' -> 'runtime\\strategy_status.json'
+2026-05-13 23:00:56,094 WARNING __main__ [BLOCK] MeanReversionKalman SOL zero notional — strategy has no allocated capital
+2026-05-13 23:01:28,175 INFO risk.strategy_capital_ledger [Ledger] disabled MeanReversionKalman
+2026-05-13 23:01:28,175 INFO __main__ [ENGINE] disable_strategy MeanReversionKalman mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}
+2026-05-13 23:01:29,174 INFO risk.strategy_capital_ledger [Ledger] disabled MeanReversionKalman
+2026-05-13 23:01:29,174 INFO __main__ [ENGINE] disable_strategy MeanReversionKalman mode=disable_only → {'ok': True, 'mode': 'disable_only', 'cancelled': 0, 'closed': 0}
+2026-05-13 23:03:52,170 ERROR __main__ Status write failed: [WinError 32] Le processus ne peut pas accéder au fichier car ce fichier est utilisé par un autre processus: 'runtime\\strategy_status.tmp' -> 'runtime\\strategy_status.json'
+2026-05-13 23:04:02,238 ERROR __main__ Status write failed: [WinError 32] Le processus ne peut pas accéder au fichier car ce fichier est utilisé par un autre processus: 'runtime\\strategy_status.tmp' -> 'runtime\\strategy_status.json'
+2026-05-13 23:04:43,395 ERROR __main__ Status write failed: [WinError 32] Le processus ne peut pas accéder au fichier car ce fichier est utilisé par un autre processus: 'runtime\\calibration_data.tmp' -> 'runtime\\calibration_data.json'
+2026-05-13 23:09:39,293 ERROR __main__ Status write failed: [WinError 5] Accès refusé: 'runtime\\strategy_status.tmp' -> 'runtime\\strategy_status.json'
