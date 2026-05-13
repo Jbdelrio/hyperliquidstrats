@@ -599,6 +599,11 @@ class EngineV9:
                 strat.config.max_position_size_usd if strat else 50.0
             )
 
+            if requested_notional <= 0:
+                log.warning("[BLOCK] %s %s zero notional — strategy has no allocated capital",
+                            strat_name, sym)
+                return
+
             # Gate 1: per-strategy ledger (budget + state)
             ok_ledger, ledger_reason = self.ledger.can_open(strat_name,
                                                             requested_notional)
