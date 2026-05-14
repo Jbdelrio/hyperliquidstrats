@@ -1,1 +1,1 @@
-{"exchange": "hyperliquid", "paper": true, "started_at": 1778709878.6458952, "config_path": "config_v9.json", "selected_strategies": [], "pid": 35424}
+{"exchange": "hyperliquid", "paper": true, "started_at": 1778784405.9278877, "config_path": "config/presets/paper_500_clean.json", "selected_strategies": ["MomentumLS", "BreakoutControlled", "RSIBollingerReversion"], "pid": 29948}

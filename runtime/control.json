@@ -1,1 +1,1 @@
-{"command_id": "a8504d25", "timestamp": 1778706087.839232, "command": "update_strategy", "args": {"strategy": "MeanReversionKalman", "action": "disable", "mode": "disable_only"}}
+{"command_id": "d6120fc8", "timestamp": 1778784405.880736, "command": "set_trading", "args": {"enabled": true}}
