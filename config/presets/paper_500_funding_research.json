@@ -1,0 +1,91 @@
+{
+  "_comment": "Funding Research preset — scan funding HL (+ Aster when wired). FundingArbitrageEnhanced runs in research_only mode (no orders).",
+  "capital": 500,
+  "paper_mode": true,
+  "mode": "funding_research",
+  "websocket_url": "wss://api.hyperliquid.xyz/ws",
+  "subscription_delay_s": 0.20,
+  "seconds_features": {
+    "enabled": true,
+    "log_enabled": true,
+    "feature_interval_s": 1.0,
+    "log_interval_s": 1.0,
+    "max_history_seconds": 300,
+    "log_path": "logs/seconds_features.csv"
+  },
+  "funding_research": {
+    "enabled": true,
+    "exchanges": ["hyperliquid", "aster"],
+    "symbols": ["BTC", "ETH", "SOL", "HYPE"],
+    "refresh_interval_s": 60,
+    "horizon_hours": [1, 4, 8],
+    "min_funding_spread_bps": 3.0,
+    "min_net_carry_bps": 2.0,
+    "min_net_carry_usd": 0.05,
+    "max_basis_bps": 30.0,
+    "min_liquidity_score": 0.70,
+    "max_risk_score": 0.40,
+    "max_notional_usd": 25,
+    "single_exchange_mode": "research_only",
+    "cross_exchange_mode": "paper_only",
+    "allow_live": false
+  },
+  "strategies": [
+    {
+      "name": "FundingArbEnhanced",
+      "class": "FundingArbitrageEnhanced",
+      "enabled": true,
+      "capital_allocated_usd": 100,
+      "max_positions": 1,
+      "max_position_size_usd": 25,
+      "coins": ["BTC", "ETH", "SOL", "HYPE"],
+      "params": {
+        "trade_enabled": false,
+        "research_only": true,
+        "cross_exchange_paper_only": true,
+        "allow_live": false,
+        "refresh_interval_s": 60,
+        "horizon_hours": 8,
+        "min_funding_spread_bps": 3.0,
+        "min_net_carry_bps": 2.0,
+        "min_net_carry_usd": 0.05,
+        "max_basis_bps": 30.0,
+        "max_notional_usd": 25,
+        "min_liquidity_score": 0.70,
+        "max_risk_score": 0.40,
+        "notional_usd": 25
+      }
+    },
+    {
+      "name": "SecondsResearch",
+      "class": "SecondsResearchStrategy",
+      "enabled": true,
+      "capital_allocated_usd": 0,
+      "max_positions": 0,
+      "max_position_size_usd": 0,
+      "coins": ["BTC", "ETH", "SOL", "HYPE"],
+      "params": {
+        "trade_enabled": false
+      }
+    }
+  ],
+  "risk": {
+    "max_open_positions": 1,
+    "max_notional_total": 50,
+    "max_trades_per_hour": 2,
+    "max_trades_per_day": 5,
+    "max_dd_daily_pct": 0.01,
+    "max_dd_total_pct": 0.03,
+    "network_timeout_s": 20
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/engine_v9.log",
+    "trade_log": "logs/fills_v9.csv",
+    "metrics_log": "metrics_v9/metrics_v9.csv",
+    "dashboard_interval_s": 60,
+    "decision_log": "logs/decisions_v9.csv",
+    "decision_logging_enabled": true,
+    "risk_events_log": "logs/risk_events.csv"
+  }
+}
