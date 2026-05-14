@@ -1,0 +1,174 @@
+{
+  "_comment": "Ultra-safe 500$ paper preset. One position at a time. Very small notional.",
+  "capital": 500,
+  "paper_mode": true,
+  "websocket_url": "wss://api.hyperliquid.xyz/ws",
+  "subscription_delay_s": 0.15,
+
+  "risk": {
+    "max_dd_daily_pct": 0.02,
+    "max_dd_total_pct": 0.05,
+    "max_open_positions": 1,
+    "max_notional_total": 100,
+    "max_trades_per_hour": 3,
+    "max_trades_per_day": 10,
+    "max_loss_streak": 3,
+    "btc_move_5m_pct": 0.015,
+    "rampage_suspend_s": 3600,
+    "streak_suspend_s": 7200,
+    "volguard_suspend_s": 1800,
+    "network_timeout_s": 20
+  },
+
+  "execution_filters": {
+    "enabled": true,
+    "min_expected_net_profit_usd": 0.05,
+    "min_expected_net_profit_pct_of_notional": 0.004,
+    "min_reward_risk_ratio": 1.5,
+    "min_hold_seconds": 120,
+    "cooldown_win_s": 300,
+    "cooldown_loss_s": 1200,
+    "taker_fee_bps": 4.5,
+    "slippage_bps": 6.0
+  },
+
+  "paper_sim": {
+    "latency_ms": 200,
+    "taker_expire_s": 20,
+    "maker_expire_s": 60,
+    "max_reprice_attempts": 1
+  },
+
+  "paper_simulation": {
+    "paper_latency_ms": 200,
+    "max_pending_seconds_taker": 20,
+    "max_pending_seconds_maker": 60,
+    "base_slippage_bps": 2.5
+  },
+
+  "sanity_check": {
+    "max_spread_bps": 30,
+    "min_reward_risk_ratio": 1.5,
+    "max_order_notional_usd": 50,
+    "stale_book_s": 30,
+    "stale_heartbeat_s": 20
+  },
+
+  "execution_planner": {
+    "taker_min_edge_ratio": 3.0,
+    "taker_max_spread_bps": 10.0,
+    "maker_price_offset_bps": 1.0
+  },
+
+  "portfolio_risk": {
+    "max_coin_exposure_pct": 0.35,
+    "max_net_exposure_pct": 0.60,
+    "max_family_exposure_pct": 0.40,
+    "max_correlated_same_dir": 1
+  },
+
+  "logging": {
+    "level": "INFO",
+    "file": "logs/engine_v9.log",
+    "trade_log": "logs/fills_v9.csv",
+    "metrics_log": "metrics_v9/metrics_v9.csv",
+    "dashboard_interval_s": 60,
+    "decision_log": "logs/decisions_v9.csv",
+    "decision_logging_enabled": true,
+    "risk_events_log": "logs/risk_events.csv",
+    "orders_log": "logs/orders_v9.csv",
+    "llm_decisions_log": "logs/llm_decisions_v9.csv"
+  },
+
+  "runtime": {
+    "control_file": "runtime/control.json",
+    "result_file": "runtime/control_result.json",
+    "status_file": "runtime/strategy_status.json",
+    "calibration_file": "runtime/calibration_data.json",
+    "status_interval_s": 10
+  },
+
+  "strategies": [
+    {
+      "name": "MomentumLS",
+      "class": "MomentumLongShort",
+      "enabled": true,
+      "capital_allocated_usd": 150,
+      "max_positions": 1,
+      "max_position_size_usd": 30,
+      "kill_after_consecutive_losses": 3,
+      "suspend_minutes_on_kill": 60,
+      "coins": ["BTC", "ETH", "SOL"],
+      "params": {
+        "rerank_seconds": 120,
+        "top_k_long": 1,
+        "bottom_k_short": 1,
+        "min_score_threshold": 0.70,
+        "r_15m_max_pct": 3.0,
+        "stop_loss_pct": 1.5,
+        "take_profit_pct": 2.5,
+        "trailing_stop_pct": 1.0,
+        "max_hold_hours": 8,
+        "spread_bps_max": 20.0,
+        "min_cost_ratio": 3.0
+      }
+    },
+    {
+      "name": "BreakoutControlled",
+      "class": "BreakoutControlled",
+      "enabled": true,
+      "capital_allocated_usd": 150,
+      "max_positions": 1,
+      "max_position_size_usd": 30,
+      "kill_after_consecutive_losses": 3,
+      "suspend_minutes_on_kill": 60,
+      "coins": ["BTC", "ETH", "SOL"],
+      "params": {
+        "lookback_bars": 20,
+        "bo_max_pct": 3.0,
+        "vr_min": 1.5,
+        "close_strength_min": 0.60,
+        "spread_bps_max": 20.0,
+        "take_profit_pct": 2.5,
+        "stop_below_resistance_pct": 1.0,
+        "max_hold_hours": 6
+      }
+    },
+    {
+      "name": "RSIBollingerReversion",
+      "class": "RSIBollingerReversionStrategy",
+      "enabled": true,
+      "capital_allocated_usd": 150,
+      "max_positions": 1,
+      "max_position_size_usd": 30,
+      "kill_after_consecutive_losses": 3,
+      "suspend_minutes_on_kill": 60,
+      "coins": ["BTC", "ETH", "SOL"],
+      "params": {
+        "rsi_period": 14,
+        "rsi_oversold": 30,
+        "zscore_period": 30,
+        "zscore_entry": -2.0,
+        "bb_period": 20,
+        "bb_k": 2.0,
+        "stop_loss_pct": 0.012,
+        "take_profit_pct": 0.020,
+        "time_stop_bars": 8,
+        "spread_bps_max": 15.0,
+        "min_cost_ratio": 3.0,
+        "btc_crash_5m_pct": -0.015
+      }
+    },
+    { "name": "S8EMS",                  "class": "S8EconophysicsMakerScalping",   "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "DonchianTrend",          "class": "DonchianTrendStrategy",         "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "MeanReversionKalman",    "class": "MeanReversionKalman",           "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "FundingArbitrage",       "class": "FundingArbitrage",              "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "RotationMomentum",       "class": "RotationMomentumStrategy",      "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "RelativeValue",          "class": "RelativeValueStrategy",         "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "SpotPerpBasis",          "class": "SpotPerpBasisStrategy",         "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "FundingCarryHedged",     "class": "FundingCarryHedgedStrategy",    "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "OBImbalanceScalper",     "class": "OrderBookImbalanceScalper",     "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "VolatilityRegimeBreakout","class": "VolatilityRegimeBreakoutStrategy", "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} },
+    { "name": "MetaAlpha",              "class": "MetaAlphaStrategy",             "enabled": false, "capital_allocated_usd": 0, "max_positions": 0, "max_position_size_usd": 0, "coins": [], "params": {} }
+  ]
+}

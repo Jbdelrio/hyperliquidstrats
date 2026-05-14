@@ -55,6 +55,9 @@ class PendingOrder:
     order_type:         str   = "MAKER_SIM"         # "MAKER_SIM" or "TAKER_SIM"
     max_pending_seconds: float = _DEFAULT_MAX_PENDING_MAKER
     expired:            bool   = False
+    # Phase 6: trace through to orders_v9.csv
+    signal_id:    str = ""
+    strategy:     str = ""
 
 
 @dataclass
@@ -103,12 +106,14 @@ class HighFreqExecutor:
     def __init__(self, paper: bool = True,
                  trade_log: str = "logs/fills_v9.csv",
                  on_fill_cb: Optional[Callable] = None,
-                 config: Optional[dict] = None):
+                 config: Optional[dict] = None,
+                 orders_log: str = "logs/orders_v9.csv"):
         if not paper:
             raise NotImplementedError("Live execution not implemented")
 
         self.paper = paper
         self.trade_log = trade_log
+        self.orders_log = orders_log
         self.on_fill_cb = on_fill_cb
 
         # Phase 1: read realistic-fill knobs from config (with safe defaults)
@@ -126,6 +131,7 @@ class HighFreqExecutor:
         self._positions: dict[str, OpenPosition] = {}
 
         Path(trade_log).parent.mkdir(parents=True, exist_ok=True)
+        Path(orders_log).parent.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------
     # 1. Place quotes
@@ -133,10 +139,13 @@ class HighFreqExecutor:
 
     def place_quotes(self, symbol: str, buy_price: float, sell_price: float,
                      size_units: float, notional_usd: float,
-                     order_type: str = "MAKER_SIM") -> str:
+                     order_type: str = "MAKER_SIM",
+                     signal_id: str = "",
+                     strategy: str = "") -> str:
         """
         order_type: "MAKER_SIM" (S8EMS-style quoting, no latency penalty) or
                     "TAKER_SIM" (directional PLACE_BUY/SELL, latency + slippage).
+        signal_id / strategy: optional trace for orders_v9.csv.
         """
         # One pair per symbol max
         if any(o.symbol == symbol for o in self._pending.values()):
@@ -155,12 +164,14 @@ class HighFreqExecutor:
             price=buy_price, size_units=size_units, notional_usd=notional_usd,
             placed_at=now, pair_id=pair_id,
             order_type=order_type, max_pending_seconds=max_pending,
+            signal_id=signal_id, strategy=strategy,
         )
         self._pending[sell_id] = PendingOrder(
             order_id=sell_id, symbol=symbol, side="SELL",
             price=sell_price, size_units=size_units, notional_usd=notional_usd,
             placed_at=now, pair_id=pair_id,
             order_type=order_type, max_pending_seconds=max_pending,
+            signal_id=signal_id, strategy=strategy,
         )
         self._pairs[pair_id] = [buy_id, sell_id]
 
@@ -247,9 +258,12 @@ class HighFreqExecutor:
     def _open_position_from_fill(self, fill: FillResult, order: PendingOrder):
         # Cancel sibling
         siblings = self._pairs.pop(order.pair_id, [])
+        sibling_orders: list[PendingOrder] = []
         for oid in siblings:
             if oid != order.order_id:
-                self._pending.pop(oid, None)
+                sib = self._pending.pop(oid, None)
+                if sib is not None:
+                    sibling_orders.append(sib)
         self._pending.pop(order.order_id, None)
 
         pos = OpenPosition(
@@ -263,6 +277,22 @@ class HighFreqExecutor:
 
         if self.on_fill_cb:
             self.on_fill_cb(fill, pos)
+
+        # Phase 6: orders_v9.csv logging — FILL row for the filled order,
+        # CANCEL rows for the auto-cancelled siblings.
+        self._log_order_event(
+            order=order, status="FILL", reason="fill",
+            notional_filled=fill.notional_usd, fill_ratio=1.0,
+            slippage_bps=fill.slippage_bps,
+            fee_bps=(MAKER_REBATE_BPS if order.order_type == "MAKER_SIM"
+                     else TAKER_FEE_BPS),
+        )
+        for sib in sibling_orders:
+            self._log_order_event(
+                order=sib, status="CANCEL", reason="sibling_filled",
+                notional_filled=0.0, fill_ratio=0.0,
+                slippage_bps=0.0, fee_bps=0.0,
+            )
 
         log.info("[FILL] %s %s @ %.6f notional=$%.0f slip=%.1fbps",
                  fill.symbol, fill.side, fill.price, fill.notional_usd,
@@ -315,6 +345,13 @@ class HighFreqExecutor:
                 log.debug("[EXPIRE] %s %s @ %.6f age=%.1fs type=%s",
                           o.symbol, o.side, o.price, now - o.placed_at,
                           o.order_type)
+                self._log_order_event(
+                    order=o, status="EXPIRE",
+                    reason=f"age={now - o.placed_at:.1f}s",
+                    notional_filled=0.0, fill_ratio=0.0,
+                    slippage_bps=0.0, fee_bps=0.0,
+                    queue_wait_s=now - o.placed_at,
+                )
         return expired_orders
 
     # ------------------------------------------------------------------
@@ -376,11 +413,28 @@ class HighFreqExecutor:
     # ------------------------------------------------------------------
 
     def cancel_quotes(self, symbol: str) -> None:
-        to_del = [oid for oid, o in self._pending.items() if o.symbol == symbol]
-        for oid in to_del:
+        to_del = [(oid, o) for oid, o in self._pending.items() if o.symbol == symbol]
+        for oid, o in to_del:
             self._pending.pop(oid, None)
+            try:
+                self._log_order_event(
+                    order=o, status="CANCEL", reason="cancel_quotes",
+                    notional_filled=0.0, fill_ratio=0.0,
+                    slippage_bps=0.0, fee_bps=0.0,
+                )
+            except Exception:
+                pass
 
     def cancel_all(self) -> None:
+        for o in list(self._pending.values()):
+            try:
+                self._log_order_event(
+                    order=o, status="CANCEL", reason="cancel_all",
+                    notional_filled=0.0, fill_ratio=0.0,
+                    slippage_bps=0.0, fee_bps=0.0,
+                )
+            except Exception:
+                pass
         self._pending.clear()
         self._pairs.clear()
 
@@ -407,6 +461,45 @@ class HighFreqExecutor:
     # ------------------------------------------------------------------
     # CSV logging
     # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # Phase 6: orders_v9.csv logging
+    # ------------------------------------------------------------------
+
+    def _log_order_event(self, *, order: PendingOrder, status: str,
+                          reason: str,
+                          notional_filled: float = 0.0,
+                          fill_ratio: float = 0.0,
+                          slippage_bps: float = 0.0,
+                          fee_bps: float = 0.0,
+                          queue_wait_s: float = 0.0) -> None:
+        """Append one row to orders_v9.csv. Best-effort; never raises."""
+        try:
+            write_hdr = not Path(self.orders_log).exists()
+            with open(self.orders_log, "a", newline="", encoding="utf-8") as f:
+                w = csv.writer(f)
+                if write_hdr:
+                    w.writerow([
+                        "timestamp", "signal_id", "strategy", "symbol", "side",
+                        "order_type", "limit_price",
+                        "notional_requested", "notional_filled", "fill_ratio",
+                        "status", "reason",
+                        "queue_wait_s", "slippage_bps", "fee_bps",
+                    ])
+                w.writerow([
+                    time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    order.signal_id, order.strategy, order.symbol, order.side,
+                    order.order_type, round(order.price, 8),
+                    round(order.notional_usd, 4),
+                    round(notional_filled, 4),
+                    round(fill_ratio, 4),
+                    status, reason,
+                    round(queue_wait_s, 3),
+                    round(slippage_bps, 3),
+                    round(fee_bps, 3),
+                ])
+        except Exception as e:
+            log.debug("Order log write failed: %s", e)
 
     def _log_trade(self, pos: "OpenPosition", exit_price: float,
                    gross: float, fee: float, net: float,

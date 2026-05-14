@@ -31,7 +31,10 @@
       "Skill(update-config)",
       "Bash(Start-Sleep -Seconds 5)",
       "Bash(Get-Content logs\\\\engine_v9.log -Tail 20)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git fetch *)",
+      "PowerShell(cd \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\"; Start-Process python -ArgumentList \"-m gui.app\" -WorkingDirectory \\(Get-Location\\).Path; Write-Host \"GUI lancé\")"
     ]
   }
 }

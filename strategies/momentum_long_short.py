@@ -87,6 +87,17 @@ class MomentumLongShort(BaseStrategy):
             self._log_skip(symbol, "score_too_low", ts, mid, spread_bps)
             return None
 
+        # Phase-6 absolute score threshold: longs need pct >= threshold,
+        # shorts need (1 - pct) >= threshold. Default 0 disables the gate.
+        min_score = float(p.get("min_score_threshold", 0.0))
+        if min_score > 0.0:
+            score_long  = pct
+            score_short = 1.0 - pct
+            score = score_long if in_long else score_short
+            if score < min_score:
+                self._log_skip(symbol, "min_score_threshold", ts, mid, spread_bps)
+                return None
+
         # Anti-pump: check r_15m
         closes = list(self._closes.get(symbol, []))
         if len(closes) >= 16:
@@ -119,6 +130,17 @@ class MomentumLongShort(BaseStrategy):
 
         size = notional / max(entry_price, 1e-9)
         action = "PLACE_BUY" if side == "BUY" else "PLACE_SELL"
+
+        # ── Enrich decision with risk metrics (Phase-6) ──────────
+        fee_bps = float(p.get("taker_fee_bps", 4.5))
+        slip_bps = float(p.get("slippage_bps", 4.5))
+        cost_bps = 2 * (fee_bps + slip_bps)
+        risk_usd = notional * stop_pct
+        reward_usd = notional * tp_pct
+        rr = reward_usd / risk_usd if risk_usd > 0 else 0.0
+        expected_edge_bps = tp_pct * 10_000.0
+        expected_net = reward_usd - (cost_bps / 10_000.0) * notional
+
         return StrategyDecision(
             action=action, symbol=symbol,
             buy_price=entry_price if side == "BUY" else None,
@@ -127,6 +149,14 @@ class MomentumLongShort(BaseStrategy):
             stop_loss=stop_price, take_profit=tp_price,
             max_hold_seconds=int(self.config.params.get("max_hold_hours", 4) * 3600),
             metadata={"side": side, "trail_ref": entry_price},
+            strategy_family="momentum",
+            order_type="TAKER_SIM",
+            confidence=abs(pct - 0.5) * 2.0,
+            estimated_cost_bps=cost_bps,
+            expected_edge_bps=expected_edge_bps,
+            expected_net_profit_usd=expected_net,
+            risk_usd=risk_usd,
+            reward_risk_ratio=rr,
         )
 
     def on_trade_update(self, symbol: str, trade, ts: float) -> None:

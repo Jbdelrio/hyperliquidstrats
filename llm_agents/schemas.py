@@ -1,6 +1,14 @@
 """
 llm_agents/schemas.py — Dataclass schemas for LLM overlay.
 All validation is explicit; no external dependencies required.
+
+Phase-6 adds:
+  - LLMRiskResponse: strict response shape from a RISK_OVERLAY LLM call.
+    Hard-caps `max_risk_multiplier` to <= 1.0 and validates the decision
+    enum so the LLM can never increase size or create a trade.
+  - LLMSnapshot: lean, typed market snapshot used by RISK_OVERLAY.
+    Kept separate from MarketSnapshot to avoid breaking existing logger
+    / coordinator code paths.
 """
 from __future__ import annotations
 
@@ -154,3 +162,99 @@ def parse_agent_forecast(raw: dict, agent_name: str) -> AgentForecast:
             risk_flags=["llm_parse_error"],
             suggested_action="NO_TRADE",
         )
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Phase-6 RISK_OVERLAY schemas
+# ─────────────────────────────────────────────────────────────────────
+
+
+_VALID_RISK_DECISIONS = frozenset({"CONFIRM", "REDUCE_SIZE_50", "BLOCK"})
+
+
+@dataclass
+class LLMRiskResponse:
+    """
+    Strict response shape from a RISK_OVERLAY LLM call.
+
+    Invariants (enforced in __post_init__):
+      - decision ∈ {CONFIRM, REDUCE_SIZE_50, BLOCK}
+      - confidence ∈ [0, 1]
+      - max_risk_multiplier ∈ [0, 1] (CAN NEVER exceed 1.0)
+      - risk_flags is a list[str]
+
+    The LLM CAN return decisions that REDUCE risk. It CAN NEVER increase
+    risk above the strategy's own choice — guaranteed by clipping
+    `max_risk_multiplier` to <= 1.0 and by the action enum.
+    """
+    decision: str
+    confidence: float = 0.0
+    risk_flags: list = field(default_factory=list)
+    reason: str = ""
+    max_risk_multiplier: float = 1.0
+
+    def __post_init__(self) -> None:
+        if self.decision not in _VALID_RISK_DECISIONS:
+            self.decision = "BLOCK"
+            self.risk_flags = list(self.risk_flags) + ["llm_invalid_decision"]
+        # Confidence ∈ [0,1]
+        try:
+            self.confidence = max(0.0, min(1.0, float(self.confidence)))
+        except (TypeError, ValueError):
+            self.confidence = 0.0
+        # CRITICAL: multiplier can NEVER exceed 1.0
+        try:
+            self.max_risk_multiplier = max(0.0, min(1.0, float(self.max_risk_multiplier)))
+        except (TypeError, ValueError):
+            self.max_risk_multiplier = 0.0
+        # risk_flags must be a list of strings
+        try:
+            self.risk_flags = [str(f) for f in (self.risk_flags or [])]
+        except (TypeError, ValueError):
+            self.risk_flags = []
+
+    @classmethod
+    def model_validate(cls, raw) -> "LLMRiskResponse":
+        """Pydantic-style entry point. Accepts dict or LLMRiskResponse."""
+        if isinstance(raw, cls):
+            return raw
+        if not isinstance(raw, dict):
+            raise ValueError(f"LLMRiskResponse expects dict, got {type(raw)}")
+        return cls(
+            decision=str(raw.get("decision", "BLOCK")),
+            confidence=float(raw.get("confidence", 0.0) or 0.0),
+            risk_flags=list(raw.get("risk_flags", []) or []),
+            reason=str(raw.get("reason", "") or ""),
+            max_risk_multiplier=float(raw.get("max_risk_multiplier", 1.0) or 1.0),
+        )
+
+
+@dataclass
+class LLMSnapshot:
+    """
+    Lean market snapshot consumed by RISK_OVERLAY. Includes only the
+    fields the risk LLM needs — strategy intent, market regime,
+    portfolio context.
+    """
+    symbol: str
+    strategy: str
+    side: str
+    entry: float
+    stop: float
+    take_profit: float
+    notional: float
+    spread_bps: float = 0.0
+    expected_edge_bps: float = 0.0
+    estimated_cost_bps: float = 0.0
+    reward_risk_ratio: float = 0.0
+
+    btc_1m_return: float = 0.0
+    btc_5m_return: float = 0.0
+    btc_regime: str = "unknown"
+    orderbook_imbalance: float = 0.0
+    funding_rate: float = 0.0
+
+    open_positions_count: int = 0
+    daily_pnl: float = 0.0
+    recent_loss_streak: int = 0
+    signal_reason: str = ""

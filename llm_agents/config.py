@@ -26,6 +26,19 @@ LLM_MAX_OHLCV_ROWS        = int(os.environ.get("LLM_MAX_OHLCV_ROWS", "60"))
 LLM_USE_CROSS_EXCHANGE    = _bool("LLM_USE_CROSS_EXCHANGE", "true")
 LLM_SAMPLE_RATE           = float(os.environ.get("LLM_SAMPLE_RATE", "1.0"))  # 1.0=always, 0.5=50%
 
+# ── Three-mode safety switch (Phase-6) ─────────────────────────────────
+# OFF           — LLM completely bypassed, decisions pass through unchanged.
+# OBSERVER      — LLM is called (if configured), result is LOGGED only.
+#                 Trade decisions are NEVER modified.
+# RISK_OVERLAY  — LLM can BLOCK or REDUCE size by 50 %. It can NEVER
+#                 increase size and NEVER create or flip a decision.
+# Read at engine start; also overridable at runtime via
+# runtime/llm_mode.json (the engine control loop picks it up).
+ARTEMISIA_LLM_MODE = os.environ.get("ARTEMISIA_LLM_MODE", "OFF").upper()
+if ARTEMISIA_LLM_MODE not in ("OFF", "OBSERVER", "RISK_OVERLAY"):
+    ARTEMISIA_LLM_MODE = "OFF"
+LLM_MODE = ARTEMISIA_LLM_MODE
+
 # Risk flags that always block trading
 BLOCKING_RISK_FLAGS = frozenset({
     "high_spread",
