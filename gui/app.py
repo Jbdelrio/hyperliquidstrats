@@ -50,7 +50,7 @@ if "--fresh" in _sys.argv:
 from gui.control_api import ControlAPI
 from gui.theme import COLORS, THEME
 from gui.tabs import calibration, coins, decisions, overview, risk, strategies, trades
-from gui.tabs import llm_overlay, exchanges
+from gui.tabs import llm_overlay, exchanges, orders
 
 _HERE = _os.path.dirname(_os.path.abspath(__file__))
 _api  = ControlAPI()
@@ -86,6 +86,7 @@ _TABS = [
     ("Overview",     "tab-overview",     overview),
     ("Decisions",    "tab-decisions",    decisions),
     ("Trades",       "tab-trades",       trades),
+    ("Orders",       "tab-orders",       orders),
     ("Coins",        "tab-coins",        coins),
     ("Risk",         "tab-risk",         risk),
     ("Strategies",   "tab-strategies",   strategies),
@@ -231,6 +232,7 @@ def _update_global_conn(_n):
 overview.register_callbacks(app)
 decisions.register_callbacks(app)
 trades.register_callbacks(app)
+orders.register_callbacks(app)
 coins.register_callbacks(app)
 risk.register_callbacks(app)
 strategies.register_callbacks(app)

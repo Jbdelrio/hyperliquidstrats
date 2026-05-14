@@ -106,6 +106,10 @@ class ControlAPI:
     def set_llm(self, enabled: bool) -> None:
         self.send_nowait("set_llm", {"enabled": enabled})
 
+    def set_llm_mode(self, mode: str) -> None:
+        """Switch LLM mode at runtime: OFF / OBSERVER / RISK_OVERLAY."""
+        self.send_nowait("set_llm_mode", {"mode": (mode or "OFF").upper()})
+
     # ------------------------------------------------------------------
     # Connection / engine status (file-age heuristic, never blocks)
     # ------------------------------------------------------------------

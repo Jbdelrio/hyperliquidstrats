@@ -610,6 +610,25 @@ def static_layout() -> html.Div:
                     className="d-flex align-items-center"),
         ], className="g-2 align-items-center mb-3"),
 
+        # ── LLM mode toggle (Phase-6) ─────────────────────────────────
+        dbc.Row([
+            dbc.Col(html.Small("LLM MODE", style={"color": COLORS["accent"],
+                                                   "letterSpacing": "2px",
+                                                   "fontWeight": "700",
+                                                   "fontSize": "10px"}),
+                    width="auto", className="d-flex align-items-center"),
+            dbc.Col(dbc.Button("OFF",      id="llm-mode-off-btn",
+                               color="secondary", size="sm", style=_BTN), width="auto"),
+            dbc.Col(dbc.Button("OBSERVER", id="llm-mode-observer-btn",
+                               color="info",   size="sm", style=_BTN), width="auto"),
+            dbc.Col(dbc.Button("RISK_OVERLAY", id="llm-mode-risk-btn",
+                               color="warning", size="sm", style=_BTN), width="auto"),
+            dbc.Col(html.Div(id="llm-mode-result",
+                             style={"fontSize": "11px",
+                                    "color": COLORS["text"]}),
+                    className="d-flex align-items-center"),
+        ], className="g-2 align-items-center mb-3"),
+
         # ── Quick strategy toggles ─────────────────────────────────────
         html.Div(style={"backgroundColor": "#0a0a0a", "padding": "8px 14px",
                         "border": _BDR, "borderRadius": "4px", "marginBottom": "10px"},
@@ -777,6 +796,28 @@ def register_callbacks(app) -> None:
             txt   = "LLM INACTIF"
             color = COLORS["text"]
         return txt, {"fontSize": "11px", "color": color, "fontWeight": "700"}
+
+    # ── LLM mode toggle (Phase-6) ─────────────────────────────────────────
+
+    @app.callback(
+        Output("llm-mode-result", "children"),
+        Input("llm-mode-off-btn",      "n_clicks"),
+        Input("llm-mode-observer-btn", "n_clicks"),
+        Input("llm-mode-risk-btn",     "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def _llm_mode(_off, _obs, _risk):
+        trig = dash.ctx.triggered_id
+        if trig == "llm-mode-off-btn":
+            _api.set_llm_mode("OFF")
+            return _ok("✓ LLM mode → OFF")
+        if trig == "llm-mode-observer-btn":
+            _api.set_llm_mode("OBSERVER")
+            return _ok("✓ LLM mode → OBSERVER")
+        if trig == "llm-mode-risk-btn":
+            _api.set_llm_mode("RISK_OVERLAY")
+            return _ok("⚠ LLM mode → RISK_OVERLAY")
+        return dash.no_update
 
     # ── Quick strategy toggles panel ──────────────────────────────────────
 

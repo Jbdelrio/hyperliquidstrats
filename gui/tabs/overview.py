@@ -217,6 +217,37 @@ def _pos_table(positions):
               "borderRadius": "4px", "padding": "8px 12px", "marginTop": "10px"})
 
 
+def _count_recent_csv_rows(path: "Path", filter_fn,
+                            window_s: float, now: float) -> int:
+    """Count CSV rows with a timestamp within `window_s` of `now` matching
+    `filter_fn(row)`. Returns 0 if file missing or unreadable."""
+    try:
+        if not path.exists():
+            return 0
+        # File mtime is a cheap proxy when timestamps are inconsistent.
+        if (now - path.stat().st_mtime) > window_s * 2:
+            return 0
+        import csv as _csv
+        cnt = 0
+        with open(path, encoding="utf-8", errors="replace", newline="") as f:
+            for row in _csv.DictReader(f):
+                ts_raw = row.get("ts") or row.get("timestamp") or ""
+                try:
+                    # Try ISO format first, then plain float seconds
+                    if "T" in ts_raw:
+                        import datetime as _dt
+                        t = _dt.datetime.fromisoformat(ts_raw).timestamp()
+                    else:
+                        t = float(ts_raw)
+                except Exception:
+                    continue
+                if now - t <= window_s and filter_fn(row):
+                    cnt += 1
+        return cnt
+    except Exception:
+        return 0
+
+
 def _build_alerts(live_list: list, now: float) -> list[dict]:
     """
     Phase 8: derive operational alerts from runtime files.
@@ -224,6 +255,47 @@ def _build_alerts(live_list: list, now: float) -> list[dict]:
     Read-only — never mutates engine state.
     """
     alerts: list[dict] = []
+
+    # ── Phase-6 alerts ────────────────────────────────────────────────
+    # A. Positions without stop / TP (data integrity)
+    for s in live_list:
+        sname = s.get("name", "?")
+        for pos in s.get("open_positions", []):
+            tp = pos.get("tp_price", 0)
+            sp = pos.get("stop_price", 0)
+            if (tp == 0 or tp is None) or (sp == 0 or sp is None):
+                alerts.append({
+                    "level": "critical",
+                    "text":  (f"{sname}/{pos.get('symbol', '?')}: position has "
+                              f"tp_price={tp} stop_price={sp} — no protective exits"),
+                })
+
+    # B. LLM-blocked trades in the last 5 minutes
+    llm_path = _REPO / "logs" / "llm_decisions_v9.csv"
+    n_blocked = _count_recent_csv_rows(
+        llm_path,
+        lambda r: (r.get("llm_decision") or "").upper() == "BLOCK",
+        window_s=300, now=now,
+    )
+    if n_blocked > 0:
+        alerts.append({
+            "level": "warning",
+            "text":  f"LLM: {n_blocked} BLOCK decision(s) in the last 5min",
+        })
+
+    # C. SanityCheckEngine rejections in the last 5 minutes
+    rev_path = _REPO / "logs" / "risk_events.csv"
+    n_sanity = _count_recent_csv_rows(
+        rev_path,
+        lambda r: ((r.get("block_reason") or "").startswith("sanity_")
+                   and (r.get("allowed") in ("0", "False", "false"))),
+        window_s=300, now=now,
+    )
+    if n_sanity > 0:
+        alerts.append({
+            "level": "warning" if n_sanity < 10 else "critical",
+            "text":  f"SanityCheck: {n_sanity} rejection(s) in the last 5min",
+        })
 
     # 1. Strategy suspended / killed and 2. drawdown > 15%
     for s in live_list:

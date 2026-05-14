@@ -44,10 +44,12 @@ from strategies.orderbook_imbalance_scalper import OrderBookImbalanceScalper
 from strategies.volatility_regime_breakout import VolatilityRegimeBreakoutStrategy
 from strategies.meta_alpha_strategy import MetaAlphaStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
+from execution.execution_planner import ExecutionPlanner
 from risk.kill_switch import KillSwitch
 from risk.adverse_selection_monitor import AdverseSelectionMonitor
 from risk.strategy_capital_ledger import StrategyCapitalLedger
 from risk.portfolio_risk_manager import PortfolioRiskManager
+from risk.sanity_check_engine import SanityCheckEngine
 from monitoring.pnl_tracker import PnLTracker
 from monitoring.decision_logger import DecisionLogger
 
@@ -166,6 +168,7 @@ class EngineV9:
                 "max_pending_seconds_maker":  _paper_sim.get("max_pending_seconds_maker", 120),
                 "base_slippage_bps":          _paper_sim.get("base_slippage_bps", 2.0),
             },
+            orders_log=log_cfg.get("orders_log", "logs/orders_v9.csv"),
         )
         self.ks = KillSwitch(
             initial_capital=self.equity,
@@ -256,6 +259,19 @@ class EngineV9:
             max_correlated_same_dir=int(_pf.get("max_correlated_same_dir", 2)),
         )
 
+        # ── Phase-6: SanityCheckEngine — first-line gate ────────────────
+        self.sanity = SanityCheckEngine()
+
+        # ── Phase-6: ExecutionPlanner — chooses MAKER/TAKER + max_pending
+        self.exec_planner = ExecutionPlanner(self.cfg)
+
+        # ── Phase-6: daily trade counters used by SanityCheckEngine ────
+        self._trades_today: int = 0
+        self._trades_this_hour_ts: list[float] = []
+        self._daily_pnl: float = 0.0
+        self._day_start_ts: float = time.time()
+        self._last_book_ts: float = 0.0
+
         # ── Multi-strategy position tracking ──────────────────────────
         self._pair_to_strategy: dict[str, str] = {}    # pair_id  → strat_name
         self._pos_to_strategy:  dict[str, str] = {}    # pos_id   → strat_name
@@ -320,6 +336,30 @@ class EngineV9:
             self._llm_sample_rate: float = float(_llm_sr)
         except Exception:
             self._llm_sample_rate = 1.0   # default: evaluate every call
+
+        # ── Phase-6 LLM mode (OFF / OBSERVER / RISK_OVERLAY) ────────────
+        try:
+            from llm_agents.config import LLM_MODE as _lm
+            self._llm_mode: str = (_lm or "OFF").upper()
+        except Exception:
+            self._llm_mode = "OFF"
+        # GUI override: runtime/llm_mode.json (read by control loop)
+        self._llm_decisions_log = log_cfg.get("llm_decisions_log",
+                                              "logs/llm_decisions_v9.csv")
+        Path(self._llm_decisions_log).parent.mkdir(parents=True, exist_ok=True)
+        if not Path(self._llm_decisions_log).exists():
+            try:
+                import csv as _csv
+                with open(self._llm_decisions_log, "w", newline="",
+                          encoding="utf-8") as _f:
+                    _csv.writer(_f).writerow([
+                        "ts", "signal_id", "strategy", "symbol", "side",
+                        "notional_in", "notional_out",
+                        "llm_mode", "llm_decision", "llm_reason",
+                        "llm_confidence", "risk_flags",
+                    ])
+            except Exception:
+                pass
 
         # ── Exchange factory (optional, multi-exchange data) ────────────
         try:
@@ -394,6 +434,7 @@ class EngineV9:
                 continue
 
             self._last_book[sym] = book
+            self._last_book_ts = ts
 
             # Update OHLCV accumulator
             mid = book.mid
@@ -481,6 +522,21 @@ class EngineV9:
                 if len(hist) > self._llm_max_bars:
                     hist.pop(0)
 
+                # Phase-6: BTC 5m return → broadcast to strategies that
+                # accept it (currently RSIBollingerReversion). 5 minutes
+                # = 5 most-recent BTC bars.
+                if sym == "BTC" and len(hist) >= 6:
+                    try:
+                        btc_5m = (hist[-1]["close"] / hist[-6]["close"]) - 1.0
+                        for st in self.manager.strategies.values():
+                            if hasattr(st, "set_btc_context"):
+                                try:
+                                    st.set_btc_context(btc_5m)
+                                except Exception:
+                                    pass
+                    except Exception:
+                        pass
+
                 for strat_name, decision in self.manager.on_bar_minute(sym, bar, ts):
                     await self._execute_decision(strat_name, decision, ts)
 
@@ -538,6 +594,10 @@ class EngineV9:
                     self.ks.update_equity(self.equity)
                     self.ks.register_close(pos.notional_usd)
                     self.ks.record_trade(net_pnl)
+                    # Phase-6: bookkeeping for SanityCheckEngine caps
+                    self._daily_pnl += net_pnl
+                    self._trades_today += 1
+                    self._trades_this_hour_ts.append(ts)
                     if sname:
                         self.ledger.register_close(sname, pos.notional_usd, net_pnl)
                         self.portfolio_risk.register_close(
@@ -602,11 +662,24 @@ class EngineV9:
         result_file  = Path(self._runtime_cfg.get("result_file",     "runtime/control_result.json"))
         status_file  = Path(self._runtime_cfg.get("status_file",     "runtime/strategy_status.json"))
         calib_file   = Path(self._runtime_cfg.get("calibration_file","runtime/calibration_data.json"))
+        llm_mode_file = Path("runtime/llm_mode.json")
         status_s     = float(self._runtime_cfg.get("status_interval_s", 60))
 
         control_file.parent.mkdir(parents=True, exist_ok=True)
         last_cmd_id   = None
         last_status_t = -999999.0
+
+        # Pick up any persisted LLM mode from a previous session.
+        try:
+            if llm_mode_file.exists():
+                with open(llm_mode_file, encoding="utf-8") as f:
+                    saved = json.load(f)
+                m = (saved.get("mode") or "").upper()
+                if m in ("OFF", "OBSERVER", "RISK_OVERLAY"):
+                    self._llm_mode = m
+                    log.info("[ENGINE] LLM mode loaded from runtime/llm_mode.json: %s", m)
+        except Exception:
+            pass
 
         while self._running:
             await asyncio.sleep(2.0)
@@ -696,7 +769,7 @@ class EngineV9:
         sym    = decision.symbol
         book   = self._last_book.get(sym)
 
-        # ── PLACE actions: ledger gate → KS gate → LLM → execute ──────
+        # ── PLACE actions: SANITY → ledger → portfolio → KS → EF → LLM → execute ──
         if action in ("PLACE_QUOTES", "PLACE_BUY", "PLACE_SELL"):
             if not self._trading_enabled or ts < self._pause_until:
                 return
@@ -710,6 +783,58 @@ class EngineV9:
                 log.debug("[BLOCK] %s %s zero notional — no capital allocated",
                           strat_name, sym)
                 return
+
+            # Gate 0: SanityCheckEngine — first-line guard on the decision
+            # itself. Catches bad book, bad stop/TP, missing fields,
+            # stale data, daily-trade caps before any state mutation.
+            try:
+                pending_syms = self._symbols_with_pending()
+                open_syms    = self._symbols_with_positions()
+                # Make sure notional is filled on the decision for the
+                # validator (some strategies leave it None).
+                if not decision.notional_usd:
+                    decision.notional_usd = requested_notional
+                strategy_cfg_for_sanity = {
+                    "max_position_size_usd": (
+                        strat.config.max_position_size_usd if strat else 1e18
+                    ),
+                }
+                strategy_states = {
+                    n: s.state(ts) for n, s in self.manager.strategies.items()
+                }
+                engine_state_for_sanity = {
+                    "now":                    ts,
+                    "last_book_ts":           self._last_book_ts,
+                    "last_heartbeat_ts":      getattr(self.ks, "_last_heartbeat", ts),
+                    "daily_pnl":              self._daily_pnl,
+                    "trades_today":           self._trades_today,
+                    "trades_this_hour":       self._trades_in_last_hour(ts),
+                    "pending_symbols":        pending_syms,
+                    "open_position_symbols":  open_syms,
+                    "allow_multi_position":   self.cfg.get(
+                        "allow_multi_position", True),
+                    "strategy_states":        strategy_states,
+                    "btc_vol_guard":          (
+                        ts < getattr(self.ks, "_volguard_until", 0.0)
+                    ),
+                }
+                ok_sa, sa_reason, sa_details = self.sanity.validate_decision(
+                    decision=decision, strategy_name=strat_name,
+                    book=book, engine_state=engine_state_for_sanity,
+                    config=self.cfg, strategy_config=strategy_cfg_for_sanity,
+                )
+                if not ok_sa:
+                    log.info("[SANITY] BLOCK %s %s → %s details=%s",
+                             strat_name, sym, sa_reason, sa_details)
+                    self._log_risk_event(
+                        strat_name, sym, action, requested_notional,
+                        False, sa_reason,
+                    )
+                    return
+            except Exception as _sa_exc:
+                # Defensive: a buggy sanity check should never crash the
+                # engine. Log and continue without blocking.
+                log.debug("SanityCheck error (ignored): %s", _sa_exc)
 
             # Gate 1: per-strategy ledger (budget + state)
             ok_ledger, ledger_reason = self.ledger.can_open(strat_name,
@@ -762,21 +887,27 @@ class EngineV9:
                         notional_usd=requested_notional, timestamp=ts)
                 return
 
-            # Gate 5: LLM overlay (optional)
-            if self._llm_overlay is not None:
-                import random as _random
-                if _random.random() < self._llm_sample_rate:
-                    try:
-                        decision = await asyncio.to_thread(
-                            self._apply_llm_overlay_sync,
-                            strat_name, decision, ts, book)
-                        if decision.action == "SKIP":
-                            self.ledger.release_reserved(strat_name,
-                                                         requested_notional)
-                            return
-                        action = decision.action
-                    except Exception as _llm_exc:
-                        log.debug("LLM overlay error (ignored): %s", _llm_exc)
+            # Gate 5: LLM mode (OFF / OBSERVER / RISK_OVERLAY)
+            try:
+                decision = await asyncio.to_thread(
+                    self._apply_llm_mode_sync,
+                    strat_name, decision, ts, book,
+                )
+                if decision.action == "SKIP":
+                    self.ledger.release_reserved(strat_name,
+                                                 requested_notional)
+                    return
+                action = decision.action
+                # The LLM may have reduced the notional. Re-sync the
+                # requested_notional we already reserved so we don't
+                # leak budget when the size shrinks.
+                new_notional = float(decision.notional_usd or 0.0)
+                if 0 < new_notional < requested_notional:
+                    delta = requested_notional - new_notional
+                    self.ledger.release_reserved(strat_name, delta)
+                    requested_notional = new_notional
+            except Exception as _llm_exc:
+                log.debug("LLM mode dispatcher error (ignored): %s", _llm_exc)
 
             self._log_risk_event(strat_name, sym, action,
                                  requested_notional, True, "")
@@ -788,7 +919,9 @@ class EngineV9:
                 pair_id = self.executor.place_quotes(
                     sym, decision.buy_price, decision.sell_price,
                     decision.size, notional_for_order,
-                    order_type="MAKER_SIM")
+                    order_type="MAKER_SIM",
+                    signal_id=getattr(decision, "signal_id", ""),
+                    strategy=strat_name)
                 if pair_id:
                     self._pair_to_strategy[pair_id] = strat_name
                     self._pair_to_reserved[pair_id] = (strat_name,
@@ -811,33 +944,35 @@ class EngineV9:
                 strat2   = self.manager.get(strat_name)
                 notional = decision.notional_usd or (
                     strat2.config.max_position_size_usd if strat2 else 50.0)
+
+                # Phase-6: ExecutionPlanner decides MAKER vs TAKER + limit.
+                try:
+                    plan = self.exec_planner.plan(decision, book)
+                except ValueError as _plan_exc:
+                    log.info("[PLAN] BLOCK %s %s → %s", strat_name, sym, _plan_exc)
+                    self.ledger.release_reserved(strat_name, requested_notional)
+                    return
+
+                # Build the dual-leg call: only the directional leg uses
+                # the planned limit price; the other leg is unfillable.
                 if action == "PLACE_BUY":
-                    ask = book.best_ask or book.mid
-                    if not ask:
-                        self.ledger.release_reserved(strat_name,
-                                                     requested_notional)
-                        return
-                    buy_p  = ask * 1.0001
+                    buy_p  = plan.limit_price
                     sell_p = 9_999_999.0
                     size   = decision.size or (notional / max(buy_p, 1e-9))
                 else:
-                    bid = book.best_bid or book.mid
-                    if not bid:
-                        self.ledger.release_reserved(strat_name,
-                                                     requested_notional)
-                        return
                     buy_p  = 0.000_001
-                    sell_p = bid * 0.9999
+                    sell_p = plan.limit_price
                     size   = decision.size or (notional / max(sell_p, 1e-9))
-                # PLACE_BUY/PLACE_SELL → directional taker order with latency + slippage
-                pair_id = self.executor.place_quotes(sym, buy_p, sell_p,
-                                                     size, notional,
-                                                     order_type="TAKER_SIM")
+
+                pair_id = self.executor.place_quotes(
+                    sym, buy_p, sell_p, size, notional,
+                    order_type=plan.order_type,
+                    signal_id=plan.signal_id, strategy=strat_name)
                 if pair_id:
                     self._pair_to_strategy[pair_id] = strat_name
                     self._pair_to_reserved[pair_id] = (strat_name, notional)
-                    log.debug("[%s] %s %s notional=$%.0f",
-                              action, strat_name, sym, notional)
+                    log.debug("[%s] %s %s notional=$%.0f type=%s",
+                              action, strat_name, sym, notional, plan.order_type)
                 else:
                     self.ledger.release_reserved(strat_name, requested_notional)
             return   # done with PLACE actions
@@ -966,6 +1101,10 @@ class EngineV9:
         self.ks.update_equity(self.equity)
         self.ks.register_close(pos.notional_usd)
         self.ks.record_trade(net_pnl)
+        # Phase-6 trade counters used by SanityCheckEngine
+        self._daily_pnl += net_pnl
+        self._trades_today += 1
+        self._trades_this_hour_ts.append(ts)
 
         self.ledger.register_close(strat_name, pos.notional_usd, net_pnl)
         self.portfolio_risk.register_close(
@@ -1045,6 +1184,132 @@ class EngineV9:
         except Exception as exc:
             log.debug("_apply_llm_overlay_sync error (ignored): %s", exc)
             return decision
+
+    # ------------------------------------------------------------------
+    # Phase-6 LLM mode dispatcher (OFF / OBSERVER / RISK_OVERLAY)
+    # ------------------------------------------------------------------
+
+    def _apply_llm_mode_sync(self, strat_name: str,
+                              decision: StrategyDecision,
+                              ts: float, book) -> StrategyDecision:
+        """
+        Resolve LLM mode and apply its multiplier to the decision.
+
+        Hard guarantees (also enforced inside llm_agents/modes.py):
+          - multiplier is always in [0, 1] (LLM can NEVER scale UP).
+          - action is never changed by the LLM (only set to SKIP if BLOCK).
+          - stop_loss / take_profit are never touched.
+        """
+        from llm_agents.modes import apply_llm_mode
+        from llm_agents.schemas import LLMSnapshot
+
+        mode = self._llm_mode
+
+        # OFF mode: cheap path, no snapshot construction.
+        if mode == "OFF":
+            return decision
+
+        # Sampling: skip a fraction of calls to keep API costs bounded.
+        if mode == "RISK_OVERLAY" and self._llm_sample_rate < 1.0:
+            import random as _random
+            if _random.random() > self._llm_sample_rate:
+                return decision
+
+        sym = decision.symbol
+        # Build the lean snapshot
+        spread_bps = 0.0
+        if book and book.best_bid and book.best_ask and book.mid:
+            spread_bps = (book.best_ask - book.best_bid) / book.mid * 10_000.0
+        side = "BUY" if decision.action == "PLACE_BUY" else (
+            "SELL" if decision.action == "PLACE_SELL" else "NEUTRAL"
+        )
+        entry = (book.best_ask if side == "BUY"
+                 else (book.best_bid if side == "SELL" else book.mid)) or 0.0
+        snapshot = LLMSnapshot(
+            symbol=sym, strategy=strat_name, side=side,
+            entry=float(entry or 0.0),
+            stop=float(decision.stop_loss or 0.0),
+            take_profit=float(decision.take_profit or 0.0),
+            notional=float(decision.notional_usd or 0.0),
+            spread_bps=spread_bps,
+            expected_edge_bps=float(decision.expected_edge_bps or 0.0),
+            estimated_cost_bps=float(decision.estimated_cost_bps or 0.0),
+            reward_risk_ratio=float(decision.reward_risk_ratio or 0.0),
+            open_positions_count=len(self.executor.open_positions),
+            daily_pnl=self._daily_pnl,
+            signal_reason=decision.reason,
+        )
+
+        result = apply_llm_mode(
+            mode=mode, overlay=self._llm_overlay,
+            decision=decision, snapshot=snapshot,
+            risk_overlay_callable=None,
+        )
+
+        notional_in  = float(decision.notional_usd or 0.0)
+        notional_out = notional_in * result.multiplier
+
+        # Log to llm_decisions_v9.csv (best effort, never raises)
+        self._log_llm_decision(
+            ts=ts, signal_id=getattr(decision, "signal_id", ""),
+            strategy=strat_name, symbol=sym, side=side,
+            notional_in=notional_in, notional_out=notional_out,
+            llm_mode=mode, llm_decision=result.action,
+            llm_reason=result.reason,
+            llm_confidence=result.confidence,
+            risk_flags=result.risk_flags,
+        )
+
+        # Apply the result
+        if result.multiplier <= 0.0:
+            import dataclasses
+            return dataclasses.replace(
+                decision, action="SKIP",
+                reason=f"llm_block: {result.reason}",
+            )
+        if result.multiplier < 1.0:
+            import dataclasses
+            return dataclasses.replace(decision, notional_usd=notional_out)
+        return decision
+
+    def _log_llm_decision(self, *, ts: float, signal_id: str,
+                           strategy: str, symbol: str, side: str,
+                           notional_in: float, notional_out: float,
+                           llm_mode: str, llm_decision: str,
+                           llm_reason: str, llm_confidence: float,
+                           risk_flags: list) -> None:
+        try:
+            import csv as _csv
+            with open(self._llm_decisions_log, "a", newline="",
+                      encoding="utf-8") as _f:
+                w = _csv.writer(_f)
+                w.writerow([
+                    time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    signal_id, strategy, symbol, side,
+                    round(notional_in, 4), round(notional_out, 4),
+                    llm_mode, llm_decision, llm_reason,
+                    round(float(llm_confidence or 0.0), 4),
+                    "|".join(risk_flags or []),
+                ])
+        except Exception as exc:
+            log.debug("llm decisions log write failed: %s", exc)
+
+    # ------------------------------------------------------------------
+    # Phase-6 helpers
+    # ------------------------------------------------------------------
+
+    def _symbols_with_pending(self) -> set:
+        return {o.symbol for o in self.executor.pending_orders}
+
+    def _symbols_with_positions(self) -> set:
+        return {p.symbol for p in self.executor.open_positions}
+
+    def _trades_in_last_hour(self, now: float) -> int:
+        # Keep only the last-hour timestamps.
+        cutoff = now - 3600.0
+        self._trades_this_hour_ts = [t for t in self._trades_this_hour_ts
+                                     if t >= cutoff]
+        return len(self._trades_this_hour_ts)
 
     # ------------------------------------------------------------------
     # LLM outcome tracking (called from dashboard loop)
@@ -1352,6 +1617,22 @@ class EngineV9:
                     self._llm_overlay = None
                     log.info("LLM overlay disabled at runtime")
                 return {"ok": True, "llm_enabled": self._llm_overlay is not None}
+
+            elif command == "set_llm_mode":
+                mode = str(args.get("mode", "OFF")).upper()
+                if mode not in ("OFF", "OBSERVER", "RISK_OVERLAY"):
+                    return {"ok": False, "error": f"invalid mode: {mode}"}
+                self._llm_mode = mode
+                # Persist for next start
+                try:
+                    Path("runtime").mkdir(parents=True, exist_ok=True)
+                    with open("runtime/llm_mode.json", "w",
+                              encoding="utf-8") as f:
+                        json.dump({"mode": mode, "ts": ts}, f)
+                except Exception:
+                    pass
+                log.info("[ENGINE] set_llm_mode → %s", mode)
+                return {"ok": True, "llm_mode": mode}
 
             else:
                 return {"ok": False, "error": f"unknown command: {command}"}

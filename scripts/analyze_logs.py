@@ -31,6 +31,7 @@ from backtesting.metrics import compute_metrics
 
 _DEFAULT_FILLS    = "logs/fills_v9.csv"
 _DEFAULT_DECISIONS = "logs/decisions_v9.csv"
+_DEFAULT_ORDERS    = "logs/orders_v9.csv"
 
 
 def _print_kv(title: str, kv: dict, fmt: str = "{:>10}") -> None:
@@ -78,10 +79,59 @@ def _trades_per_hour_per_strategy(trades: list[dict]) -> dict[str, float]:
     return out
 
 
+def _analyze_orders(path: str) -> dict:
+    """Read orders_v9.csv and return aggregate stats. Empty dict if missing."""
+    p = Path(path)
+    if not p.exists():
+        return {}
+    out = {
+        "total":       0,
+        "filled":      0,
+        "expired":     0,
+        "cancelled":   0,
+        "rejected":    0,
+        "partial":     0,
+        "maker":       0,
+        "taker":       0,
+        "slip_bps_sum": 0.0,
+        "slip_bps_n":   0,
+    }
+    with open(p, encoding="utf-8", errors="replace", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            out["total"] += 1
+            status = (row.get("status") or "").upper()
+            if status == "FILL":
+                out["filled"] += 1
+                slip = row.get("slippage_bps")
+                try:
+                    s = float(slip) if slip not in (None, "") else None
+                except (TypeError, ValueError):
+                    s = None
+                if s is not None:
+                    out["slip_bps_sum"] += s
+                    out["slip_bps_n"]   += 1
+            elif status == "EXPIRE":
+                out["expired"] += 1
+            elif status == "CANCEL":
+                out["cancelled"] += 1
+            elif status == "REJECT":
+                out["rejected"] += 1
+            elif status == "PARTIAL_FILL":
+                out["partial"] += 1
+            ot = (row.get("order_type") or "").upper()
+            if ot == "MAKER_SIM":
+                out["maker"] += 1
+            elif ot == "TAKER_SIM":
+                out["taker"] += 1
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description="Analyze Artemisia v9 logs")
     ap.add_argument("--fills",     default=_DEFAULT_FILLS)
     ap.add_argument("--decisions", default=_DEFAULT_DECISIONS)
+    ap.add_argument("--orders",    default=_DEFAULT_ORDERS)
     args = ap.parse_args()
 
     print("Artemisia v9 - Log Analysis")
@@ -118,6 +168,30 @@ def main():
         print("  (no blocking-reason data found)")
     for reason, cnt in blocking:
         print(f"  {cnt:>6}  {reason}")
+
+    # ── Orders log (Phase 6) ─────────────────────────────────────────
+    orders = _analyze_orders(args.orders)
+    print("\n-- Orders log stats --")
+    if not orders:
+        print("  (no orders_v9.csv yet)")
+    else:
+        n = orders["total"]
+        print(f"  total                {n}")
+        print(f"  filled               {orders['filled']}")
+        print(f"  expired              {orders['expired']}")
+        print(f"  cancelled            {orders['cancelled']}")
+        if orders["rejected"]: print(f"  rejected             {orders['rejected']}")
+        if orders["partial"]:  print(f"  partial              {orders['partial']}")
+        if n > 0:
+            expire_rate = orders["expired"] / n * 100
+            missed_fill = (orders["expired"] + orders["cancelled"]) / n * 100
+            print(f"  expired rate         {expire_rate:.1f}%")
+            print(f"  missed-fill rate     {missed_fill:.1f}%")
+        if orders["slip_bps_n"] > 0:
+            avg_slip = orders["slip_bps_sum"] / orders["slip_bps_n"]
+            print(f"  avg slippage_bps     {avg_slip:.2f}")
+        print(f"  maker fills          {orders['maker']}")
+        print(f"  taker fills          {orders['taker']}")
 
 
 if __name__ == "__main__":

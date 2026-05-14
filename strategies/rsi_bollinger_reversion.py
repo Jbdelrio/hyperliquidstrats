@@ -86,6 +86,12 @@ class RSIBollingerReversionStrategy(BaseStrategy):
 
         self._cost_filter = CostFilter(min_ratio=float(p.get("min_cost_ratio", 3.0)))
 
+        # Phase-6: BTC 5m return injected by the engine via set_btc_context().
+        # When < btc_crash_5m_pct (default -0.015 = -1.5%), long entries are
+        # skipped. None means "no fresh BTC context yet" — gate is disabled.
+        self._btc_5m_return: Optional[float] = None
+        self._btc_crash_5m_pct = float(p.get("btc_crash_5m_pct", -0.015))
+
         self._coins: dict[str, _CoinState] = {}
         for coin in config.coins:
             self._coins[coin] = _CoinState(
@@ -93,6 +99,22 @@ class RSIBollingerReversionStrategy(BaseStrategy):
                 agg_60m = BarAggregator(coin, 60, maxlen=300),
                 ema_1h  = EmaState(self._ema_1h_period),
             )
+
+    # ------------------------------------------------------------------
+    # Phase-6 BTC context setter (engine calls this from _minute_loop)
+    # ------------------------------------------------------------------
+
+    def set_btc_context(self, btc_5m_return: float) -> None:
+        """Inject the latest 5-minute BTC return.
+
+        The strategy uses this to skip long entries during a BTC crash
+        (the local oversold/RSI signal is not reliable when BTC itself
+        is in free fall).
+        """
+        try:
+            self._btc_5m_return = float(btc_5m_return)
+        except (TypeError, ValueError):
+            self._btc_5m_return = None
 
     # ------------------------------------------------------------------
 
@@ -189,6 +211,17 @@ class RSIBollingerReversionStrategy(BaseStrategy):
                         return StrategyDecision(action="SKIP", symbol=symbol,
                                                 reason=f"btc_crash btc_1h={btc_chg:.2%}")
 
+        # Phase-6: explicit BTC 5m crash guard via engine-injected context.
+        # When btc_5m_return is provided and below the configured threshold,
+        # skip long entries (the strategy is long-only).
+        if (self._btc_5m_return is not None
+                and self._btc_5m_return < self._btc_crash_5m_pct):
+            return StrategyDecision(
+                action="SKIP", symbol=symbol,
+                reason=(f"btc_crash_5m={self._btc_5m_return:.2%}"
+                        f"<{self._btc_crash_5m_pct:.2%}"),
+            )
+
         # ── Cost filter ──────────────────────────────────────────────
         expected_bps = self._tp_pct * 10000
         ok, cost_reason, _ = self._cost_filter.is_worth_taking(expected_bps)
@@ -201,15 +234,37 @@ class RSIBollingerReversionStrategy(BaseStrategy):
             self.config.max_position_size_usd,
         )
         state.last_entry_ts = ts
+
+        # Enrich decision with risk metrics (Phase-6)
+        stop_price = current_close * (1 - self._sl_pct)
+        tp_price   = current_close * (1 + self._tp_pct)
+        p = self.config.params
+        fee_bps = float(p.get("taker_fee_bps", 4.5))
+        slip_bps = float(p.get("slippage_bps", 4.5))
+        cost_bps = 2 * (fee_bps + slip_bps)
+        risk_usd = notional * self._sl_pct
+        reward_usd = notional * self._tp_pct
+        rr = reward_usd / risk_usd if risk_usd > 0 else 0.0
+        expected_edge_bps = self._tp_pct * 10_000.0
+        expected_net = reward_usd - (cost_bps / 10_000.0) * notional
+
         return StrategyDecision(
             action="PLACE_BUY",
             symbol=symbol,
             reason=f"rsi_bb_reversion rsi={rsi_val:.1f} z={zs:.2f} close_re_entry={current_close:.5g}",
             notional_usd=notional,
-            stop_loss=current_close * (1 - self._sl_pct),
-            take_profit=current_close * (1 + self._tp_pct),
+            stop_loss=stop_price,
+            take_profit=tp_price,
             max_hold_seconds=self._max_hold_s,
             metadata={"bb_lower": bb_lower, "rsi": rsi_val, "zscore": zs},
+            strategy_family="mean_reversion",
+            order_type="TAKER_SIM",
+            confidence=min(1.0, abs(zs) / 4.0),
+            estimated_cost_bps=cost_bps,
+            expected_edge_bps=expected_edge_bps,
+            expected_net_profit_usd=expected_net,
+            risk_usd=risk_usd,
+            reward_risk_ratio=rr,
         )
 
     def check_position_exits(self, symbol: str, book, ts: float) -> Optional[StrategyDecision]:

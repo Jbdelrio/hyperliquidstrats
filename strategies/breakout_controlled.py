@@ -94,12 +94,30 @@ class BreakoutControlled(BaseStrategy):
         self._signals.pop(symbol, None)
         self._pending_entries[symbol] = {"resistance": resistance, "vr": signal["vr"]}
 
+        # ── Enrich decision with risk metrics (Phase-6) ──────────
+        fee_bps = float(p.get("taker_fee_bps", 4.5))
+        slip_bps = float(p.get("slippage_bps", 4.5))
+        cost_bps = 2 * (fee_bps + slip_bps)  # round-trip
+        risk_usd = max(notional * abs(mid - stop_price) / mid, 1e-9)
+        reward_usd = notional * (tp_price - mid) / mid
+        rr = reward_usd / risk_usd if risk_usd > 0 else 0.0
+        expected_edge_bps = (tp_price - mid) / mid * 10_000.0
+        expected_net = reward_usd - (cost_bps / 10_000.0) * notional
+
         return StrategyDecision(
             action="PLACE_BUY", symbol=symbol,
             buy_price=ask, size=size, notional_usd=notional,
             stop_loss=stop_price, take_profit=tp_price,
             max_hold_seconds=max_hold,
             metadata={"resistance": resistance},
+            strategy_family="breakout",
+            order_type="TAKER_SIM",
+            confidence=min(1.0, signal["vr"] / 3.0),
+            estimated_cost_bps=cost_bps,
+            expected_edge_bps=expected_edge_bps,
+            expected_net_profit_usd=expected_net,
+            risk_usd=risk_usd,
+            reward_risk_ratio=rr,
         )
 
     def on_trade_update(self, symbol: str, trade, ts: float) -> None:
@@ -217,6 +235,18 @@ class BreakoutControlled(BaseStrategy):
         vr = vol_15m / avg_24h
         if vr < p.get("vr_min", 1.5):
             return
+
+        # Phase-6 close-strength filter: require the close to be in the
+        # upper portion of the bar's range. A weak close (e.g. wick that
+        # broke resistance but the body closed low) is a poor breakout.
+        cs_min = p.get("close_strength_min", 0.0)
+        if cs_min > 0.0:
+            high = bar.high
+            low  = bar.low
+            rng  = max(high - low, 1e-9)
+            close_strength = (bar.close - low) / rng
+            if close_strength < cs_min:
+                return
 
         # Signal confirmed
         self._signals[symbol] = {"resistance": resistance, "vr": vr, "ts": ts}

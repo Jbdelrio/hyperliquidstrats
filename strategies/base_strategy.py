@@ -2,6 +2,7 @@
 base_strategy.py — Abstract interface for all Artemisia strategies.
 """
 import time
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Optional
@@ -33,6 +34,27 @@ class StrategyDecision:
     take_profit: Optional[float] = None
     max_hold_seconds: Optional[int] = None
     metadata: dict = field(default_factory=dict)
+
+    # ── Phase-6 enrichment (all safe defaults — backward compatible) ──
+    # Estimated edge / cost / profit, used by SanityCheckEngine and
+    # ExecutionPlanner. Strategies SHOULD fill these in but don't have to.
+    confidence: float = 0.0
+    expected_edge_bps: float = 0.0
+    expected_net_profit_usd: float = 0.0
+    estimated_cost_bps: float = 0.0
+    risk_usd: float = 0.0
+    reward_risk_ratio: float = 0.0
+
+    # Order routing hints (consumed by ExecutionPlanner)
+    # "" means "let ExecutionPlanner decide based on edge/spread"; a
+    # strategy can override with "MAKER_SIM" or "TAKER_SIM" to force.
+    order_type: str = ""
+    time_in_force: str = "GTC"
+
+    # Trace + classification
+    signal_id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
+    strategy_family: str = ""              # filled by strategy or engine
+    requires_llm_review: bool = False
 
 
 @dataclass
