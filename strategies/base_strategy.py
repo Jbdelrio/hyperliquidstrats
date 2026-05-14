@@ -133,6 +133,16 @@ class BaseStrategy(ABC):
     def check_position_exits(self, symbol: str, book, ts: float) -> Optional[StrategyDecision]:
         return None
 
+    # ------------------------------------------------------------------
+    # Optional per-second microstructure hook (Alpha Research framework)
+    # ------------------------------------------------------------------
+    # Strategies that consume the SecondsFeatureEngine snapshot override
+    # this method.  Default returns None so the existing strategies are
+    # untouched and the engine's _seconds_loop is a no-op for them.
+    def on_second_features(self, symbol: str, features: dict, ts: float
+                           ) -> Optional[StrategyDecision]:
+        return None
+
     def on_position_closed(self, symbol: str, pnl_net: float, exit_reason: str) -> None:
         if pnl_net < 0:
             self._consecutive_losses += 1

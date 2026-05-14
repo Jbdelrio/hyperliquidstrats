@@ -1,0 +1,1 @@
+ts,datetime,symbol,long_exchange,short_exchange,direction,mode,funding_hl,funding_aster,spread_bps,notional_usd,expected_funding_bps,expected_net_bps,expected_net_usd,estimated_cost_bps,basis_bps,liquidity_score,stability_score,risk_score,horizon_hours,decision,reason

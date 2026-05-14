@@ -58,6 +58,28 @@ class StrategyManager:
             except Exception as e:
                 log.error("Strategy %s error on_trade_update %s: %s", name, symbol, e)
 
+    def on_second_features(self, symbol: str, features: dict, ts: float) -> list:
+        """Dispatch a SecondsFeatureEngine snapshot to enabled strategies.
+
+        Strategies that don't override `on_second_features` return None
+        (default in BaseStrategy) so they're skipped here without cost.
+        """
+        results = []
+        for name, strat in self.strategies.items():
+            if not strat.enabled:
+                continue
+            if symbol not in strat.config.coins:
+                continue
+            if self.kill_switch.is_killed():
+                continue
+            try:
+                d = strat.on_second_features(symbol, features, ts)
+                if d is not None and d.action != "SKIP":
+                    results.append((name, d))
+            except Exception as e:
+                log.error("Strategy %s error on_second_features %s: %s", name, symbol, e)
+        return results
+
     def on_bar_minute(self, symbol: str, bar: BarData, ts: float) -> list:
         """Returns list of (strat_name, StrategyDecision) for decisions from bar events."""
         results = []

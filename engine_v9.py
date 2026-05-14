@@ -43,6 +43,12 @@ from strategies.funding_carry_hedged import FundingCarryHedgedStrategy
 from strategies.orderbook_imbalance_scalper import OrderBookImbalanceScalper
 from strategies.volatility_regime_breakout import VolatilityRegimeBreakoutStrategy
 from strategies.meta_alpha_strategy import MetaAlphaStrategy
+# Alpha Research framework (Phase: seconds features) — all disabled by default.
+from strategies.seconds_research_strategy import SecondsResearchStrategy
+from strategies.alpha_pressure_scalper import AlphaPressureScalper
+from strategies.book_flow_divergence_reversal import BookFlowDivergenceReversal
+from strategies.absorption_reversal import AbsorptionReversal
+from strategies.funding_arbitrage_enhanced import FundingArbitrageEnhanced
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from execution.execution_planner import ExecutionPlanner
 from risk.kill_switch import KillSwitch
@@ -71,6 +77,12 @@ _STRATEGY_CLASSES = {
     "OrderBookImbalanceScalper":          OrderBookImbalanceScalper,
     "VolatilityRegimeBreakoutStrategy":   VolatilityRegimeBreakoutStrategy,
     "MetaAlphaStrategy":                  MetaAlphaStrategy,
+    # ── Alpha Research framework (paper-only, disabled by default) ───────
+    "SecondsResearchStrategy":            SecondsResearchStrategy,
+    "AlphaPressureScalper":               AlphaPressureScalper,
+    "BookFlowDivergenceReversal":         BookFlowDivergenceReversal,
+    "AbsorptionReversal":                 AbsorptionReversal,
+    "FundingArbitrageEnhanced":           FundingArbitrageEnhanced,
 }
 
 
@@ -170,6 +182,35 @@ class EngineV9:
             },
             orders_log=log_cfg.get("orders_log", "logs/orders_v9.csv"),
         )
+        # ── Alpha Research framework — SecondsFeatureEngine (opt-in) ────
+        # Disabled by default for backward compatibility. Enabled via
+        # `seconds_features.enabled = true` in config.
+        sf_cfg = self.cfg.get("seconds_features", {}) or {}
+        self.seconds_features = None
+        self._seconds_logger = None
+        self._seconds_feature_interval = float(sf_cfg.get("feature_interval_s", 1.0))
+        if sf_cfg.get("enabled", False):
+            try:
+                from data.seconds_feature_engine import SecondsFeatureEngine
+                self.seconds_features = SecondsFeatureEngine(self.symbols, config=sf_cfg)
+                log.info("SecondsFeatureEngine enabled (max_history=%.0fs, interval=%.2fs)",
+                         self.seconds_features.max_history_seconds,
+                         self._seconds_feature_interval)
+            except Exception as _sf_exc:
+                log.warning("SecondsFeatureEngine init failed (ignored): %s", _sf_exc)
+                self.seconds_features = None
+            if self.seconds_features is not None and sf_cfg.get("log_enabled", True):
+                try:
+                    from monitoring.seconds_feature_logger import SecondsFeatureLogger
+                    self._seconds_logger = SecondsFeatureLogger(
+                        path=sf_cfg.get("log_path", "logs/seconds_features.csv"),
+                        min_interval_s=float(sf_cfg.get("log_interval_s", 1.0)),
+                    )
+                    log.info("SecondsFeatureLogger writing to %s", self._seconds_logger.path)
+                except Exception as _sl_exc:
+                    log.warning("SecondsFeatureLogger init failed (ignored): %s", _sl_exc)
+                    self._seconds_logger = None
+
         self.ks = KillSwitch(
             initial_capital=self.equity,
             daily_dd_pct=risk_p.get("max_dd_daily_pct", 0.030),
@@ -402,7 +443,7 @@ class EngineV9:
         except Exception:
             pass
         try:
-            await asyncio.gather(
+            coros = [
                 self._orderbook_loop(),
                 self._trade_loop(),
                 self._minute_loop(),
@@ -411,7 +452,10 @@ class EngineV9:
                 self._dashboard_loop(),
                 self._control_loop(),
                 self._arbitrage_monitor_loop(),
-            )
+            ]
+            if self.seconds_features is not None:
+                coros.append(self._seconds_loop())
+            await asyncio.gather(*coros)
         except asyncio.CancelledError:
             pass
         finally:
@@ -435,6 +479,13 @@ class EngineV9:
 
             self._last_book[sym] = book
             self._last_book_ts = ts
+
+            # Alpha Research: feed seconds feature engine on every book tick
+            if self.seconds_features is not None:
+                try:
+                    self.seconds_features.update_from_book(sym, book, ts)
+                except Exception as _sfe:
+                    log.debug("seconds_features book update error: %s", _sfe)
 
             # Update OHLCV accumulator
             mid = book.mid
@@ -478,6 +529,12 @@ class EngineV9:
             acc = self._bar_acc.get(sym)
             if acc is not None:
                 acc["vol"] = acc.get("vol", 0.0) + getattr(event, "volume_usd", 0.0)
+            # Alpha Research: feed seconds feature engine on every trade
+            if self.seconds_features is not None:
+                try:
+                    self.seconds_features.update_from_trade(sym, event, event.timestamp)
+                except Exception as _sfe:
+                    log.debug("seconds_features trade update error: %s", _sfe)
             self.manager.on_trade_update(sym, event, event.timestamp)
 
     # ------------------------------------------------------------------
@@ -616,6 +673,44 @@ class EngineV9:
                 # Strategy-level exits (signal reversal, momentum exit, etc.)
                 for strat_name, decision in self.manager.check_position_exits(sym, book, ts):
                     self._apply_close_action(strat_name, decision, ts)
+
+    # ------------------------------------------------------------------
+    # Loop S — seconds features (Alpha Research framework)
+    # ------------------------------------------------------------------
+
+    async def _seconds_loop(self) -> None:
+        """Sample SecondsFeatureEngine snapshots once per second.
+
+        For each symbol with `enough_data`, log the snapshot (rate-limited
+        inside the logger) and dispatch `on_second_features` to enabled
+        strategies that implement the hook.
+        """
+        if self.seconds_features is None:
+            return
+        # Small initial pause so book buffers have a chance to fill.
+        await asyncio.sleep(2.0)
+        while self._running:
+            await asyncio.sleep(self._seconds_feature_interval)
+            ts = time.time()
+            for sym in self.symbols:
+                try:
+                    feats = self.seconds_features.get_features(sym)
+                except Exception as _e:
+                    log.debug("seconds_features get_features(%s) error: %s", sym, _e)
+                    continue
+                if self._seconds_logger is not None and feats.get("mid") is not None:
+                    try:
+                        self._seconds_logger.log(feats)
+                    except Exception as _le:
+                        log.debug("seconds_features logger error: %s", _le)
+                # Dispatch only if the snapshot has enough data — strategies
+                # may still apply their own gates.
+                try:
+                    for strat_name, decision in self.manager.on_second_features(
+                            sym, feats, ts):
+                        await self._execute_decision(strat_name, decision, ts)
+                except Exception as _de:
+                    log.debug("on_second_features dispatch error: %s", _de)
 
     # ------------------------------------------------------------------
     # Loop E — watchdog (5s)
@@ -1797,6 +1892,11 @@ class EngineV9:
                 for s in self.symbols}
         self.executor.close_all_market(mids, "shutdown")
         self.decision_logger.flush()
+        if self._seconds_logger is not None:
+            try:
+                self._seconds_logger.flush()
+            except Exception:
+                pass
         await self.obm.stop()
         try:
             self._print_dashboard()

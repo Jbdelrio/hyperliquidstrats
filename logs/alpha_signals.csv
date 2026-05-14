@@ -1,0 +1,10 @@
+ts,strategy,symbol,action,reason,pressure_score_raw,book_flow_divergence,absorption_buy_proxy,absorption_sell_proxy,obi_5,trade_imbalance_10s,spread_bps,rv_30s,expected_edge_bps,cost_bps,enough_data,book_stale
+1778799763.05179,P,BTC,PLACE_BUY,pressure_score_raw|score=0.900|edge_bps=45.00,0.9,0.6,0.0005,0.0,0.7,0.4,2.0,0.0005,45.0,1.0,True,False
+1778799763.0655437,D,BTC,PLACE_BUY,book_flow_divergence|score=0.600|edge_bps=30.00,0.8,0.6,0.0005,0.0,-0.2,0.5,2.0,0.0005,30.0,1.0,True,False
+1778799763.0705428,A,BTC,PLACE_BUY,absorption|score=1.000|edge_bps=50.00,0.8,0.6,0.001,0.0,0.7,0.4,2.0,0.0005,50.0,1.0,True,False
+1778801028.644272,P,BTC,PLACE_BUY,pressure_score_raw|score=0.900|edge_bps=45.00,0.9,0.6,0.0005,0.0,0.7,0.4,2.0,0.0005,45.0,1.0,True,False
+1778801028.6522715,D,BTC,PLACE_BUY,book_flow_divergence|score=0.600|edge_bps=30.00,0.8,0.6,0.0005,0.0,-0.2,0.5,2.0,0.0005,30.0,1.0,True,False
+1778801028.655348,A,BTC,PLACE_BUY,absorption|score=1.000|edge_bps=50.00,0.8,0.6,0.001,0.0,0.7,0.4,2.0,0.0005,50.0,1.0,True,False
+1778801065.487489,P,BTC,PLACE_BUY,pressure_score_raw|score=0.900|edge_bps=45.00,0.9,0.6,0.0005,0.0,0.7,0.4,2.0,0.0005,45.0,1.0,True,False
+1778801065.4918315,D,BTC,PLACE_BUY,book_flow_divergence|score=0.600|edge_bps=30.00,0.8,0.6,0.0005,0.0,-0.2,0.5,2.0,0.0005,30.0,1.0,True,False
+1778801065.4938304,A,BTC,PLACE_BUY,absorption|score=1.000|edge_bps=50.00,0.8,0.6,0.001,0.0,0.7,0.4,2.0,0.0005,50.0,1.0,True,False

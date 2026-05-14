@@ -591,3 +591,59 @@ artemisia_v9/
 ---
 
 *Artemisia v9 — Paper trading uniquement. Ne pas utiliser en live sans validation complète.*
+
+---
+
+## Alpha Research / Seconds Features
+
+Un framework de recherche d'alpha microstructure + funding a été ajouté
+au repo. Il est **paper-only** et désactivé par défaut.
+
+### Pipeline
+
+1. **Collecter** des features microstructure secondes :
+   ```bash
+   python engine_v9.py --paper --config config/presets/paper_500_alpha_research.json
+   ```
+   Génère `logs/seconds_features.csv` (1 ligne/symbole/seconde).
+
+2. **Analyser** :
+   ```bash
+   python scripts/run_alpha_research.py --features logs/seconds_features.csv --out reports/alpha_research_report.md
+   ```
+   Ou ouvrir `research/alpha_research_hyperliquid_seconds.ipynb`.
+
+3. **Scanner les funding rates** (Hyperliquid + Aster quand wired) :
+   ```bash
+   python scripts/scan_funding_opportunities.py --exchanges hyperliquid,aster --symbols BTC,ETH,SOL,HYPE --out reports/funding_opportunities.md
+   ```
+   Ou lancer l'engine avec `config/presets/paper_500_funding_research.json` pour un scan continu.
+
+4. **Décider** : un signal n'est branché en stratégie (`enabled=true`,
+   toujours en paper) que s'il passe :
+   - Spearman IC stable,
+   - bucket analysis monotone,
+   - PnL net > 0 après 8–16 bps de coûts,
+   - walk-forward positif,
+   - IC résiduel hors-bêta-BTC,
+   - performance robuste multi-symboles.
+
+   Voir `docs/ALPHA_RESEARCH_FRAMEWORK.md` pour la grille complète.
+
+### Documents
+
+- `docs/ALPHA_MODELS_THEORY.md` — formalisation mathématique des 8 modèles (Pressure, Divergence, Absorption, Liquidity Vacuum, BTC Residual, Regime, Composite, Funding Carry).
+- `docs/ALPHA_RESEARCH_FRAMEWORK.md` — méthodologie, critères de validation, anti-patterns.
+- `docs/DATA_COLLECTION_SECONDS.md` — WebSocket-first, univers, qualité de données.
+- `docs/ALPHA_RESEARCH_IMPLEMENTATION_PLAN.md` — plan d'audit et d'intégration.
+
+### Stratégies ajoutées (toutes `enabled=false` par défaut)
+
+- `SecondsResearchStrategy` — no-op, sert uniquement à activer le flux features.
+- `AlphaPressureScalper` — utilise `pressure_score_raw`.
+- `BookFlowDivergenceReversal` — utilise `trade_imbalance_10s - obi_5`.
+- `AbsorptionReversal` — utilise `absorption_{buy,sell}_proxy`.
+- `FundingArbitrageEnhanced` — single + cross-exchange funding, **research_only**, jamais live.
+
+La recherche d'alpha doit **précéder** le paper trading qui doit **précéder** le live. Aucun raccourci.
+
