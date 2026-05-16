@@ -1952,3 +1952,536 @@
 2026-05-15 01:23:41,095 INFO data.orderbook_manager All subscriptions sent.
 2026-05-15 01:23:43,698 INFO data.orderbook_manager All subscriptions sent.
 2026-05-15 01:23:55,988 INFO __main__ Shutting down v9...
+2026-05-15 01:32:52,018 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2290.609166 exit=2293.750000 net=$0.2753 hold=600s momentum_exit
+2026-05-15 01:32:52,018 INFO __main__ [CLOSE] MomentumLS ETH BUY @ 2293.750000 | net=$0.2753 | momentum_exit
+2026-05-15 01:32:52,110 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:32:52,110 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:32:52,114 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:32:52,576 INFO execution.high_freq_executor [FILL] BTC BUY @ 81310.799450 notional=$250 slip=2.1bps
+2026-05-15 01:34:51,607 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=81310.799450 exit=81288.500000 net=$-0.1361 hold=119s momentum_exit
+2026-05-15 01:34:51,609 INFO __main__ [CLOSE] MomentumLS BTC BUY @ 81288.500000 | net=$-0.1361 | momentum_exit
+2026-05-15 01:34:51,612 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:34:51,613 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:34:51,614 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:34:52,221 INFO execution.high_freq_executor [FILL] HYPE BUY @ 44.451411 notional=$250 slip=2.1bps
+2026-05-15 01:40:09,274 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config/presets/paper_500_clean.json selected_strategies=None
+2026-05-15 01:40:09,277 INFO risk.kill_switch KillSwitch init: capital=2500 daily_dd=2.5% total_dd=6.0%
+2026-05-15 01:40:09,278 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-15 01:40:09,278 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-15 01:40:09,278 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-15 01:40:09,279 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-15 01:40:09,279 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-15 01:40:09,279 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 01:40:09,280 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 01:40:09,281 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 01:40:09,281 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 01:40:09,281 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 01:40:09,281 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 01:40:09,282 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-15 01:40:09,282 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 01:40:09,282 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 01:40:09,282 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 01:40:09,282 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 01:40:09,282 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 01:40:09,282 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MomentumLS'
+2026-05-15 01:40:09,282 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BreakoutControlled'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'DonchianTrend'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'VolatilityRegimeBreakout'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RSIBollingerReversion'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'S8EMS'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbitrage'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MeanReversionKalman'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RotationMomentum'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RelativeValue'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SpotPerpBasis'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingCarryHedged'
+2026-05-15 01:40:09,283 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'OBImbalanceScalper'
+2026-05-15 01:40:09,283 INFO __main__ MetaAlpha wired with 13 peers: ['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper']
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
+2026-05-15 01:40:09,284 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
+2026-05-15 01:40:09,285 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
+2026-05-15 01:40:09,285 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
+2026-05-15 01:40:09,285 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
+2026-05-15 01:40:09,285 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
+2026-05-15 01:40:09,294 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2500.00 | strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-15 01:40:09,960 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-15 01:40:12,305 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-15 01:40:12,306 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion']
+2026-05-15 01:40:13,741 INFO data.orderbook_manager All subscriptions sent.
+2026-05-15 01:42:29,843 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=44.451411 exit=44.134000 net=$-1.8527 hold=458s stop_loss
+2026-05-15 01:42:29,846 INFO __main__ [CLOSE] MomentumLS HYPE BUY @ 44.134000 | net=$-1.8527 | stop_loss
+2026-05-15 01:42:29,848 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:42:30,354 INFO __main__ [LEDGER] BLOCK MomentumLS AAVE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:42:30,357 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 01:42:30,360 INFO execution.high_freq_executor [FILL] LTC BUY @ 58.399207 notional=$250 slip=2.1bps
+2026-05-15 01:57:49,655 CRITICAL risk.kill_switch HARD KILL: network_timeout=708s
+2026-05-15 01:57:49,655 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=708s
+2026-05-15 01:57:49,754 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-15 01:57:49,803 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 1s (attempt 1)
+2026-05-15 01:57:50,110 CRITICAL risk.kill_switch HARD KILL: network_timeout=709s
+2026-05-15 01:57:50,111 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=709s
+2026-05-15 01:57:50,112 INFO execution.high_freq_executor [CLOSE] LTC BUY entry=58.399207 exit=58.262000 net=$-0.6549 hold=920s network_timeout=709s
+2026-05-15 01:57:50,121 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-15 01:57:50,678 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 8s (attempt 4)
+2026-05-15 01:57:50,867 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-15 01:57:52,883 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-15 03:08:33,804 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 8s (attempt 4)
+2026-05-15 03:08:34,758 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 16s (attempt 5)
+2026-05-15 03:08:42,923 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-15 03:08:46,684 INFO data.orderbook_manager All subscriptions sent.
+2026-05-15 03:08:46,811 INFO __main__ Shutting down v9...
+2026-05-15 03:08:51,722 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-15 03:08:55,704 INFO data.orderbook_manager All subscriptions sent.
+2026-05-15 11:55:14,349 INFO __main__ Shutting down v9...
+2026-05-15 18:03:16,202 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config/presets/paper_500_ideal.json selected_strategies=None
+2026-05-15 18:03:16,213 INFO __main__ SecondsFeatureEngine enabled (max_history=300s, interval=1.00s)
+2026-05-15 18:03:16,217 INFO __main__ SecondsFeatureLogger writing to logs\seconds_features.csv
+2026-05-15 18:03:16,218 INFO risk.kill_switch KillSwitch init: capital=2500 daily_dd=2.5% total_dd=6.0%
+2026-05-15 18:03:16,219 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-15 18:03:16,219 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-15 18:03:16,220 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-15 18:03:16,220 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-15 18:03:16,220 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-15 18:03:16,220 INFO strategies.strategy_manager Strategy registered: SecondsResearch (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 18:03:16,220 INFO data.exchange_adapters.aster_funding AsterFundingAdapter disabled (no REST_URL configured); scanner will log 'aster_funding_unavailable'.
+2026-05-15 18:03:16,223 INFO strategies.strategy_manager Strategy registered: FundingArbEnhanced (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 18:03:16,223 INFO strategies.strategy_manager Strategy registered: AlphaPressureScalper (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 18:03:16,223 INFO strategies.strategy_manager Strategy registered: BookFlowDivergenceReversal (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 18:03:16,223 INFO strategies.strategy_manager Strategy registered: AbsorptionReversal (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 18:03:16,242 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 18:03:16,243 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 18:03:16,244 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 18:03:16,244 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 18:03:16,244 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 18:03:16,244 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 18:03:16,244 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-15 18:03:16,244 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 18:03:16,245 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 18:03:16,245 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 18:03:16,245 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 18:03:16,245 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MomentumLS'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BreakoutControlled'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'DonchianTrend'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'VolatilityRegimeBreakout'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RSIBollingerReversion'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SecondsResearch'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbEnhanced'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'AlphaPressureScalper'
+2026-05-15 18:03:16,245 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BookFlowDivergenceReversal'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'AbsorptionReversal'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'S8EMS'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbitrage'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MeanReversionKalman'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RotationMomentum'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RelativeValue'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SpotPerpBasis'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingCarryHedged'
+2026-05-15 18:03:16,246 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'OBImbalanceScalper'
+2026-05-15 18:03:16,246 INFO __main__ MetaAlpha wired with 18 peers: ['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'SecondsResearch', 'FundingArbEnhanced', 'AlphaPressureScalper', 'BookFlowDivergenceReversal', 'AbsorptionReversal', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper']
+2026-05-15 18:03:16,246 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered SecondsResearch capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbEnhanced capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered AlphaPressureScalper capital=$25
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered BookFlowDivergenceReversal capital=$25
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered AbsorptionReversal capital=$25
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
+2026-05-15 18:03:16,247 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
+2026-05-15 18:03:16,248 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
+2026-05-15 18:03:16,255 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2500.00 | strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'SecondsResearch', 'FundingArbEnhanced', 'AlphaPressureScalper', 'BookFlowDivergenceReversal', 'AbsorptionReversal', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-15 18:03:16,891 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-15 18:03:19,260 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-15 18:03:19,260 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'SecondsResearch', 'FundingArbEnhanced']
+2026-05-15 18:03:21,869 INFO data.orderbook_manager All subscriptions sent.
+2026-05-15 18:18:30,824 INFO __main__ [LEDGER] BLOCK BreakoutControlled OP $250 → budget_exceeded:open=0+reserved=500+req=250>500
+2026-05-15 18:18:31,536 INFO execution.high_freq_executor [FILL] AAVE BUY @ 93.566755 notional=$250 slip=3.1bps
+2026-05-15 18:18:31,544 INFO execution.high_freq_executor [FILL] LTC BUY @ 57.072941 notional=$250 slip=2.1bps
+2026-05-15 20:36:00,018 INFO __main__ [ENGINE] started — exchange=hyperliquid paper=True config=config/presets/paper_500_ideal.json selected_strategies=None
+2026-05-15 20:36:00,027 INFO __main__ SecondsFeatureEngine enabled (max_history=300s, interval=1.00s)
+2026-05-15 20:36:00,030 INFO __main__ SecondsFeatureLogger writing to logs\seconds_features.csv
+2026-05-15 20:36:00,030 INFO risk.kill_switch KillSwitch init: capital=2500 daily_dd=3.0% total_dd=8.0%
+2026-05-15 20:36:00,031 INFO strategies.strategy_manager Strategy registered: MomentumLS (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-15 20:36:00,031 INFO strategies.strategy_manager Strategy registered: BreakoutControlled (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'LTC', 'BCH', 'XRP'])
+2026-05-15 20:36:00,032 INFO strategies.strategy_manager Strategy registered: DonchianTrend (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-15 20:36:00,032 INFO strategies.strategy_manager Strategy registered: VolatilityRegimeBreakout (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX', 'LINK', 'ARB', 'OP', 'AAVE', 'XRP'])
+2026-05-15 20:36:00,032 INFO strategies.strategy_manager Strategy registered: RSIBollingerReversion (enabled=True, coins=['BTC', 'ETH', 'SOL', 'AVAX', 'HYPE'])
+2026-05-15 20:36:00,032 INFO strategies.strategy_manager Strategy registered: SecondsResearch (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 20:36:00,032 INFO data.exchange_adapters.aster_funding AsterFundingAdapter disabled (no REST_URL configured); scanner will log 'aster_funding_unavailable'.
+2026-05-15 20:36:00,033 INFO strategies.strategy_manager Strategy registered: FundingArbEnhanced (enabled=True, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 20:36:00,033 INFO strategies.strategy_manager Strategy registered: AlphaPressureScalper (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 20:36:00,033 INFO strategies.strategy_manager Strategy registered: BookFlowDivergenceReversal (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 20:36:00,033 INFO strategies.strategy_manager Strategy registered: AbsorptionReversal (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE'])
+2026-05-15 20:36:00,034 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 20:36:00,034 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 20:36:00,034 INFO econophysics.har_rv HAR coefs loaded from config/har_coefs.json (R²=0.258)
+2026-05-15 20:36:00,034 INFO strategies.strategy_manager Strategy registered: S8EMS (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 20:36:00,034 INFO strategies.strategy_manager Strategy registered: FundingArbitrage (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 20:36:00,034 INFO strategies.strategy_manager Strategy registered: MeanReversionKalman (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 20:36:00,034 INFO strategies.strategy_manager Strategy registered: RotationMomentum (enabled=False, coins=['BTC', 'ETH', 'SOL', 'HYPE', 'AVAX'])
+2026-05-15 20:36:00,034 INFO strategies.strategy_manager Strategy registered: RelativeValue (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 20:36:00,034 INFO strategies.strategy_manager Strategy registered: SpotPerpBasis (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 20:36:00,035 INFO strategies.strategy_manager Strategy registered: FundingCarryHedged (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 20:36:00,035 INFO strategies.strategy_manager Strategy registered: OBImbalanceScalper (enabled=False, coins=['BTC', 'ETH'])
+2026-05-15 20:36:00,035 INFO strategies.strategy_manager Strategy registered: MetaAlpha (enabled=False, coins=['BTC', 'ETH', 'SOL'])
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MomentumLS'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BreakoutControlled'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'DonchianTrend'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'VolatilityRegimeBreakout'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RSIBollingerReversion'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SecondsResearch'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbEnhanced'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'AlphaPressureScalper'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'BookFlowDivergenceReversal'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'AbsorptionReversal'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'S8EMS'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingArbitrage'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'MeanReversionKalman'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RotationMomentum'
+2026-05-15 20:36:00,035 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'RelativeValue'
+2026-05-15 20:36:00,036 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'SpotPerpBasis'
+2026-05-15 20:36:00,036 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'FundingCarryHedged'
+2026-05-15 20:36:00,036 INFO strategies.meta_alpha_strategy MetaAlpha: registered peer 'OBImbalanceScalper'
+2026-05-15 20:36:00,036 INFO __main__ MetaAlpha wired with 18 peers: ['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'SecondsResearch', 'FundingArbEnhanced', 'AlphaPressureScalper', 'BookFlowDivergenceReversal', 'AbsorptionReversal', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper']
+2026-05-15 20:36:00,036 INFO risk.strategy_capital_ledger [Ledger] registered MomentumLS capital=$500
+2026-05-15 20:36:00,036 INFO risk.strategy_capital_ledger [Ledger] registered BreakoutControlled capital=$500
+2026-05-15 20:36:00,036 INFO risk.strategy_capital_ledger [Ledger] registered DonchianTrend capital=$500
+2026-05-15 20:36:00,036 INFO risk.strategy_capital_ledger [Ledger] registered VolatilityRegimeBreakout capital=$500
+2026-05-15 20:36:00,036 INFO risk.strategy_capital_ledger [Ledger] registered RSIBollingerReversion capital=$500
+2026-05-15 20:36:00,036 INFO risk.strategy_capital_ledger [Ledger] registered SecondsResearch capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbEnhanced capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered AlphaPressureScalper capital=$25
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered BookFlowDivergenceReversal capital=$25
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered AbsorptionReversal capital=$25
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered S8EMS capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered FundingArbitrage capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered MeanReversionKalman capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered RotationMomentum capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered RelativeValue capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered SpotPerpBasis capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered FundingCarryHedged capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered OBImbalanceScalper capital=$0
+2026-05-15 20:36:00,037 INFO risk.strategy_capital_ledger [Ledger] registered MetaAlpha capital=$0
+2026-05-15 20:36:00,045 INFO __main__ EngineV9 | paper=True | symbols=['AAVE', 'ARB', 'AVAX', 'BCH', 'BTC', 'ETH', 'HYPE', 'LINK', 'LTC', 'OP', 'SOL', 'XRP'] | equity=2500.00 | strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'SecondsResearch', 'FundingArbEnhanced', 'AlphaPressureScalper', 'BookFlowDivergenceReversal', 'AbsorptionReversal', 'S8EMS', 'FundingArbitrage', 'MeanReversionKalman', 'RotationMomentum', 'RelativeValue', 'SpotPerpBasis', 'FundingCarryHedged', 'OBImbalanceScalper', 'MetaAlpha']
+2026-05-15 20:36:00,608 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-15 20:36:03,056 INFO data.orderbook_manager OrderbookManager connected. Books ready: 0/12
+2026-05-15 20:36:03,056 INFO __main__ Engine V9 running. exchange=hyperliquid paper=True strategies=['MomentumLS', 'BreakoutControlled', 'DonchianTrend', 'VolatilityRegimeBreakout', 'RSIBollingerReversion', 'SecondsResearch', 'FundingArbEnhanced']
+2026-05-15 20:36:05,860 INFO data.orderbook_manager All subscriptions sent.
+2026-05-15 21:01:58,282 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-15 21:02:03,234 INFO data.orderbook_manager All subscriptions sent.
+2026-05-15 21:04:43,598 INFO execution.high_freq_executor [CLOSE] AAVE BUY entry=93.566755 exit=93.039000 net=$-1.4776 hold=9972s invalidation
+2026-05-15 21:04:43,602 INFO __main__ [CLOSE] BreakoutControlled AAVE BUY @ 93.039000 | net=$-1.4776 | invalidation
+2026-05-15 21:04:43,609 INFO __main__ [LEDGER] BLOCK BreakoutControlled AVAX $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,609 INFO __main__ [LEDGER] BLOCK BreakoutControlled BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,610 INFO __main__ [LEDGER] BLOCK BreakoutControlled BTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,611 INFO __main__ [LEDGER] BLOCK BreakoutControlled ETH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,612 INFO __main__ [LEDGER] BLOCK BreakoutControlled HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,613 INFO __main__ [LEDGER] BLOCK BreakoutControlled LINK $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,613 INFO __main__ [LEDGER] BLOCK BreakoutControlled OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,614 INFO __main__ [LEDGER] BLOCK BreakoutControlled SOL $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,615 INFO __main__ [LEDGER] BLOCK BreakoutControlled XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,949 INFO __main__ [LEDGER] BLOCK BreakoutControlled AAVE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 21:04:43,956 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.125440 notional=$250 slip=3.2bps
+2026-05-15 21:06:58,677 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.125440 exit=0.125545 net=$0.1415 hold=135s invalidation
+2026-05-15 21:06:58,678 INFO __main__ [CLOSE] BreakoutControlled ARB BUY @ 0.125545 | net=$0.1415 | invalidation
+2026-05-15 21:16:34,929 INFO execution.high_freq_executor [FILL] HYPE BUY @ 44.773475 notional=$250 slip=2.1bps
+2026-05-15 22:07:07,479 INFO execution.high_freq_executor [FILL] AAVE SELL @ 92.595930 notional=$250 slip=2.9bps
+2026-05-15 22:07:07,481 INFO execution.high_freq_executor [FILL] ARB BUY @ 0.125220 notional=$250 slip=3.2bps
+2026-05-15 22:08:16,359 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=44.773475 exit=44.512000 net=$-1.5275 hold=3101s invalidation
+2026-05-15 22:08:16,360 INFO __main__ [CLOSE] BreakoutControlled HYPE BUY @ 44.512000 | net=$-1.5275 | invalidation
+2026-05-15 22:08:16,362 INFO __main__ [LEDGER] BLOCK BreakoutControlled OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,363 INFO __main__ [LEDGER] BLOCK BreakoutControlled SOL $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,364 INFO __main__ [LEDGER] BLOCK BreakoutControlled XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,800 INFO __main__ [LEDGER] BLOCK BreakoutControlled AAVE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,801 INFO __main__ [LEDGER] BLOCK BreakoutControlled ARB $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,803 INFO __main__ [LEDGER] BLOCK BreakoutControlled BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,803 INFO __main__ [LEDGER] BLOCK BreakoutControlled BTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,804 INFO __main__ [LEDGER] BLOCK BreakoutControlled ETH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,805 INFO __main__ [LEDGER] BLOCK BreakoutControlled HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:16,807 INFO execution.high_freq_executor [FILL] LINK BUY @ 10.042513 notional=$250 slip=2.5bps
+2026-05-15 22:08:37,257 INFO execution.high_freq_executor [CLOSE] ARB BUY entry=0.125220 exit=0.125115 net=$-0.2773 hold=90s momentum_exit
+2026-05-15 22:08:37,259 INFO __main__ [CLOSE] MomentumLS ARB BUY @ 0.125115 | net=$-0.2773 | momentum_exit
+2026-05-15 22:08:37,261 INFO __main__ [LEDGER] BLOCK MomentumLS BTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:37,262 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:08:37,746 INFO execution.high_freq_executor [FILL] AVAX SELL @ 9.510193 notional=$250 slip=2.1bps
+2026-05-15 22:10:07,649 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=9.510193 exit=9.511000 net=$-0.0887 hold=90s momentum_exit
+2026-05-15 22:10:07,650 INFO __main__ [CLOSE] MomentumLS AVAX SELL @ 9.511000 | net=$-0.0887 | momentum_exit
+2026-05-15 22:10:07,652 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:10:07,654 INFO __main__ [LEDGER] BLOCK MomentumLS SOL $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:10:08,149 INFO execution.high_freq_executor [FILL] BTC BUY @ 79113.358952 notional=$250 slip=2.1bps
+2026-05-15 22:12:10,838 INFO execution.high_freq_executor [CLOSE] AAVE SELL entry=92.595930 exit=92.687500 net=$-0.3147 hold=303s momentum_exit
+2026-05-15 22:12:10,839 INFO __main__ [CLOSE] MomentumLS AAVE SELL @ 92.687500 | net=$-0.3147 | momentum_exit
+2026-05-15 22:12:10,842 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:12:10,843 INFO __main__ [LEDGER] BLOCK MomentumLS ARB $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:12:10,844 INFO __main__ [SANITY] BLOCK MomentumLS LINK → sanity_pending_order_exists details={'symbol': 'LINK'}
+2026-05-15 22:12:10,845 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:12:10,897 INFO __main__ [LEDGER] BLOCK MomentumLS ARB $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:12:10,899 INFO __main__ [SANITY] BLOCK MomentumLS LINK → sanity_pending_order_exists details={'symbol': 'LINK'}
+2026-05-15 22:12:10,900 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:12:11,306 INFO __main__ [LEDGER] BLOCK MomentumLS ARB $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:12:11,310 INFO execution.high_freq_executor [FILL] LINK SELL @ 10.034488 notional=$250 slip=2.5bps
+2026-05-15 22:14:12,314 INFO execution.high_freq_executor [CLOSE] BTC BUY entry=79113.358952 exit=79094.500000 net=$-0.1271 hold=244s momentum_exit
+2026-05-15 22:14:12,315 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-15 22:14:12,315 INFO execution.high_freq_executor [CLOSE] LTC BUY entry=57.072941 exit=57.219500 net=$0.5745 hold=14141s loss_streak
+2026-05-15 22:14:12,315 INFO execution.high_freq_executor [CLOSE] LINK BUY entry=10.042513 exit=10.039500 net=$-0.1425 hold=356s loss_streak
+2026-05-15 22:14:12,316 INFO execution.high_freq_executor [CLOSE] LINK SELL entry=10.034488 exit=10.039500 net=$-0.1924 hold=121s loss_streak
+2026-05-15 22:14:12,317 WARNING risk.kill_switch Loss streak 5 reached -> 30 min suspend
+2026-05-15 22:14:12,317 INFO __main__ [CLOSE] MomentumLS BTC BUY @ 79094.500000 | net=$-0.1271 | momentum_exit
+2026-05-15 22:44:12,975 INFO __main__ [LEDGER] BLOCK MomentumLS BTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:44:12,977 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:44:12,978 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:44:12,979 INFO __main__ [SANITY] BLOCK MomentumLS ARB → sanity_pending_order_exists details={'symbol': 'ARB'}
+2026-05-15 22:44:13,184 INFO __main__ [LEDGER] BLOCK MomentumLS BTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:44:13,185 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:44:13,186 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 22:44:13,394 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.124790 notional=$250 slip=3.2bps
+2026-05-15 22:47:33,807 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.124790 exit=0.124840 net=$-0.1677 hold=200s momentum_exit
+2026-05-15 22:47:33,816 INFO __main__ [CLOSE] MomentumLS ARB SELL @ 0.124840 | net=$-0.1677 | momentum_exit
+2026-05-15 23:17:33,905 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:17:33,906 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:17:33,908 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:17:34,490 INFO execution.high_freq_executor [FILL] AAVE SELL @ 92.803388 notional=$250 slip=3.0bps
+2026-05-15 23:19:04,405 INFO execution.high_freq_executor [CLOSE] AAVE SELL entry=92.803388 exit=92.964000 net=$-0.5002 hold=90s momentum_exit
+2026-05-15 23:19:04,406 INFO __main__ [CLOSE] MomentumLS AAVE SELL @ 92.964000 | net=$-0.5002 | momentum_exit
+2026-05-15 23:19:04,408 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:19:04,409 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:19:04,410 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:19:04,955 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.125160 notional=$250 slip=3.2bps
+2026-05-15 23:20:34,919 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.125160 exit=0.125040 net=$0.1720 hold=90s momentum_exit
+2026-05-15 23:20:34,920 INFO __main__ [CLOSE] MomentumLS ARB SELL @ 0.125040 | net=$0.1720 | momentum_exit
+2026-05-15 23:20:34,922 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:20:34,923 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:20:34,924 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:20:35,555 INFO execution.high_freq_executor [FILL] BCH BUY @ 425.610314 notional=$250 slip=2.8bps
+2026-05-15 23:29:00,198 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=425.610314 exit=425.140000 net=$-0.3438 hold=505s momentum_exit
+2026-05-15 23:29:00,199 INFO __main__ [CLOSE] MomentumLS BCH BUY @ 425.140000 | net=$-0.3438 | momentum_exit
+2026-05-15 23:29:00,387 INFO __main__ [LEDGER] BLOCK MomentumLS AVAX $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:29:00,388 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:29:00,389 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:29:01,182 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.125020 notional=$250 slip=2.4bps
+2026-05-15 23:30:30,646 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.125020 exit=0.124935 net=$0.1023 hold=89s momentum_exit
+2026-05-15 23:30:30,647 INFO __main__ [CLOSE] MomentumLS ARB SELL @ 0.124935 | net=$0.1023 | momentum_exit
+2026-05-15 23:30:30,657 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:30:30,658 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:30:31,458 INFO __main__ [LEDGER] BLOCK MomentumLS AAVE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:30:31,463 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.534061 notional=$250 slip=2.2bps
+2026-05-15 23:33:02,993 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.534061 exit=9.535450 net=$-0.0311 hold=152s momentum_exit
+2026-05-15 23:33:02,994 INFO __main__ [CLOSE] MomentumLS AVAX BUY @ 9.535450 | net=$-0.0311 | momentum_exit
+2026-05-15 23:33:03,006 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:33:03,372 INFO __main__ [LEDGER] BLOCK MomentumLS AAVE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:33:03,374 INFO execution.high_freq_executor [FILL] HYPE SELL @ 44.003675 notional=$250 slip=2.1bps
+2026-05-15 23:38:34,970 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-15 23:38:39,919 INFO data.orderbook_manager All subscriptions sent.
+2026-05-15 23:49:14,564 INFO execution.high_freq_executor [CLOSE] HYPE SELL entry=44.003675 exit=44.064500 net=$-0.4131 hold=971s momentum_exit
+2026-05-15 23:49:14,565 INFO __main__ [CLOSE] MomentumLS HYPE SELL @ 44.064500 | net=$-0.4131 | momentum_exit
+2026-05-15 23:49:14,569 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:49:14,570 INFO __main__ [LEDGER] BLOCK MomentumLS ETH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:49:14,571 INFO __main__ [SANITY] BLOCK MomentumLS AVAX → sanity_pending_order_exists details={'symbol': 'AVAX'}
+2026-05-15 23:49:14,571 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:49:14,572 INFO __main__ [LEDGER] BLOCK MomentumLS ETH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:49:15,126 INFO execution.high_freq_executor [FILL] AVAX SELL @ 9.517741 notional=$250 slip=2.7bps
+2026-05-15 23:52:16,811 INFO execution.high_freq_executor [CLOSE] AVAX SELL entry=9.517741 exit=9.521250 net=$-0.1597 hold=182s momentum_exit
+2026-05-15 23:52:16,813 INFO __main__ [CLOSE] MomentumLS AVAX SELL @ 9.521250 | net=$-0.1597 | momentum_exit
+2026-05-15 23:52:16,823 INFO __main__ [LEDGER] BLOCK MomentumLS BTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:52:16,823 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-15 23:52:17,090 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.124605 notional=$250 slip=2.8bps
+2026-05-16 00:00:25,830 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-16 00:00:30,727 INFO data.orderbook_manager All subscriptions sent.
+2026-05-16 00:01:24,061 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.124605 exit=0.124405 net=$0.3338 hold=547s momentum_exit
+2026-05-16 00:01:24,091 INFO __main__ [CLOSE] MomentumLS ARB SELL @ 0.124405 | net=$0.3338 | momentum_exit
+2026-05-16 00:01:24,097 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:01:24,098 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:01:24,100 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:01:24,101 INFO __main__ [SANITY] BLOCK MomentumLS LTC → sanity_pending_order_exists details={'symbol': 'LTC'}
+2026-05-16 00:01:24,102 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:01:24,518 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:01:24,520 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:01:24,523 INFO execution.high_freq_executor [FILL] LTC BUY @ 57.226971 notional=$250 slip=2.3bps
+2026-05-16 00:06:27,796 INFO execution.high_freq_executor [CLOSE] LTC BUY entry=57.226971 exit=57.229000 net=$-0.0586 hold=303s momentum_exit
+2026-05-16 00:06:27,797 INFO __main__ [CLOSE] MomentumLS LTC BUY @ 57.229000 | net=$-0.0586 | momentum_exit
+2026-05-16 00:06:27,804 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:06:27,806 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:06:28,039 INFO __main__ [LEDGER] BLOCK MomentumLS AVAX $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:06:28,042 INFO execution.high_freq_executor [FILL] BCH BUY @ 425.090209 notional=$250 slip=2.8bps
+2026-05-16 00:13:32,688 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=425.090209 exit=425.040000 net=$-0.0970 hold=425s momentum_exit
+2026-05-16 00:13:32,689 INFO __main__ [CLOSE] MomentumLS BCH BUY @ 425.040000 | net=$-0.0970 | momentum_exit
+2026-05-16 00:13:32,706 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:13:32,708 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:13:33,289 INFO execution.high_freq_executor [FILL] AVAX BUY @ 9.528510 notional=$250 slip=2.5bps
+2026-05-16 00:15:02,654 INFO execution.high_freq_executor [CLOSE] AVAX BUY entry=9.528510 exit=9.522250 net=$-0.2317 hold=89s momentum_exit
+2026-05-16 00:15:02,656 INFO __main__ [CLOSE] MomentumLS AVAX BUY @ 9.522250 | net=$-0.2317 | momentum_exit
+2026-05-16 00:15:02,658 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:15:03,212 INFO __main__ [LEDGER] BLOCK MomentumLS ARB $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:15:03,215 INFO execution.high_freq_executor [FILL] ETH BUY @ 2220.295071 notional=$250 slip=2.2bps
+2026-05-16 00:16:34,902 INFO execution.high_freq_executor [CLOSE] ETH BUY entry=2220.295071 exit=2219.850000 net=$-0.1176 hold=92s momentum_exit
+2026-05-16 00:16:34,903 INFO __main__ [CLOSE] MomentumLS ETH BUY @ 2219.850000 | net=$-0.1176 | momentum_exit
+2026-05-16 00:16:34,930 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:16:34,932 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:16:35,067 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.124510 notional=$250 slip=3.2bps
+2026-05-16 00:28:42,938 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.124510 exit=0.124530 net=$-0.1076 hold=728s momentum_exit
+2026-05-16 00:28:42,938 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-16 00:28:42,938 WARNING risk.kill_switch Loss streak 5 reached -> 30 min suspend
+2026-05-16 00:28:42,938 INFO __main__ [CLOSE] MomentumLS ARB SELL @ 0.124530 | net=$-0.1076 | momentum_exit
+2026-05-16 00:58:43,170 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:58:43,173 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:58:43,174 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 00:58:43,699 INFO execution.high_freq_executor [FILL] AAVE SELL @ 93.076334 notional=$250 slip=2.5bps
+2026-05-16 01:02:04,927 INFO execution.high_freq_executor [CLOSE] AAVE SELL entry=93.076334 exit=93.099500 net=$-0.1297 hold=201s momentum_exit
+2026-05-16 01:02:04,933 INFO __main__ [CLOSE] MomentumLS AAVE SELL @ 93.099500 | net=$-0.1297 | momentum_exit
+2026-05-16 01:02:04,942 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:02:04,943 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:02:04,944 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:02:05,115 INFO execution.high_freq_executor [FILL] ARB SELL @ 0.124690 notional=$250 slip=3.2bps
+2026-05-16 01:03:34,935 INFO execution.high_freq_executor [CLOSE] ARB SELL entry=0.124690 exit=0.124795 net=$-0.2780 hold=90s momentum_exit
+2026-05-16 01:03:34,936 INFO __main__ [CLOSE] MomentumLS ARB SELL @ 0.124795 | net=$-0.2780 | momentum_exit
+2026-05-16 01:03:34,938 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:03:34,939 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:03:34,940 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:03:35,432 INFO execution.high_freq_executor [FILL] BCH BUY @ 426.545503 notional=$250 slip=2.2bps
+2026-05-16 01:18:15,910 INFO execution.high_freq_executor [CLOSE] BCH BUY entry=426.545503 exit=426.455000 net=$-0.1205 hold=880s momentum_exit
+2026-05-16 01:18:15,910 INFO __main__ [CLOSE] MomentumLS BCH BUY @ 426.455000 | net=$-0.1205 | momentum_exit
+2026-05-16 01:18:15,918 INFO __main__ [LEDGER] BLOCK MomentumLS HYPE $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:18:15,918 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:18:15,919 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:18:16,167 INFO execution.high_freq_executor [FILL] AAVE SELL @ 92.949359 notional=$250 slip=2.4bps
+2026-05-16 01:20:17,381 INFO execution.high_freq_executor [CLOSE] AAVE SELL entry=92.949359 exit=92.987000 net=$-0.1687 hold=121s momentum_exit
+2026-05-16 01:20:17,382 INFO __main__ [CLOSE] MomentumLS AAVE SELL @ 92.987000 | net=$-0.1687 | momentum_exit
+2026-05-16 01:20:17,386 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:20:17,387 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:20:17,397 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:20:17,398 INFO __main__ [SANITY] BLOCK MomentumLS LTC → sanity_pending_order_exists details={'symbol': 'LTC'}
+2026-05-16 01:20:17,399 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:20:17,400 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:20:17,917 INFO __main__ [LEDGER] BLOCK MomentumLS BCH $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:20:17,922 INFO execution.high_freq_executor [FILL] LTC BUY @ 57.467519 notional=$250 slip=2.7bps
+2026-05-16 01:21:47,401 INFO execution.high_freq_executor [CLOSE] LTC BUY entry=57.467519 exit=57.456000 net=$-0.1176 hold=89s momentum_exit
+2026-05-16 01:21:47,402 CRITICAL __main__ EMERGENCY CLOSE ALL: loss_streak
+2026-05-16 01:21:47,402 WARNING risk.kill_switch Loss streak 5 reached -> 30 min suspend
+2026-05-16 01:21:47,402 INFO __main__ [CLOSE] MomentumLS LTC BUY @ 57.456000 | net=$-0.1176 | momentum_exit
+2026-05-16 01:52:06,938 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 1s (attempt 1)
+2026-05-16 01:52:18,000 WARNING data.orderbook_manager WS error (timed out during handshake). Reconnect in 2s (attempt 2)
+2026-05-16 01:52:19,016 WARNING data.orderbook_manager WS error (sent 1011 (internal error) keepalive ping timeout; no close frame received). Reconnect in 1s (attempt 1)
+2026-05-16 01:52:20,028 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 2s (attempt 2)
+2026-05-16 01:52:20,035 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-16 01:52:22,045 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 4s (attempt 3)
+2026-05-16 01:52:24,065 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 8s (attempt 4)
+2026-05-16 01:52:26,059 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 8s (attempt 4)
+2026-05-16 01:52:32,704 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-16 01:52:35,314 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-16 01:52:37,779 INFO data.orderbook_manager All subscriptions sent.
+2026-05-16 01:52:37,853 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:37,864 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,871 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:37,877 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,888 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:37,890 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,894 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,903 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:37,905 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,915 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,918 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,926 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:37,930 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,930 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:37,937 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:38,498 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:38,501 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:38,504 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:38,505 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:38,968 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:38,971 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:38,971 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:38,971 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:39,522 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:39,530 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:39,530 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:39,537 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:40,277 INFO data.orderbook_manager All subscriptions sent.
+2026-05-16 01:52:40,312 INFO __main__ [SANITY] BLOCK MomentumLS AVAX → sanity_stale_heartbeat details={'last_heartbeat_ts': 1778889100.9323332, 'now': 1778889156.964, 'age_s': 56.0, 'limit_s': 20.0}
+2026-05-16 01:52:40,320 INFO __main__ [SANITY] BLOCK MomentumLS AVAX → sanity_stale_heartbeat details={'last_heartbeat_ts': 1778889100.9323332, 'now': 1778889157.468, 'age_s': 56.5, 'limit_s': 20.0}
+2026-05-16 01:52:40,326 INFO __main__ [SANITY] BLOCK MomentumLS AVAX → sanity_stale_heartbeat details={'last_heartbeat_ts': 1778889100.9323332, 'now': 1778889157.993, 'age_s': 57.1, 'limit_s': 20.0}
+2026-05-16 01:52:40,421 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:40,423 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:40,625 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:40,625 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:40,633 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:40,634 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:40,634 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:40,634 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:41,242 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:41,246 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:41,248 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:41,250 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:41,714 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:41,720 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:41,722 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:41,724 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:42,268 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:42,270 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:42,271 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:42,274 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:42,773 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:42,778 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:42,782 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:42,978 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:43,291 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:43,292 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:43,292 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:43,292 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:43,777 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:43,785 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:43,785 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:43,785 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:44,415 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:44,415 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:44,420 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:44,420 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:45,236 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:45,238 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:45,240 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:45,242 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:45,617 INFO __main__ [SANITY] BLOCK MomentumLS HYPE → sanity_pending_order_exists details={'symbol': 'HYPE'}
+2026-05-16 01:52:45,619 INFO __main__ [LEDGER] BLOCK MomentumLS LTC $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:45,621 INFO __main__ [LEDGER] BLOCK MomentumLS OP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:45,845 INFO __main__ [LEDGER] BLOCK MomentumLS XRP $250 → budget_exceeded:open=250+reserved=250+req=250>500
+2026-05-16 01:52:46,054 INFO execution.high_freq_executor [FILL] HYPE BUY @ 44.137348 notional=$250 slip=2.1bps
+2026-05-16 01:54:33,692 CRITICAL risk.kill_switch HARD KILL: network_timeout=81s
+2026-05-16 01:54:33,692 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=81s
+2026-05-16 01:54:33,767 INFO execution.high_freq_executor [CLOSE] HYPE BUY entry=44.137348 exit=44.144500 net=$-0.0270 hold=108s network_timeout=81s
+2026-05-16 01:54:33,862 CRITICAL risk.kill_switch HARD KILL: network_timeout=81s
+2026-05-16 01:54:33,862 CRITICAL __main__ EMERGENCY CLOSE ALL: network_timeout=81s
+2026-05-16 01:54:33,867 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-16 01:54:33,880 WARNING data.hyperliquid_funding fetch_hyperliquid_funding_rates: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001BE2A90AF10>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-16 01:54:33,911 CRITICAL __main__ Kill switch fired. Stopping engine.
+2026-05-16 01:54:33,917 WARNING data.hyperliquid_funding fetch_hyperliquid_funding_rates: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001BE2A66BB90>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-16 01:54:33,999 WARNING data.hyperliquid_funding fetch_hyperliquid_funding_rates: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001C918917AD0>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-16 01:54:34,025 WARNING data.hyperliquid_funding fetch_hyperliquid_funding_rates: HTTPSConnectionPool(host='api.hyperliquid.xyz', port=443): Max retries exceeded with url: /info (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001C91824EBD0>: Failed to resolve 'api.hyperliquid.xyz' ([Errno 11001] getaddrinfo failed)"))
+2026-05-16 01:54:34,051 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 16s (attempt 5)
+2026-05-16 01:54:34,067 WARNING data.orderbook_manager WS error (no close frame received or sent). Reconnect in 16s (attempt 5)
+2026-05-16 02:18:13,411 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 32s (attempt 6)
+2026-05-16 02:18:13,422 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 32s (attempt 6)
+2026-05-16 10:48:03,162 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 64s (attempt 7)
+2026-05-16 10:48:03,808 WARNING data.orderbook_manager WS error ([Errno 11001] getaddrinfo failed). Reconnect in 64s (attempt 7)
+2026-05-16 10:49:07,748 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-16 10:49:08,409 INFO data.orderbook_manager WS connected. Subscribing to 12 symbols...
+2026-05-16 10:49:12,714 INFO data.orderbook_manager All subscriptions sent.
+2026-05-16 10:49:12,778 INFO __main__ Shutting down v9...
+2026-05-16 10:49:13,427 INFO data.orderbook_manager All subscriptions sent.
+2026-05-16 10:49:13,506 INFO __main__ Shutting down v9...
