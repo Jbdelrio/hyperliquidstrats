@@ -1,1 +1,1 @@
-{"command_id": "4f9dbc6a", "timestamp": 1778935870.4517825, "command": "set_trading", "args": {"enabled": true}}
+{"command_id": "0c299e57", "timestamp": 1778955760.0782814, "command": "update_strategy", "args": {"strategy": "S8EMS", "action": "enable"}}

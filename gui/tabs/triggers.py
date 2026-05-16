@@ -264,16 +264,18 @@ def _build_recent_decisions() -> html.Div:
         return html.Div("Pas de décisions encore.",
                         style={"color": COLORS["text"]})
 
-    # Last 3 entries per strategy
+    # Last 3 entries per strategy — safe simple loop.
     if "strategy" not in df.columns:
         return html.Div("Colonne 'strategy' absente.", style={"color": COLORS["text"]})
     keep_cols = [c for c in ("strategy", "symbol", "decision", "reason", "timestamp")
                  if c in df.columns]
-    grouped = (df.groupby("strategy", group_keys=False)
-                 .apply(lambda g: g.tail(3))[keep_cols])
-    if grouped.empty:
+    pieces = []
+    for sname, g in df.groupby("strategy", sort=False):
+        pieces.append(g.tail(3)[keep_cols])
+    if not pieces:
         return html.Div("Pas de décisions par stratégie.",
                         style={"color": COLORS["text"]})
+    grouped = pd.concat(pieces, ignore_index=True)
 
     return dash_table.DataTable(
         data=grouped.to_dict("records"),

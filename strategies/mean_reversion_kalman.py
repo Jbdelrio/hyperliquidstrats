@@ -147,8 +147,31 @@ class MeanReversionKalman(BaseStrategy):
 
         action = "PLACE_BUY" if side == "BUY" else "PLACE_SELL"
         entry  = ask if side == "BUY" else bid
-        stop   = entry * (1 - 0.02) if side == "BUY" else entry * (1 + 0.02)
-        tp     = fv
+        sl_pct = float(p.get("stop_loss_pct", 0.02))
+        # Minimum TP move (%) — used as a floor when the Kalman FV is on
+        # the wrong side of entry (which means the FV/z relation has
+        # drifted; we skip rather than emit a non-sensical TP).
+        min_tp_pct = float(p.get("min_take_profit_pct", 0.003))
+
+        if side == "BUY":
+            stop = entry * (1.0 - sl_pct)
+            # tp must be > entry. Use fv if it's strictly above entry,
+            # else use the minimum percentage move.
+            tp = fv if (fv is not None and fv > entry * (1.0 + min_tp_pct)) \
+                    else entry * (1.0 + min_tp_pct)
+        else:
+            stop = entry * (1.0 + sl_pct)
+            tp = fv if (fv is not None and fv < entry * (1.0 - min_tp_pct)) \
+                    else entry * (1.0 - min_tp_pct)
+
+        # Final safety: skip if TP would still land on the wrong side or
+        # the RR is too thin to clear sanity (e.g. tp very close to entry).
+        if side == "BUY" and tp <= entry:
+            self._log_skip(symbol, "tp_below_entry_after_floor", ts, mid, spread_bps)
+            return None
+        if side == "SELL" and tp >= entry:
+            self._log_skip(symbol, "tp_above_entry_after_floor", ts, mid, spread_bps)
+            return None
 
         return StrategyDecision(
             action=action, symbol=symbol, reason=f"z={z_t:.2f}",

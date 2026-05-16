@@ -43,7 +43,8 @@
       "Bash(tasklist)",
       "Bash(tasklist /FI \"IMAGENAME eq python.exe\" /V)",
       "Bash(wmic process *)",
-      "Bash(taskkill /F /PID 58876 /PID 57292)"
+      "Bash(taskkill /F /PID 58876 /PID 57292)",
+      "Bash(/c/Users/jeanb/AppData/Local/Programs/Python/Python311/Scripts/pytest tests/test_strategy_sl_tp_fixes.py -v)"
     ]
   }
 }
