@@ -179,6 +179,10 @@ class EngineV9:
                 "max_pending_seconds_taker":  _paper_sim.get("max_pending_seconds_taker", 30),
                 "max_pending_seconds_maker":  _paper_sim.get("max_pending_seconds_maker", 120),
                 "base_slippage_bps":          _paper_sim.get("base_slippage_bps", 2.0),
+                # Phase 8 (audit): conservative exits + fees-from-config.
+                "tp_fill_mode":               _paper_sim.get("tp_fill_mode", "legacy"),
+                "stop_fill_mode":             _paper_sim.get("stop_fill_mode", "legacy"),
+                "fees":                       self.cfg.get("fees", {}) or {},
             },
             orders_log=log_cfg.get("orders_log", "logs/orders_v9.csv"),
         )
@@ -257,9 +261,15 @@ class EngineV9:
             if symbols:
                 coins = [c for c in coins if c in self.symbols]
 
-            # If --strategy flag given: enable only those named, disable the rest
+            # If --strategy flag given: enable only those named, disable the rest.
+            # BUT: never force-enable a strategy that the preset intentionally
+            # disabled with zero capital (e.g. SpotPerpBasis needs an external
+            # spot feed that isn't wired). Force-enable still allows budget>0
+            # strategies that are simply disabled by default.
+            cfg_capital = float(sc.get("capital_allocated_usd", 0.0))
             if _force_enable:
-                enabled = sc["name"].upper() in _force_enable
+                wanted = sc["name"].upper() in _force_enable
+                enabled = wanted and cfg_capital > 0.0
             else:
                 enabled = sc.get("enabled", True)
 
@@ -302,6 +312,30 @@ class EngineV9:
 
         # ── Phase-6: SanityCheckEngine — first-line gate ────────────────
         self.sanity = SanityCheckEngine()
+
+        # ── Phase 4/6 (Audit): MarketQualityGate + DecisionThrottle ─────
+        # Both opt-in via config — existing presets remain unaffected.
+        self.market_quality_gate = None
+        mqg_cfg = self.cfg.get("market_quality_gate", {}) or {}
+        if mqg_cfg.get("enabled", False):
+            try:
+                from risk.market_quality_gate import MarketQualityGate
+                self.market_quality_gate = MarketQualityGate(mqg_cfg)
+                log.info("MarketQualityGate enabled")
+            except Exception as _mqg_exc:
+                log.warning("MarketQualityGate init failed: %s", _mqg_exc)
+                self.market_quality_gate = None
+
+        self.decision_throttle = None
+        dt_cfg = self.cfg.get("decision_throttle", {}) or {}
+        if dt_cfg.get("enabled", False):
+            try:
+                from risk.decision_throttle import DecisionThrottle
+                self.decision_throttle = DecisionThrottle(dt_cfg)
+                log.info("DecisionThrottle enabled")
+            except Exception as _dt_exc:
+                log.warning("DecisionThrottle init failed: %s", _dt_exc)
+                self.decision_throttle = None
 
         # ── Phase-6: ExecutionPlanner — chooses MAKER/TAKER + max_pending
         self.exec_planner = ExecutionPlanner(self.cfg)
@@ -689,15 +723,26 @@ class EngineV9:
             return
         # Small initial pause so book buffers have a chance to fill.
         await asyncio.sleep(2.0)
+        # NOTE: runtime/calibration_data.json is the legacy file expected
+        # by the GUI calibration tab — its format is
+        # {strategy_name: {coin: {...}}}.  We do NOT overwrite it here.
+        # Seconds-feature snapshots + data feed health + gate stats are
+        # written to a separate file so the GUI keeps working unchanged.
+        data_feed_status_path = Path(self._runtime_cfg.get(
+            "data_feed_status_file", "runtime/data_feed_status.json"))
+        data_feed_status_path.parent.mkdir(parents=True, exist_ok=True)
+        last_calib_write = 0.0
         while self._running:
             await asyncio.sleep(self._seconds_feature_interval)
             ts = time.time()
+            all_feats: dict[str, dict] = {}
             for sym in self.symbols:
                 try:
                     feats = self.seconds_features.get_features(sym)
                 except Exception as _e:
                     log.debug("seconds_features get_features(%s) error: %s", sym, _e)
                     continue
+                all_feats[sym] = feats
                 if self._seconds_logger is not None and feats.get("mid") is not None:
                     try:
                         self._seconds_logger.log(feats)
@@ -711,6 +756,52 @@ class EngineV9:
                         await self._execute_decision(strat_name, decision, ts)
                 except Exception as _de:
                     log.debug("on_second_features dispatch error: %s", _de)
+
+            # Write the latest features snapshot to runtime calibration file
+            # (debounced to every 5 seconds to keep disk I/O light).
+            if ts - last_calib_write >= 5.0 and all_feats:
+                try:
+                    health = None
+                    try:
+                        health = self.obm.health_snapshot()
+                    except Exception:
+                        health = None
+                    payload = {
+                        "ts": ts,
+                        "seconds_features": all_feats,
+                        "data_feed_health": health,
+                    }
+                    if self.market_quality_gate is not None:
+                        payload["market_quality_gate_stats"] = {
+                            "total_evaluated": self.market_quality_gate.stats.total_evaluated,
+                            "total_blocked": self.market_quality_gate.stats.total_blocked,
+                            "blocks_by_reason": dict(self.market_quality_gate.stats.blocks_by_reason),
+                        }
+                        # Expose key thresholds so the GUI Triggers tab can
+                        # render per-coin verdicts without re-reading config.
+                        mqg_cfg = self.market_quality_gate.cfg
+                        payload["market_quality_gate_cfg"] = {
+                            "max_book_age_s": mqg_cfg.get("max_book_age_s"),
+                            "max_trade_age_s": mqg_cfg.get("max_trade_age_s"),
+                            "max_spread_bps_by_symbol": mqg_cfg.get("max_spread_bps_by_symbol"),
+                            "min_volume_30s_usd_by_symbol": mqg_cfg.get("min_volume_30s_usd_by_symbol"),
+                            "max_realized_vol_60s_bps": mqg_cfg.get("max_realized_vol_60s_bps"),
+                            "max_toxicity_score": mqg_cfg.get("max_toxicity_score"),
+                            "min_liquidity_score": mqg_cfg.get("min_liquidity_score"),
+                            "ofi_block_threshold": mqg_cfg.get("ofi_block_threshold"),
+                            "depth_block_threshold": mqg_cfg.get("depth_block_threshold"),
+                        }
+                    if self.decision_throttle is not None:
+                        payload["decision_throttle_stats"] = {
+                            "total_evaluated": self.decision_throttle.stats.total_evaluated,
+                            "total_blocked": self.decision_throttle.stats.total_blocked,
+                            "blocks_by_reason": dict(self.decision_throttle.stats.blocks_by_reason),
+                        }
+                    with open(data_feed_status_path, "w", encoding="utf-8") as _f:
+                        json.dump(payload, _f, default=str)
+                    last_calib_write = ts
+                except Exception as _ce:
+                    log.debug("data_feed_status write error: %s", _ce)
 
     # ------------------------------------------------------------------
     # Loop E — watchdog (5s)
@@ -931,6 +1022,60 @@ class EngineV9:
                 # engine. Log and continue without blocking.
                 log.debug("SanityCheck error (ignored): %s", _sa_exc)
 
+            # Gate 0b: MarketQualityGate (microstructure quality)
+            if self.market_quality_gate is not None:
+                try:
+                    side_for_mqg = "long" if action == "PLACE_BUY" else (
+                        "short" if action == "PLACE_SELL" else "long"
+                    )
+                    feats_for_mqg = {}
+                    if self.seconds_features is not None:
+                        try:
+                            feats_for_mqg = self.seconds_features.get_features(sym)
+                        except Exception:
+                            feats_for_mqg = {}
+                    health_for_mqg = None
+                    try:
+                        health_for_mqg = self.obm.health_snapshot()
+                    except Exception:
+                        health_for_mqg = None
+                    ok_mqg, mqg_reason, mqg_details = self.market_quality_gate.evaluate(
+                        sym, side_for_mqg, feats_for_mqg, book=book,
+                        health=health_for_mqg, now=ts,
+                    )
+                    if not ok_mqg:
+                        log.info("[MQG] BLOCK %s %s %s → %s",
+                                 strat_name, sym, side_for_mqg, mqg_reason)
+                        self._log_risk_event(
+                            strat_name, sym, action, requested_notional,
+                            False, f"market_quality:{mqg_reason}")
+                        try:
+                            self.decision_logger.log_skip(
+                                symbol=sym,
+                                reason=f"market_quality:{mqg_reason}",
+                                timestamp=ts,
+                                mid=feats_for_mqg.get("mid"),
+                                spread_bps=feats_for_mqg.get("spread_bps"),
+                                obi=feats_for_mqg.get("obi_5"),
+                            )
+                        except Exception:
+                            pass
+                        return
+                except Exception as _mqg_exc:
+                    log.debug("MQG error (ignored): %s", _mqg_exc)
+
+            # Gate 0c: DecisionThrottle (rate-limit entries)
+            if self.decision_throttle is not None:
+                ok_dt, dt_reason = self.decision_throttle.check(
+                    strat_name, sym, action, now=ts)
+                if not ok_dt:
+                    log.info("[THROTTLE] BLOCK %s %s %s → %s",
+                             strat_name, sym, action, dt_reason)
+                    self._log_risk_event(
+                        strat_name, sym, action, requested_notional,
+                        False, f"throttle:{dt_reason}")
+                    return
+
             # Gate 1: per-strategy ledger (budget + state)
             ok_ledger, ledger_reason = self.ledger.can_open(strat_name,
                                                             requested_notional)
@@ -1025,6 +1170,11 @@ class EngineV9:
                     if st and hasattr(st, "register_pending"):
                         st.register_pending(sym, [f"b_{pair_id}",
                                                    f"s_{pair_id}"])
+                    if self.decision_throttle is not None:
+                        try:
+                            self.decision_throttle.record_entry(strat_name, sym, now=ts)
+                        except Exception:
+                            pass
                     log.debug("[QUOTE] %s %s buy=%.6f sell=%.6f notional=$%.0f",
                               strat_name, sym, decision.buy_price,
                               decision.sell_price, notional_for_order)
@@ -1066,6 +1216,11 @@ class EngineV9:
                 if pair_id:
                     self._pair_to_strategy[pair_id] = strat_name
                     self._pair_to_reserved[pair_id] = (strat_name, notional)
+                    if self.decision_throttle is not None:
+                        try:
+                            self.decision_throttle.record_entry(strat_name, sym, now=ts)
+                        except Exception:
+                            pass
                     log.debug("[%s] %s %s notional=$%.0f type=%s",
                               action, strat_name, sym, notional, plan.order_type)
                 else:
@@ -1843,6 +1998,22 @@ class EngineV9:
     def _log_risk_event(self, strategy: str, symbol: str, action: str,
                          requested_notional: float, allowed: bool,
                          block_reason: str) -> None:
+        # Dedupe noisy recurring blocks (e.g. sanity rejecting every book
+        # tick) — keep at most ONE risk-event per (strategy, symbol, reason
+        # head) per minute. Successful actions and other entries always pass.
+        if not allowed and block_reason:
+            head = block_reason.split(":", 1)[0]
+            key = (strategy, symbol, head)
+            now = time.time()
+            if not hasattr(self, "_risk_event_dedupe"):
+                self._risk_event_dedupe = {}
+                self._risk_event_counts = {}
+            self._risk_event_counts[key] = self._risk_event_counts.get(key, 0) + 1
+            last_logged = self._risk_event_dedupe.get(key, 0.0)
+            if now - last_logged < 60.0:
+                # Suppress; we still keep the counter for stats.
+                return
+            self._risk_event_dedupe[key] = now
         global_open = sum(p.notional_usd for p in self.executor.open_positions)
         self.ledger.log_risk_event(
             strategy=strategy, symbol=symbol, action=action,

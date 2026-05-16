@@ -20,10 +20,22 @@ if "--fresh" in _sys.argv:
     _FRESH_FILES = [
         _REPO / "logs"       / "decisions_v9.csv",
         _REPO / "logs"       / "fills_v9.csv",
+        _REPO / "logs"       / "orders_v9.csv",
+        _REPO / "logs"       / "risk_events.csv",
         _REPO / "logs"       / "engine_stdout.log",
+        _REPO / "logs"       / "engine_v9.log",
+        _REPO / "logs"       / "seconds_features.csv",
+        _REPO / "logs"       / "alpha_signals.csv",
+        _REPO / "logs"       / "funding_snapshots.csv",
+        _REPO / "logs"       / "funding_opportunities.csv",
+        _REPO / "logs"       / "funding_positions.csv",
+        _REPO / "logs"       / "llm_decisions_v9.csv",
         _REPO / "metrics_v9" / "metrics_v9.csv",
         _REPO / "runtime"    / "strategy_status.json",
         _REPO / "runtime"    / "calibration_data.json",
+        _REPO / "runtime"    / "data_feed_status.json",
+        _REPO / "runtime"    / "arb_alerts.json",
+        _REPO / "runtime"    / "llm_status.json",
         _REPO / "runtime"    / "control.json",
         _REPO / "runtime"    / "control_result.json",
         _REPO / "runtime"    / "engine.pid",
@@ -50,7 +62,7 @@ if "--fresh" in _sys.argv:
 from gui.control_api import ControlAPI
 from gui.theme import COLORS, THEME
 from gui.tabs import calibration, coins, decisions, overview, risk, strategies, trades
-from gui.tabs import llm_overlay, exchanges, orders
+from gui.tabs import llm_overlay, exchanges, orders, triggers
 
 _HERE = _os.path.dirname(_os.path.abspath(__file__))
 _api  = ControlAPI()

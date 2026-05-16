@@ -61,6 +61,16 @@ def _tanh(x: float) -> float:
     return math.tanh(x)
 
 
+def _clip(x: float, lo: float, hi: float) -> float:
+    if x is None or not math.isfinite(x):
+        return lo
+    if x < lo:
+        return lo
+    if x > hi:
+        return hi
+    return x
+
+
 # ----------------------------------------------------------------------
 # Per-symbol state
 # ----------------------------------------------------------------------
@@ -107,17 +117,23 @@ class SecondsFeatureEngine:
     """Rolling per-second microstructure feature engine."""
 
     DEFAULT_DEPTH_LEVELS = (1, 3, 5, 10)
-    DEFAULT_TI_WINDOWS = (5.0, 10.0, 30.0)
-    DEFAULT_VWAP_WINDOWS = (5.0, 15.0, 30.0)
+    DEFAULT_TI_WINDOWS = (5.0, 10.0, 30.0, 60.0)
+    DEFAULT_VWAP_WINDOWS = (5.0, 15.0, 30.0, 60.0)
     DEFAULT_RET_WINDOWS = (5.0, 15.0, 30.0, 60.0)
     DEFAULT_RV_WINDOWS = (30.0, 60.0)
+    DEFAULT_OFI_WINDOWS = (5.0, 30.0, 60.0)
+    DEFAULT_MICRO_MOM_WINDOWS = (30.0, 60.0)
 
     def __init__(self, symbols: list[str], config: Optional[dict] = None):
         config = config or {}
         self.symbols = [s.upper() for s in symbols]
-        self.max_history_seconds = float(config.get("max_history_seconds", 300.0))
+        self.max_history_seconds = float(config.get("max_history_seconds", 600.0))
         self.stale_book_s = float(config.get("stale_book_s", 5.0))
-        self.min_data_seconds = float(config.get("min_data_seconds", 30.0))
+        # `min_warmup_seconds` is the canonical name from the new config;
+        # `min_data_seconds` kept as alias for back-compat.
+        self.min_warmup_seconds = float(config.get(
+            "min_warmup_seconds", config.get("min_data_seconds", 120.0)))
+        self.min_data_seconds = self.min_warmup_seconds
         # Tanh saturation lambdas (cf. docs/ALPHA_MODELS_THEORY.md)
         self.lambda_vwap_slope = float(config.get("lambda_vwap_slope", 1000.0))
         self.lambda_micropressure = float(config.get("lambda_micropressure", 1000.0))
@@ -346,6 +362,91 @@ class SecondsFeatureEngine:
         pressure += 0.15 * _tanh(self.lambda_momentum * (r5 if (r5 is not None and math.isfinite(r5)) else 0.0))
         feats["pressure_score_raw"] = pressure
 
+        # ------------------------------------------------------------------
+        # Phase 3 additions — OFI / micro-momentum / liquidity / toxicity
+        # ------------------------------------------------------------------
+
+        # OFI (order-flow imbalance) — already the same formula as TI,
+        # exposed under the canonical name for the MarketQualityGate.
+        for w in self.DEFAULT_OFI_WINDOWS:
+            tag = self._fmt_window(w)
+            ti_key = f"trade_imbalance_{tag}"
+            if ti_key in feats:
+                feats[f"ofi_{tag}"] = feats[ti_key]
+            else:
+                buy_vol, sell_vol, _ = self._trade_window_stats(st, data_now, w)
+                denom = buy_vol + sell_vol
+                feats[f"ofi_{tag}"] = (buy_vol - sell_vol) / denom if denom > 0 else _NaN
+
+        # mid_return aliases (the existing r_<w>s already carries the value)
+        for w in self.DEFAULT_OFI_WINDOWS:
+            tag = self._fmt_window(w)
+            if f"r_{tag}" in feats:
+                feats[f"mid_return_{tag}"] = feats[f"r_{tag}"]
+
+        # trade_volume_<w> aliases (sum of buy + sell)
+        for w in self.DEFAULT_OFI_WINDOWS:
+            tag = self._fmt_window(w)
+            bv = feats.get(f"buy_volume_usd_{tag}") or 0.0
+            sv = feats.get(f"sell_volume_usd_{tag}") or 0.0
+            feats[f"trade_volume_{tag}"] = bv + sv
+
+        # depth_imbalance_<n> aliases for the gate
+        feats["depth_imbalance_5"] = feats.get("obi_5", _NaN)
+        feats["depth_imbalance_10"] = feats.get("obi_10", _NaN)
+
+        # micro_momentum — short-term log return saturated.
+        for w in self.DEFAULT_MICRO_MOM_WINDOWS:
+            tag = self._fmt_window(w)
+            r = self._return_back(st, data_now, w)
+            feats[f"micro_momentum_{tag}"] = (
+                _tanh(self.lambda_momentum * r) if math.isfinite(r) else _NaN
+            )
+
+        # spread_z_60s — rolling z-score of spread on a 60 s window.
+        spread_60 = self._spread_z(st, data_now, 60.0)
+        feats["spread_z_60s"] = spread_60
+
+        # book_age_s / trade_age_s (relative to wall clock)
+        feats["book_age_s"] = last_update_age_s
+        if st.trades:
+            feats["trade_age_s"] = max(0.0, wall - st.trades[-1].ts)
+        else:
+            feats["trade_age_s"] = float("inf")
+
+        # ------------------------------------------------------------------
+        # liquidity_score ∈ [0, 1] — higher is better.
+        # Components: spread (lower → +), depth (higher → +), volume (higher → +),
+        # freshness (newer book → +), latency (NOT available here → 1.0).
+        sb = feats.get("spread_bps")
+        spread_term = _clip(1.0 - (sb / 20.0), 0.0, 1.0) if (sb is not None and math.isfinite(sb)) else 0.5
+        depth5 = ((feats.get("bid_depth_5") or 0.0) + (feats.get("ask_depth_5") or 0.0))
+        depth_term = _clip(depth5 / 50.0, 0.0, 1.0)
+        vol_30 = feats.get("trade_volume_30s") or 0.0
+        vol_term = _clip(vol_30 / 5000.0, 0.0, 1.0)
+        fresh_term = 1.0 if (last_update_age_s < 2.0) else 0.0
+        liquidity_score = (
+            0.30 * spread_term + 0.30 * depth_term + 0.20 * vol_term + 0.20 * fresh_term
+        )
+        feats["liquidity_score"] = liquidity_score
+
+        # toxicity_score ∈ [0, 1] — higher is worse.
+        # Components: spread, RV, |OFI|, stale book/trade, depth_imbalance, latency proxy.
+        spread_tox = _clip((sb or 0.0) / 20.0, 0.0, 1.0)
+        rv60 = feats.get("rv_60s")
+        rv_tox = _clip((rv60 or 0.0) / 0.01, 0.0, 1.0)
+        ofi60 = feats.get("ofi_60s")
+        ofi_tox = _clip(abs(ofi60 or 0.0), 0.0, 1.0)
+        stale_tox = 1.0 if (book_stale or feats.get("trade_age_s", 0) > 30.0) else 0.0
+        di10 = feats.get("depth_imbalance_10")
+        di_tox = _clip(abs(di10 or 0.0), 0.0, 1.0)
+        toxicity_score = _clip(
+            0.20 * spread_tox + 0.25 * rv_tox + 0.20 * ofi_tox
+            + 0.20 * stale_tox + 0.15 * di_tox,
+            0.0, 1.0,
+        )
+        feats["toxicity_score"] = toxicity_score
+
         return feats
 
     def get_all_features(self) -> list[dict]:
@@ -464,6 +565,22 @@ class SecondsFeatureEngine:
             return _NaN
         arr = np.asarray(rets, dtype=float)
         return float(np.sqrt(np.sum(arr * arr)))
+
+    def _spread_z(self, st: _SymbolState, data_now: float, window: float) -> float:
+        """Rolling z-score of the spread over `window` seconds of book history."""
+        cutoff = data_now - window
+        vals = [t.spread_bps for t in st.book_history
+                if t.ts >= cutoff and t.spread_bps is not None
+                and math.isfinite(t.spread_bps)]
+        if len(vals) < 10:
+            return _NaN
+        arr = np.asarray(vals, dtype=float)
+        mu = float(np.nanmean(arr))
+        sd = float(np.nanstd(arr))
+        latest = vals[-1]
+        if sd <= 0 or not math.isfinite(sd):
+            return 0.0
+        return (latest - mu) / sd
 
     @staticmethod
     def _zscore(x: Optional[float], samples: deque) -> float:
