@@ -326,7 +326,7 @@
       "params": {}
     },
     {
-      "_comment": "BAR — Kalman mean reversion (slow).",
+      "_comment": "BAR — Kalman mean reversion. SL/TP tuned so RR >= 1.2 (passes SanityCheck).",
       "name": "MeanReversionKalman",
       "class": "MeanReversionKalman",
       "enabled": true,
@@ -336,7 +336,14 @@
       "kill_after_consecutive_losses": 4,
       "suspend_minutes_on_kill": 30,
       "coins": ["BTC", "ETH", "SOL"],
-      "params": {}
+      "params": {
+        "stop_loss_pct": 0.005,
+        "min_take_profit_pct": 0.007,
+        "max_hold_minutes": 30,
+        "z_entry": 1.5,
+        "z_exit": 0.5,
+        "z_stop": 3.0
+      }
     },
     {
       "_comment": "BAR — directional funding carry. Slow (1-2/day in normal regimes).",

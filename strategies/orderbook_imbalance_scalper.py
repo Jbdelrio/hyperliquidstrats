@@ -171,15 +171,25 @@ class OrderBookImbalanceScalper(BaseStrategy):
         require_mid = p.get("require_mid_confirmation", True)
         mid_hist    = list(self._mid_hist.get(symbol, []))
 
+        # SL/TP must be on the StrategyDecision itself — the SanityCheck
+        # blocks decisions without them.  on_fill() later re-computes the
+        # same values for the executor's exit machinery; we pre-fill here
+        # using the limit price so the sanity check passes.
+        sl_pct = float(p.get("stop_loss_pct", 0.004))
+        tp_pct = float(p.get("take_profit_pct", 0.003))
+
         if all(x > thr for x in recent):
             # Mid must not be declining (would indicate fake buy-side imbalance)
             if require_mid and len(mid_hist) >= 2 and mid_hist[-1] < mid_hist[0]:
                 return None
+            stop_p = ask * (1.0 - sl_pct)
+            tp_p   = ask * (1.0 + tp_pct)
             reason = f"obimb_buy imb={imb:.3f} (>{thr})"
             return StrategyDecision(
                 action="PLACE_BUY", symbol=symbol, reason=reason,
                 buy_price=ask, size=notional / max(ask, 1e-9),
                 notional_usd=notional, max_hold_seconds=max_hold_s,
+                stop_loss=stop_p, take_profit=tp_p,
                 metadata={"imbalance": imb, "threshold": thr, "persist": persist},
             )
 
@@ -187,11 +197,14 @@ class OrderBookImbalanceScalper(BaseStrategy):
             # Mid must not be rising (would indicate fake sell-side imbalance)
             if require_mid and len(mid_hist) >= 2 and mid_hist[-1] > mid_hist[0]:
                 return None
+            stop_p = bid * (1.0 + sl_pct)
+            tp_p   = bid * (1.0 - tp_pct)
             reason = f"obimb_sell imb={imb:.3f} (<-{thr})"
             return StrategyDecision(
                 action="PLACE_SELL", symbol=symbol, reason=reason,
                 sell_price=bid, size=notional / max(bid, 1e-9),
                 notional_usd=notional, max_hold_seconds=max_hold_s,
+                stop_loss=stop_p, take_profit=tp_p,
                 metadata={"imbalance": imb, "threshold": thr, "persist": persist},
             )
 

@@ -292,9 +292,18 @@ def _build_alerts(live_list: list, now: float) -> list[dict]:
         window_s=300, now=now,
     )
     if n_sanity > 0:
+        # Risk events are now deduped (1/min per strat × symbol × reason)
+        # → 5min ≤ 5 events for a single recurring issue. Bump thresholds:
+        # warning at >= 30 unique block buckets, critical at >= 200.
+        if n_sanity >= 200:
+            level = "critical"
+        elif n_sanity >= 30:
+            level = "warning"
+        else:
+            level = "info"
         alerts.append({
-            "level": "warning" if n_sanity < 10 else "critical",
-            "text":  f"SanityCheck: {n_sanity} rejection(s) in the last 5min",
+            "level": level,
+            "text":  f"SanityCheck: {n_sanity} unique rejection bucket(s) in the last 5min",
         })
 
     # 1. Strategy suspended / killed and 2. drawdown > 15%

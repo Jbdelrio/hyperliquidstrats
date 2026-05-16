@@ -96,6 +96,7 @@ _TAB_SEL_STYLE = {
 
 _TABS = [
     ("Overview",     "tab-overview",     overview),
+    ("🎯 Triggers",  "tab-triggers",     triggers),
     ("Decisions",    "tab-decisions",    decisions),
     ("Trades",       "tab-trades",       trades),
     ("Orders",       "tab-orders",       orders),
