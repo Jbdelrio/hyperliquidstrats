@@ -715,3 +715,112 @@ Un signal n'est branché en stratégie active (`enabled: true`) **que** s'il pas
 
 La recherche d'alpha doit **précéder** le paper trading qui doit **précéder** le live. Aucun raccourci.
 
+---
+
+## Adaptive Framework — preset `paper_500_all_strategies_adaptive.json`
+
+Preset le plus complet : **$500 par stratégie**, toutes les strats activables, RegimeController + manual execution + data_requirements + filters microstructure.
+
+### Stratégies actives ($500 chacune)
+
+| Catégorie | Strats | Notional / pos |
+|-----------|--------|----------------|
+| **Tick scalpers** | OBImbalanceScalper, AlphaPressureScalper, BookFlowDivergenceReversal, AbsorptionReversal | $50 × 1 pos |
+| **Bar momentum/breakout** | MomentumLS, BreakoutControlled, DonchianTrend, VolatilityRegimeBreakout, RSIBollingerReversion | $250 × 2 pos |
+| **Bar autres** | S8EMS, MeanReversionKalman, RotationMomentum, MetaAlpha | $100-250 × 1-2 pos |
+| **Research only** | SecondsResearch, FundingArbEnhanced | $0 (intentionnel, scanners) |
+| **Disabled avec raison** | FundingArbitrage, FundingCarryHedged, SpotPerpBasis, RelativeValue | $0 — feeds externes manquants |
+
+### RegimeController (bounded)
+
+`risk/regime_controller.py` — détecte 7 régimes (`LOW_VOL_RANGE`, `HIGH_VOL_TREND`, `HIGH_VOL_CHAOTIC`, `BTC_CRASH`, `TOXIC_FLOW`, `ILLIQUID_WIDE_SPREAD`, `NORMAL`) et propose des ajustements de paramètres avec garde-fous :
+
+- **Le notional ne peut JAMAIS être augmenté** sans `allow_notional_amplification: true`
+- Bornes dures sur `take_profit_pct`, `stop_loss_pct`, `max_hold_seconds`, `cooldown_s`, etc.
+- TTL automatique (revert après expiration)
+- Tout est loggé dans `logs/regime_adaptations.csv`
+
+### Manual paper execution
+
+Commandes JSON envoyables via `runtime/control.json` (ou GUI quand le bouton est wired) :
+
+```json
+{"command": "manual_open",  "args": {"symbol": "BTC", "side": "BUY",  "notional_usd": 25, "take_profit_pct": 0.003, "stop_loss_pct": 0.002, "max_hold_seconds": 120, "reason": "test"}}
+{"command": "manual_close", "args": {"symbol": "BTC", "reason": "manual_close"}}
+{"command": "manual_flatten_symbol", "args": {"symbol": "BTC", "reason": "risk_off", "emergency_close": false}}
+{"command": "manual_set_param", "args": {"strategy": "OBImbalanceScalper", "param_name": "imbalance_entry_threshold", "value": 0.42, "ttl_seconds": 1800, "reason": "manual_regime"}}
+```
+
+Les ordres manuels passent par **toutes les gates** (Sanity, MQG, Throttle, Ledger, Portfolio, KillSwitch, ExecFilter) sauf `manual_flatten_symbol` avec `emergency_close: true`. Tag `strategy="MANUAL"` dans les fills. Audit log dans `logs/manual_orders.csv`.
+
+### `data_requirements` + warmup
+
+Chaque stratégie peut surcharger :
+
+```python
+def data_requirements(self) -> dict:
+    return {
+        "orderbook": True, "trades": True,
+        "seconds_features": False,
+        "bars": ["1m", "15m", "1h"],
+        "funding": False, "external_spot": False,
+        "warmup_bars": {"1m": 240, "15m": 50},
+    }
+```
+
+Et `warmup_status()` pour annoncer son readiness. Le tout est exposé dans `runtime/strategy_status.json` (et donc visible dans le GUI).
+
+### Performance analysis
+
+Après une session :
+
+```bash
+python scripts/analyze_strategy_performance.py \
+  --fills logs/fills_v9.csv \
+  --regime logs/regime_adaptations.csv \
+  --out reports/strategy_performance.md
+```
+
+Sortie : PnL par strat / coin, winrate, expectancy, profit factor, fees, slippage, frequency, performance par régime, dernières adaptations de params.
+
+### Smoke test
+
+Vérifie que les 15 stratégies du preset s'instancient et que tous leurs hooks répondent sans crash :
+
+```bash
+python scripts/smoke_all_strategies_adaptive.py
+```
+
+### Commandes principales
+
+```bash
+# Lancer le preset adaptive
+python engine_v9.py --paper --config config/presets/paper_500_all_strategies_adaptive.json
+
+# Smoke test
+python scripts/smoke_all_strategies_adaptive.py
+
+# Analyser perf après une session
+python scripts/analyze_strategy_performance.py
+
+# Audit data feed (à faire AVANT de trader)
+python scripts/audit_data_feed.py --minutes 5 --coins BTC,ETH,SOL,HYPE
+```
+
+### Limites restantes
+
+- **Pas de multi-timeframe router complet** : chaque strat continue de consommer ses bars 1-min via `on_bar_minute`. Pour des bars 15m/1h plus longues, la stratégie doit agréger elle-même côté code.
+- **RegimeController** ne s'auto-applique pas encore aux strats — il calcule les ajustements et les loggue, mais ne pousse pas automatiquement vers `update_params`. À wirer dans un futur changement si tu veux que les régimes ajustent live.
+- **LLM PARAM_ADVISOR** non implémenté — l'overlay LLM existant (`OFF/OBSERVER/RISK_OVERLAY`) suffit pour l'instant.
+- **Aster execution** toujours non wired pour le funding cross-exchange.
+
+### Checklist avant micro-live ($1-$3)
+
+1. Au moins 24 h de paper en `paper_500_all_strategies_adaptive` sans crash
+2. `python scripts/analyze_strategy_performance.py` montre **profit factor > 1** sur au moins 2 stratégies
+3. `audit_data_feed.py` retourne `DATA FEED OK`
+4. Aucune alerte critique dans le GUI sur 24 h
+5. `logs/manual_orders.csv` testé en paper (au moins un `manual_open` + `manual_close` réussi)
+6. `logs/regime_adaptations.csv` montre des adaptations cohérentes (pas d'amplification du notional)
+7. Le live executor reste `NotImplementedError` ; **micro-live nécessite un module dédié séparé**.
+

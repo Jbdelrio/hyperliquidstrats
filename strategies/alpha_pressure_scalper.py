@@ -101,6 +101,14 @@ class _AlphaScalperBase(BaseStrategy):
         # only use this to throttle re-entries.
         self._open_positions: dict[str, dict] = {}
 
+    def data_requirements(self) -> dict:
+        return {
+            "orderbook": True, "trades": True,
+            "seconds_features": True,
+            "bars": [], "funding": False, "external_spot": False,
+            "warmup_bars": {}, "warmup_seconds": 90,
+        }
+
     # --- Required BaseStrategy hooks (no-op in seconds path) ------------
 
     def on_orderbook_update(self, symbol, book, ts):

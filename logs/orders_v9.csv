@@ -1,9 +1,0 @@
-timestamp,signal_id,strategy,symbol,side,order_type,limit_price,notional_requested,notional_filled,fill_ratio,status,reason,queue_wait_s,slippage_bps,fee_bps
-2026-05-16T20:44:09,ded7688e,BreakoutControlled,BTC,BUY,TAKER_SIM,78224.0,250.0,0.0,0.0,EXPIRE,age=30.1s,30.078,0.0,0.0
-2026-05-16T20:44:09,ded7688e,BreakoutControlled,BTC,SELL,TAKER_SIM,9999999.0,250.0,0.0,0.0,EXPIRE,age=30.1s,30.078,0.0,0.0
-2026-05-16T20:45:43,607280de,BreakoutControlled,HYPE,BUY,TAKER_SIM,41.19,250.0,250.0,1.0,FILL,fill,0.0,2.126,3.0
-2026-05-16T20:45:43,607280de,BreakoutControlled,HYPE,SELL,TAKER_SIM,9999999.0,250.0,0.0,0.0,CANCEL,sibling_filled,0.0,0.0,0.0
-2026-05-16T20:48:47,452c41ad,BreakoutControlled,ETH,BUY,TAKER_SIM,2179.5,250.0,250.0,1.0,FILL,fill,0.0,2.234,3.0
-2026-05-16T20:48:47,452c41ad,BreakoutControlled,ETH,SELL,TAKER_SIM,9999999.0,250.0,0.0,0.0,CANCEL,sibling_filled,0.0,0.0,0.0
-2026-05-16T21:49:25,5a35e820,BreakoutControlled,LINK,BUY,TAKER_SIM,9.761,250.0,250.0,1.0,FILL,fill,0.0,2.722,3.0
-2026-05-16T21:49:25,5a35e820,BreakoutControlled,LINK,SELL,TAKER_SIM,9999999.0,250.0,0.0,0.0,CANCEL,sibling_filled,0.0,0.0,0.0

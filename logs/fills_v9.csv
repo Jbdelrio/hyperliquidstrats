@@ -1,2 +1,0 @@
-ts,symbol,side,notional,entry,exit,gross,fee,net,hold_s,reason,strategy,slippage_bps,entry_fee_usd,exit_fee_usd,total_fees_usd,exit_slippage_bps,paper_latency_ms,exit_mode
-2026-05-16T21:49:25,HYPE,BUY,250.0,41.1967582,41.81470957,3.75,0.225,3.525,3822.2,take_profit,BreakoutControlled,,0.1125,0.1125,0.225,0.0,150.0,market_after_touch

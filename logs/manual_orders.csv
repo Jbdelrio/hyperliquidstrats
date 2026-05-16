@@ -1,0 +1,20 @@
+ts,symbol,side,notional_usd,order_type,stop_loss,take_profit,reason,accepted,result_msg
+1000.000,XXX,BUY,10.0,TAKER_SIM,,,manual_open,0,unknown symbol XXX
+1000.000,,PARAM,0.0,MANUAL,,,manual_param,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=60.0s
+1000.000,,PARAM,0.0,MANUAL,,,test,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=30.0s
+1000.000,ZZZ,BUY,25.0,TAKER_SIM,,,manual_open,0,unknown symbol ZZZ
+1000.000,BTC,BUY,25.0,TAKER_SIM,,,manual_open,0,no book
+1000.000,BTC,FLATTEN,0.0,MANUAL,,,test,1,emergency=False closed=0
+1000.000,,PARAM,0.0,MANUAL,,,test,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=30.0s
+1000.000,ZZZ,BUY,25.0,TAKER_SIM,,,manual_open,0,unknown symbol ZZZ
+1000.000,BTC,BUY,25.0,TAKER_SIM,,,manual_open,0,no book
+1000.000,BTC,FLATTEN,0.0,MANUAL,,,test,1,emergency=False closed=0
+1778965700.875,,PARAM,0.0,MANUAL,,,smoke,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=60.0s
+1778965732.345,,PARAM,0.0,MANUAL,,,smoke,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=60.0s
+1778965772.529,,PARAM,0.0,MANUAL,,,smoke,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=60.0s
+1000.000,,PARAM,0.0,MANUAL,,,test,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=30.0s
+1000.000,ZZZ,BUY,25.0,TAKER_SIM,,,manual_open,0,unknown symbol ZZZ
+1000.000,BTC,BUY,25.0,TAKER_SIM,,,manual_open,0,no book
+1000.000,BTC,FLATTEN,0.0,MANUAL,,,test,1,emergency=False closed=0
+1778965855.116,,PARAM,0.0,MANUAL,,,smoke,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=60.0s
+1778969471.376,,PARAM,0.0,MANUAL,,,smoke,1,OBImbalanceScalper.imbalance_entry_threshold: 0.3 -> 0.42 ttl=60.0s

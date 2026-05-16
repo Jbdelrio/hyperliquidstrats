@@ -34,6 +34,13 @@ class OrderBookImbalanceScalper(BaseStrategy):
         self._last_mid:   dict[str, Optional[float]] = {c: None for c in config.coins}
         self._cooldowns:  dict[str, float]           = {}
 
+    def data_requirements(self) -> dict:
+        return {
+            "orderbook": True, "trades": True, "seconds_features": False,
+            "bars": [], "funding": False, "external_spot": False,
+            "warmup_bars": {}, "warmup_ticks": int(self.config.params.get("min_persistence_updates", 3)),
+        }
+
     # ── BaseStrategy interface ───────────────────────────────────────────────
 
     def on_orderbook_update(self, symbol: str, book, ts: float) -> Optional[StrategyDecision]:
