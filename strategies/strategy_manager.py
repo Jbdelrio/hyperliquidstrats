@@ -144,8 +144,9 @@ class StrategyManager:
     def get_status(self) -> list:
         import time
         now = time.time()
-        return [
-            {
+        out = []
+        for s in self.strategies.values():
+            entry = {
                 "name":                  s.name,
                 "state":                 s.state(now),
                 "enabled":               s.enabled,
@@ -155,11 +156,24 @@ class StrategyManager:
                 "suspended_until":       s._suspended_until,
                 "suspended_remaining_s": max(0.0, s._suspended_until - now),
                 "capital_allocated_usd": s.config.capital_allocated_usd,
+                "max_positions":         s.config.max_positions,
+                "max_position_size_usd": s.config.max_position_size_usd,
                 "coins":                 s.config.coins,
-                "params":               s.config.params,
+                "params":                s.config.params,
             }
-            for s in self.strategies.values()
-        ]
+            # Phase B additions: data requirements + warmup status.
+            try:
+                if hasattr(s, "data_requirements"):
+                    entry["data_requirements"] = s.data_requirements()
+            except Exception:
+                pass
+            try:
+                if hasattr(s, "warmup_status"):
+                    entry["warmup_status"] = s.warmup_status()
+            except Exception:
+                pass
+            out.append(entry)
+        return out
 
     def get_calibration_data(self) -> dict:
         result = {}

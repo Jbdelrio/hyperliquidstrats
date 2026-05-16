@@ -143,6 +143,33 @@ class BaseStrategy(ABC):
                            ) -> Optional[StrategyDecision]:
         return None
 
+    # ------------------------------------------------------------------
+    # Data requirements (Phase B — adaptive framework)
+    # ------------------------------------------------------------------
+    # Strategies override this to declare which data streams they need
+    # and how much warmup. The engine uses it to surface readiness in the
+    # GUI and to skip strategies whose warmup isn't satisfied yet.
+    #
+    # Default = "consumes whatever is wired by the existing hooks".
+    def data_requirements(self) -> dict:
+        return {
+            "orderbook": True,
+            "trades": True,
+            "seconds_features": False,
+            "bars": ["1m"],
+            "funding": False,
+            "external_spot": False,
+            "warmup_bars": {"1m": 60},
+        }
+
+    def warmup_status(self) -> dict:
+        """Return per-stream readiness. Engine fills timeframe counts."""
+        # Default: rely on per-symbol consecutive_losses + ledger state.
+        # Strategies that track their own buffers override this to return
+        # e.g. {"BTC": {"1m": (45, 60, False)}, ...} meaning 45/60 bars,
+        # not ready yet.
+        return getattr(self, "_warmup_status", {})
+
     def on_position_closed(self, symbol: str, pnl_net: float, exit_reason: str) -> None:
         if pnl_net < 0:
             self._consecutive_losses += 1

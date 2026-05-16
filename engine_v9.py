@@ -875,6 +875,21 @@ class EngineV9:
                 await self._write_status(status_file, calib_file)
                 last_status_t = ts
 
+            # Phase C: auto-revert expired manual param overrides.
+            reverts = getattr(self, "_manual_param_reverts", None)
+            if reverts:
+                still = []
+                for r in reverts:
+                    if ts >= r["expires_at"]:
+                        strat = self.manager.get(r["strategy"])
+                        if strat is not None and r["old"] is not None:
+                            strat.update_params({r["param"]: r["old"]})
+                            log.info("[MANUAL] reverted %s.%s to %s",
+                                     r["strategy"], r["param"], r["old"])
+                    else:
+                        still.append(r)
+                self._manual_param_reverts = still
+
             try:
                 if not control_file.exists():
                     continue
@@ -1884,11 +1899,184 @@ class EngineV9:
                 log.info("[ENGINE] set_llm_mode → %s", mode)
                 return {"ok": True, "llm_mode": mode}
 
+            # ── Phase C: manual paper-trading commands ────────────────
+            elif command == "manual_open":
+                return self._manual_open(args, ts)
+
+            elif command == "manual_close":
+                return self._manual_close(args, ts)
+
+            elif command == "manual_flatten_symbol":
+                return self._manual_flatten_symbol(args, ts)
+
+            elif command == "manual_set_param":
+                return self._manual_set_param(args, ts)
+
             else:
                 return {"ok": False, "error": f"unknown command: {command}"}
 
         except Exception as e:
             return {"ok": False, "error": str(e)}
+
+    # ------------------------------------------------------------------
+    # Manual paper commands (Phase C). Still go through all risk gates
+    # unless emergency_close=true is set on manual_flatten_symbol.
+    # ------------------------------------------------------------------
+
+    def _manual_open(self, args: dict, ts: float) -> dict:
+        sym = str(args.get("symbol", "")).upper()
+        side = str(args.get("side", "BUY")).upper()
+        notional = float(args.get("notional_usd", 25))
+        order_type = str(args.get("order_type", "TAKER_SIM")).upper()
+        tp_pct = float(args.get("take_profit_pct", 0.003))
+        sl_pct = float(args.get("stop_loss_pct", 0.002))
+        max_hold = int(args.get("max_hold_seconds", 120))
+        reason = str(args.get("reason", "manual_open"))
+
+        if sym not in self.symbols:
+            self._log_manual_order(ts, sym, side, notional, order_type,
+                                   None, None, reason, False,
+                                   f"unknown symbol {sym}")
+            return {"ok": False, "error": f"unknown symbol {sym}"}
+        book = self._last_book.get(sym)
+        if book is None:
+            self._log_manual_order(ts, sym, side, notional, order_type,
+                                   None, None, reason, False, "no book")
+            return {"ok": False, "error": "no book"}
+        bid, ask = book.best_bid, book.best_ask
+        if bid is None or ask is None:
+            self._log_manual_order(ts, sym, side, notional, order_type,
+                                   None, None, reason, False, "stale book")
+            return {"ok": False, "error": "stale book"}
+        entry = ask if side == "BUY" else bid
+        stop = entry * (1.0 - sl_pct) if side == "BUY" else entry * (1.0 + sl_pct)
+        tp = entry * (1.0 + tp_pct) if side == "BUY" else entry * (1.0 - tp_pct)
+        size = notional / max(entry, 1e-9)
+
+        # Build a StrategyDecision and re-use the existing gates pipeline.
+        action = "PLACE_BUY" if side == "BUY" else "PLACE_SELL"
+        from strategies.base_strategy import StrategyDecision
+        d = StrategyDecision(
+            action=action, symbol=sym, reason=f"MANUAL:{reason}",
+            buy_price=entry if side == "BUY" else None,
+            sell_price=entry if side == "SELL" else None,
+            size=size, notional_usd=notional,
+            stop_loss=stop, take_profit=tp, max_hold_seconds=max_hold,
+            order_type=order_type, strategy_family="manual",
+        )
+        # Ensure a MANUAL strategy slot exists in the ledger.
+        if "MANUAL" not in self.manager.strategies:
+            # Lightweight pseudo-registration: ledger only, no real strat.
+            try:
+                self.ledger.register_strategy("MANUAL", 10_000.0)
+            except Exception:
+                pass
+        # Dispatch through the standard execute pipeline.
+        # This is sync inside the control loop; we schedule it on the loop.
+        import asyncio as _aio
+        try:
+            loop = _aio.get_event_loop()
+            loop.create_task(self._execute_decision("MANUAL", d, ts))
+        except Exception as exc:
+            self._log_manual_order(ts, sym, side, notional, order_type,
+                                   stop, tp, reason, False,
+                                   f"dispatch error: {exc}")
+            return {"ok": False, "error": str(exc)}
+        self._log_manual_order(ts, sym, side, notional, order_type,
+                               stop, tp, reason, True, "submitted")
+        return {"ok": True, "action": action, "symbol": sym,
+                "notional": notional, "entry": entry,
+                "stop": stop, "tp": tp}
+
+    def _manual_close(self, args: dict, ts: float) -> dict:
+        sym = str(args.get("symbol", "")).upper()
+        strategy_filter = str(args.get("strategy", "")).strip()
+        reason = str(args.get("reason", "manual_close"))
+        closed = []
+        for pos in list(self.executor.open_positions):
+            if sym and pos.symbol != sym:
+                continue
+            if strategy_filter:
+                sname = self._pos_to_strategy.get(pos.pos_id, "")
+                if sname != strategy_filter:
+                    continue
+            res = self._close_position_sync(pos.pos_id, ts)
+            closed.append({"pos_id": pos.pos_id, "result": res})
+        self._log_manual_order(ts, sym, "CLOSE", 0.0, "MANUAL",
+                               None, None, reason, True,
+                               f"{len(closed)} position(s)")
+        return {"ok": True, "closed": closed}
+
+    def _manual_flatten_symbol(self, args: dict, ts: float) -> dict:
+        sym = str(args.get("symbol", "")).upper()
+        reason = str(args.get("reason", "manual_flatten"))
+        emergency = bool(args.get("emergency_close", False))
+        if not sym:
+            return {"ok": False, "error": "missing symbol"}
+        closed = []
+        # Cancel pending orders for the symbol
+        self.executor.cancel_quotes(sym)
+        for pos in list(self.executor.open_positions):
+            if pos.symbol != sym:
+                continue
+            res = self._close_position_sync(pos.pos_id, ts)
+            closed.append({"pos_id": pos.pos_id, "result": res})
+        if emergency:
+            # Also pause the symbol for 10 min to prevent immediate re-entry
+            self._pause_until = max(self._pause_until, ts + 600)
+        self._log_manual_order(ts, sym, "FLATTEN", 0.0, "MANUAL",
+                               None, None, reason, True,
+                               f"emergency={emergency} closed={len(closed)}")
+        return {"ok": True, "closed": closed, "paused": emergency}
+
+    def _manual_set_param(self, args: dict, ts: float) -> dict:
+        strategy = str(args.get("strategy", "")).strip()
+        sym = str(args.get("symbol", "")).upper()  # informational only
+        param = str(args.get("param_name", "")).strip()
+        value = args.get("value")
+        ttl = float(args.get("ttl_seconds", 1800))
+        reason = str(args.get("reason", "manual_param"))
+        if not strategy or not param:
+            return {"ok": False, "error": "missing strategy or param_name"}
+        strat = self.manager.get(strategy)
+        if strat is None:
+            return {"ok": False, "error": f"unknown strategy {strategy}"}
+        old = strat.config.params.get(param)
+        strat.update_params({param: value})
+        # Persist intent for analysis; revert handled via a separate
+        # bookkeeping list scanned in _control_loop tick.
+        if not hasattr(self, "_manual_param_reverts"):
+            self._manual_param_reverts = []
+        self._manual_param_reverts.append({
+            "strategy": strategy, "param": param,
+            "old": old, "new": value,
+            "expires_at": ts + ttl, "reason": reason,
+        })
+        self._log_manual_order(ts, sym, "PARAM", 0.0, "MANUAL",
+                               None, None, reason, True,
+                               f"{strategy}.{param}: {old} -> {value} ttl={ttl}s")
+        return {"ok": True, "strategy": strategy, "param": param,
+                "old": old, "new": value, "expires_at": ts + ttl}
+
+    def _log_manual_order(self, ts, sym, side, notional, order_type,
+                          stop, tp, reason, accepted, msg):
+        log_path = (self.cfg.get("logging", {}) or {}).get(
+            "manual_orders_log", "logs/manual_orders.csv")
+        import csv as _csv
+        try:
+            p = Path(log_path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            new = not p.exists()
+            with open(p, "a", newline="", encoding="utf-8") as fh:
+                w = _csv.writer(fh)
+                if new:
+                    w.writerow(["ts", "symbol", "side", "notional_usd",
+                                "order_type", "stop_loss", "take_profit",
+                                "reason", "accepted", "result_msg"])
+                w.writerow([f"{ts:.3f}", sym, side, notional, order_type,
+                            stop, tp, reason, "1" if accepted else "0", msg])
+        except Exception as e:
+            log.debug("manual log write failed: %s", e)
 
     def _close_position_sync(self, pos_id: str, ts: float) -> dict:
         pos = next((p for p in self.executor.open_positions if p.pos_id == pos_id), None)
