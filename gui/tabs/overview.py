@@ -321,10 +321,23 @@ def _build_alerts(live_list: list, now: float) -> list[dict]:
                 "text":  f"{name}: drawdown {dd_pct:.1f}% > 15%",
             })
 
-        # 5. Zero-capital strategies with enabled=true (config warning)
+        # 5. Zero-capital strategies with enabled=true (config warning).
+        # Research-only / no-trade strategies are exempt — they intentionally
+        # have capital=0 because they don't open positions.
+        _RESEARCH_ONLY_STRATS = {
+            "SecondsResearch", "SecondsResearchStrategy",
+            "FundingArbEnhanced", "FundingArbitrageEnhanced",
+        }
         cap = s.get("capital_allocated_usd")
         enabled = s.get("enabled", state not in ("DISABLED", "disabled"))
-        if enabled and isinstance(cap, (int, float)) and cap == 0:
+        max_pos = s.get("max_positions")
+        is_research_only = (
+            name in _RESEARCH_ONLY_STRATS
+            or (isinstance(max_pos, (int, float)) and max_pos == 0)
+            or bool((s.get("params") or {}).get("research_only"))
+            or bool((s.get("params") or {}).get("trade_enabled") is False)
+        )
+        if enabled and isinstance(cap, (int, float)) and cap == 0 and not is_research_only:
             alerts.append({
                 "level": "warning",
                 "text":  f"{name}: enabled but capital_allocated_usd=0 (config check)",

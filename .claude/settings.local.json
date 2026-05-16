@@ -34,7 +34,9 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Bash(git fetch *)",
-      "PowerShell(cd \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\"; Start-Process python -ArgumentList \"-m gui.app\" -WorkingDirectory \\(Get-Location\\).Path; Write-Host \"GUI lancé\")"
+      "PowerShell(cd \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\"; Start-Process python -ArgumentList \"-m gui.app\" -WorkingDirectory \\(Get-Location\\).Path; Write-Host \"GUI lancé\")",
+      "Bash(/c/Users/jeanb/AppData/Local/Programs/Python/Python311/Scripts/pytest tests/ -q --no-header)",
+      "WebFetch(domain:arxiv.org)"
     ]
   }
 }
