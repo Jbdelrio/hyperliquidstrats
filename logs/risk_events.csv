@@ -662,3 +662,6 @@ ts,strategy,symbol,action,requested_notional,allowed,block_reason,strat_open_not
 2026-05-16T22:18:38,OBImbalanceScalper,HYPE,PLACE_BUY,250.0,0,sanity_rr_too_low,0.0,0.0,500.0,500.0,7503.52
 2026-05-16T22:18:43,OBImbalanceScalper,BTC,PLACE_SELL,250.0,0,sanity_rr_too_low,0.0,0.0,500.0,500.0,7503.52
 2026-05-16T22:18:43,MeanReversionKalman,SOL,PLACE_BUY,250.0,0,market_quality:low_volume:3695.27151<4000.0,0.0,0.0,500.0,500.0,7503.52
+2026-05-16T22:19:15,OBImbalanceScalper,ETH,PLACE_SELL,250.0,0,sanity_rr_too_low,0.0,0.0,500.0,500.0,7503.52
+2026-05-16T22:19:15,MeanReversionKalman,BTC,PLACE_SELL,250.0,0,market_quality:ofi_against_short:0.32,0.0,0.0,500.0,500.0,7503.52
+2026-05-16T22:19:19,OBImbalanceScalper,SOL,PLACE_BUY,250.0,0,sanity_rr_too_low,0.0,0.0,500.0,500.0,7503.52
