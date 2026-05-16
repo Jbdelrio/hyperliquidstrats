@@ -41,8 +41,14 @@ def register_callbacks(app) -> None:
     )
     def update(_n, strat_name):
         calib = load_calibration()
-        if not calib:
+        if not calib or not isinstance(calib, dict):
             return no_data("En attente de runtime/calibration_data.json..."), []
+
+        # Defensive: only keep entries whose value is a {coin: features} dict.
+        # Tolerates older / future schemas that may have extra top-level keys.
+        calib = {k: v for k, v in calib.items() if isinstance(v, dict)}
+        if not calib:
+            return no_data("Calibration JSON malformée (aucun dict stratégie)."), []
 
         options = [{"label": k, "value": k} for k in calib]
         if strat_name not in calib:
@@ -51,6 +57,10 @@ def register_callbacks(app) -> None:
             return no_data("Aucune donnée de calibration."), options
 
         coin_data = calib[strat_name]
+        if not isinstance(coin_data, dict) or not coin_data:
+            return no_data(f"Pas de données pour {strat_name}."), options
+        # Drop any non-dict coin entries to avoid downstream crashes.
+        coin_data = {c: v for c, v in coin_data.items() if isinstance(v, dict)}
         if not coin_data:
             return no_data(f"Pas de données pour {strat_name}."), options
 

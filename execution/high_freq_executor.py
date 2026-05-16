@@ -72,6 +72,9 @@ class OpenPosition:
     stop_price:   float
     max_hold_ts:  float
     entry_ts:     float
+    # Phase 8 (audit): record which order_type filled this position so the
+    # close path can choose maker vs taker fees correctly.
+    order_type:   str = "TAKER_SIM"
 
 
 @dataclass
@@ -125,6 +128,20 @@ class HighFreqExecutor:
                                                 _DEFAULT_MAX_PENDING_MAKER))
         self._base_slippage_bps = float(cfg.get("base_slippage_bps",
                                                 _DEFAULT_BASE_SLIPPAGE_BPS))
+        # Phase 8 (audit): conservative exits + fees-from-config.
+        # When set, TP/SL exits are simulated as market-after-touch
+        # (bid for long, ask for short) with slippage applied. Otherwise
+        # keep legacy behaviour (TP fills at exact price).
+        self._tp_fill_mode = str(cfg.get("tp_fill_mode", "legacy")).lower()
+        self._stop_fill_mode = str(cfg.get("stop_fill_mode", "legacy")).lower()
+        # Per-trade fees (bps). If absent, fall back to module constants
+        # for back-compat with existing presets.
+        fees_cfg = cfg.get("fees") or {}
+        self._maker_fee_bps = float(fees_cfg.get("maker_bps", -MAKER_REBATE_BPS))
+        # ↑ note: maker_bps is positive cost; MAKER_REBATE_BPS is the
+        # legacy rebate (negative cost). The conversion keeps legacy.
+        self._taker_fee_bps = float(fees_cfg.get("taker_bps", TAKER_FEE_BPS))
+        self._fees_from_config = bool(fees_cfg)
 
         self._pending:  dict[str, PendingOrder]  = {}
         self._pairs:    dict[str, list[str]]      = {}   # pair_id → [buy_id, sell_id]
@@ -272,6 +289,7 @@ class HighFreqExecutor:
             entry_price=fill.price,
             tp_price=0.0, stop_price=0.0, max_hold_ts=0.0,  # set by on_fill_cb
             entry_ts=fill.ts,
+            order_type=getattr(order, "order_type", "TAKER_SIM"),
         )
         self._positions[pos.pos_id] = pos
 
@@ -364,23 +382,46 @@ class HighFreqExecutor:
         now = time.time()
         to_close = []
 
+        # Conservative exits: market-after-touch (long sells at bid,
+        # short buys at ask) + slippage. Enabled via config when set to
+        # "market_after_touch"; otherwise legacy (fill at exact TP/SL).
+        tp_realistic = self._tp_fill_mode == "market_after_touch"
+        stop_realistic = self._stop_fill_mode == "market_after_touch"
+        slip = self._base_slippage_bps / 10_000.0
+
         for pos in [p for p in self._positions.values() if p.symbol == symbol]:
             reason = exit_price = None
 
             if now >= pos.max_hold_ts and pos.max_hold_ts > 0:
-                reason, exit_price = "max_hold", mid
+                # Max-hold exits use bid/ask side appropriately under realistic mode.
+                if stop_realistic:
+                    px = best_bid if pos.side == "BUY" else best_ask
+                    px = px * (1.0 - slip) if pos.side == "BUY" else px * (1.0 + slip)
+                else:
+                    px = mid
+                reason, exit_price = "max_hold", px
 
             elif pos.side == "BUY":
                 if mid <= pos.stop_price:
-                    reason, exit_price = "stop_loss", best_bid
+                    px = best_bid * (1.0 - slip) if stop_realistic else best_bid
+                    reason, exit_price = "stop_loss", px
                 elif pos.tp_price > 0 and mid >= pos.tp_price:
-                    reason, exit_price = "take_profit", pos.tp_price
+                    if tp_realistic:
+                        px = best_bid * (1.0 - slip)
+                    else:
+                        px = pos.tp_price
+                    reason, exit_price = "take_profit", px
 
             elif pos.side == "SELL":
                 if mid >= pos.stop_price:
-                    reason, exit_price = "stop_loss", best_ask
+                    px = best_ask * (1.0 + slip) if stop_realistic else best_ask
+                    reason, exit_price = "stop_loss", px
                 elif pos.tp_price > 0 and mid <= pos.tp_price:
-                    reason, exit_price = "take_profit", pos.tp_price
+                    if tp_realistic:
+                        px = best_ask * (1.0 + slip)
+                    else:
+                        px = pos.tp_price
+                    reason, exit_price = "take_profit", px
 
             if reason:
                 to_close.append((pos, exit_price, reason))
@@ -394,18 +435,72 @@ class HighFreqExecutor:
         else:
             gross = (pos.entry_price - exit_price) / pos.entry_price * pos.notional_usd
 
-        maker_exit = reason == "take_profit"
-        exit_fee = (-MAKER_REBATE_BPS if maker_exit else TAKER_FEE_BPS) * pos.notional_usd / 10_000
-        entry_rebate = MAKER_REBATE_BPS * pos.notional_usd / 10_000
-        net = gross - exit_fee + entry_rebate
+        # Fee model: config-driven if `fees` block was set; otherwise legacy.
+        # Under realistic exits the TP fill is a market hit at bid/ask, so it
+        # is taker — switch the maker_exit detection accordingly.
+        realistic_tp_exit = (
+            reason == "take_profit"
+            and self._tp_fill_mode == "market_after_touch"
+        )
+        realistic_stop_exit = (
+            reason in ("stop_loss", "max_hold")
+            and self._stop_fill_mode == "market_after_touch"
+        )
+
+        if self._fees_from_config:
+            # Entry side : MAKER_SIM ⇒ maker fee (cost), else taker.
+            entry_fee_bps = (
+                self._maker_fee_bps if pos.order_type == "MAKER_SIM" else self._taker_fee_bps
+            )
+            # Exit side : TP at exact price is maker (legacy); realistic TP is taker.
+            if reason == "take_profit" and not realistic_tp_exit:
+                exit_fee_bps = self._maker_fee_bps
+            else:
+                exit_fee_bps = self._taker_fee_bps
+        else:
+            # Legacy maker-rebate vs taker model
+            maker_exit = reason == "take_profit" and not realistic_tp_exit
+            entry_fee_bps = -MAKER_REBATE_BPS
+            exit_fee_bps = -MAKER_REBATE_BPS if maker_exit else TAKER_FEE_BPS
+
+        entry_fee_usd = entry_fee_bps * pos.notional_usd / 10_000.0
+        exit_fee_usd = exit_fee_bps * pos.notional_usd / 10_000.0
+        total_fees_usd = entry_fee_usd + exit_fee_usd
+        net = gross - total_fees_usd
+
+        # Slippage that was already baked into exit_price (informational only).
+        if pos.side == "BUY":
+            exit_slippage_bps = max(0.0, (pos.tp_price - exit_price) / pos.tp_price * 10_000.0) \
+                if (reason == "take_profit" and pos.tp_price > 0) else 0.0
+        else:
+            exit_slippage_bps = max(0.0, (exit_price - pos.tp_price) / pos.tp_price * 10_000.0) \
+                if (reason == "take_profit" and pos.tp_price > 0) else 0.0
 
         hold_s = time.time() - pos.entry_ts
-        log.info("[CLOSE] %s %s entry=%.6f exit=%.6f net=$%.4f hold=%.0fs %s",
-                 pos.symbol, pos.side, pos.entry_price, exit_price, net, hold_s, reason)
+        log.info(
+            "[CLOSE] %s %s entry=%.6f exit=%.6f gross=$%.4f fees=$%.4f net=$%.4f hold=%.0fs %s",
+            pos.symbol, pos.side, pos.entry_price, exit_price,
+            gross, total_fees_usd, net, hold_s, reason,
+        )
 
         self._positions.pop(pos.pos_id, None)
-        self._log_trade(pos, exit_price, gross, exit_fee - entry_rebate, net,
-                        reason, hold_s, strategy)
+        # Pass the detailed fee/slippage info to the trade logger.
+        try:
+            self._log_trade(pos, exit_price, gross, total_fees_usd, net,
+                            reason, hold_s, strategy,
+                            entry_fee_usd=entry_fee_usd,
+                            exit_fee_usd=exit_fee_usd,
+                            exit_slippage_bps=exit_slippage_bps,
+                            paper_latency_ms=self._latency_ms,
+                            exit_mode=(
+                                "market_after_touch"
+                                if (realistic_tp_exit or realistic_stop_exit)
+                                else "legacy"
+                            ))
+        except TypeError:
+            # Older _log_trade signature — fall back.
+            self._log_trade(pos, exit_price, gross, total_fees_usd, net,
+                            reason, hold_s, strategy)
         return net
 
     # ------------------------------------------------------------------
@@ -503,27 +598,40 @@ class HighFreqExecutor:
 
     def _log_trade(self, pos: "OpenPosition", exit_price: float,
                    gross: float, fee: float, net: float,
-                   reason: str, hold_s: float, strategy: str = ""):
+                   reason: str, hold_s: float, strategy: str = "",
+                   entry_fee_usd: Optional[float] = None,
+                   exit_fee_usd: Optional[float] = None,
+                   exit_slippage_bps: Optional[float] = None,
+                   paper_latency_ms: Optional[float] = None,
+                   exit_mode: Optional[str] = None):
         try:
             write_hdr = not Path(self.trade_log).exists()
             with open(self.trade_log, "a", newline="", encoding="utf-8") as f:
                 w = csv.writer(f)
                 if write_hdr:
-                    # NB: slippage_bps column added (Phase 1) — preserves all
-                    # existing columns to avoid breaking downstream readers.
-                    w.writerow(["ts", "symbol", "side", "notional",
-                                 "entry", "exit", "gross", "fee", "net",
-                                 "hold_s", "reason", "strategy", "slippage_bps"])
-                # Note: exit-side fills (this close call) do not carry an
-                # explicit slippage tag — fees already model the round-trip
-                # exit cost. We log "" (blank) so the column exists for
-                # downstream tools without misrepresenting close slippage.
+                    # Phase 8 (audit) added cost-breakdown columns —
+                    # preserves all existing columns to avoid breaking
+                    # downstream readers that pin to the first 13.
+                    w.writerow([
+                        "ts", "symbol", "side", "notional",
+                        "entry", "exit", "gross", "fee", "net",
+                        "hold_s", "reason", "strategy", "slippage_bps",
+                        "entry_fee_usd", "exit_fee_usd", "total_fees_usd",
+                        "exit_slippage_bps", "paper_latency_ms", "exit_mode",
+                    ])
                 w.writerow([
                     time.strftime("%Y-%m-%dT%H:%M:%S"),
                     pos.symbol, pos.side, round(pos.notional_usd, 2),
                     round(pos.entry_price, 8), round(exit_price, 8),
                     round(gross, 6), round(fee, 6), round(net, 6),
                     round(hold_s, 1), reason, strategy, "",
+                    "" if entry_fee_usd is None else round(entry_fee_usd, 6),
+                    "" if exit_fee_usd is None else round(exit_fee_usd, 6),
+                    "" if (entry_fee_usd is None and exit_fee_usd is None) else round(
+                        (entry_fee_usd or 0.0) + (exit_fee_usd or 0.0), 6),
+                    "" if exit_slippage_bps is None else round(exit_slippage_bps, 3),
+                    "" if paper_latency_ms is None else round(paper_latency_ms, 1),
+                    exit_mode or "",
                 ])
         except Exception as e:
             log.error("Trade log write failed: %s", e)

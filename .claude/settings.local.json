@@ -36,7 +36,14 @@
       "Bash(git fetch *)",
       "PowerShell(cd \"C:\\\\Users\\\\jeanb\\\\Documents\\\\Mercantour\\\\Arbitragedetector\\\\genepi\\\\gptversion\\\\artemisia\\\\hyperliquidbis\\\\artemisia_v9\"; Start-Process python -ArgumentList \"-m gui.app\" -WorkingDirectory \\(Get-Location\\).Path; Write-Host \"GUI lancé\")",
       "Bash(/c/Users/jeanb/AppData/Local/Programs/Python/Python311/Scripts/pytest tests/ -q --no-header)",
-      "WebFetch(domain:arxiv.org)"
+      "WebFetch(domain:arxiv.org)",
+      "Bash(/c/Users/jeanb/AppData/Local/Programs/Python/Python311/Scripts/pytest tests/test_seconds_feature_engine.py tests/test_alpha_research_metrics.py tests/test_alpha_strategies_seconds.py -q)",
+      "Bash(/c/Users/jeanb/AppData/Local/Programs/Python/Python311/Scripts/pytest tests/test_orderbook_manager_hardening.py tests/test_market_quality_gate.py tests/test_decision_throttle.py tests/test_paper_500_total_preset.py tests/test_seconds_feature_engine_v2.py tests/test_executor_conservative_exits.py -q)",
+      "Bash(/c/Users/jeanb/AppData/Local/Programs/Python/Python311/Scripts/pytest tests/test_paper_500_total_preset.py -v)",
+      "Bash(tasklist)",
+      "Bash(tasklist /FI \"IMAGENAME eq python.exe\" /V)",
+      "Bash(wmic process *)",
+      "Bash(taskkill /F /PID 58876 /PID 57292)"
     ]
   }
 }

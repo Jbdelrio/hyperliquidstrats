@@ -1,6 +1,6 @@
 # Artemisia v9 — Multi-Strategy Paper Trading Engine
 
-Moteur de trading multi-stratégies en paper mode, connecté en temps réel à **Hyperliquid** via WebSocket. Architecture asyncio pure, 14 stratégies, cascade de filtres de risque, dashboard Dash, overlay LLM optionnel.
+Moteur de trading multi-stratégies en paper mode, connecté en temps réel à **Hyperliquid** via WebSocket. Architecture asyncio pure, **18 stratégies** (14 bar/tick + 4 microstructure-seconds), cascade de filtres de risque (Sanity → MarketQualityGate → DecisionThrottle → Ledger → Portfolio → KillSwitch → ExecutionFilter), dashboard Dash, overlay LLM optionnel, framework de recherche d'alpha intégré.
 
 ---
 
@@ -594,56 +594,124 @@ artemisia_v9/
 
 ---
 
-## Alpha Research / Seconds Features
+## Alpha Research + Seconds-Filter Framework
 
-Un framework de recherche d'alpha microstructure + funding a été ajouté
-au repo. Il est **paper-only** et désactivé par défaut.
+Un framework complet de **collecte de données secondes**, **filtre microstructure** et **recherche d'alpha** a été ajouté au repo. Tout est **paper-only**, jamais live.
+
+### Le preset par défaut : `paper_500_total_seconds_filtered.json` ★
+
+Le preset recommandé (et défaut du GUI) fait tourner **15 stratégies de trading + 2 stratégies de recherche** en paper, avec **$500 alloué à chaque stratégie** (pas $500 total — $500 par strat). Le but : générer un dataset utilisable pour tester toutes les stratégies en parallèle, sous un même filtre de qualité de marché.
+
+| Catégorie | Stratégies | Notes |
+|-----------|-----------|-------|
+| **Tick scalpers** (fréquent, ~5-10/h chacune) | `OBImbalanceScalper`, `AlphaPressureScalper`, `BookFlowDivergenceReversal`, `AbsorptionReversal` | TP/SL en bps, cooldown 20-30s, `DecisionThrottle` cap globale à 120/h |
+| **Bar strats** (1-3/h) | `MomentumLS`, `BreakoutControlled`, `DonchianTrend`, `VolatilityRegimeBreakout`, `RSIBollingerReversion` | TP/SL en %, max_hold 4-12h |
+| **Slow / specialized** | `S8EMS`, `MeanReversionKalman`, `FundingArbitrage`, `RotationMomentum`, `RelativeValue`, `MetaAlpha` | Cadence naturelle |
+| **Research only** (zéro trade) | `SecondsResearch`, `FundingArbEnhanced` | Alimentent les CSV + l'onglet Calibration |
+
+Cadence cible : **~2-3 trades / 2 min** globalement (les tick scalpers tirent l'essentiel ; les bar strats complètent).
 
 ### Pipeline
 
-1. **Collecter** des features microstructure secondes :
-   ```bash
-   python engine_v9.py --paper --config config/presets/paper_500_alpha_research.json
-   ```
-   Génère `logs/seconds_features.csv` (1 ligne/symbole/seconde).
+```bash
+# 1. Audit data feed AVANT trading (5 min suffit pour vérifier qualité Hyperliquid)
+python scripts/audit_data_feed.py --minutes 5 --coins BTC,ETH,SOL,HYPE
+# → reports/data_feed_audit.md  ;  exit 0 = OK, 1 = NOT OK
 
-2. **Analyser** :
-   ```bash
-   python scripts/run_alpha_research.py --features logs/seconds_features.csv --out reports/alpha_research_report.md
-   ```
-   Ou ouvrir `research/alpha_research_hyperliquid_seconds.ipynb`.
+# 2. Lancer le bot via GUI (preset déjà sélectionné par défaut)
+#    OU en CLI :
+python engine_v9.py --paper --config config/presets/paper_500_total_seconds_filtered.json
 
-3. **Scanner les funding rates** (Hyperliquid + Aster quand wired) :
-   ```bash
-   python scripts/scan_funding_opportunities.py --exchanges hyperliquid,aster --symbols BTC,ETH,SOL,HYPE --out reports/funding_opportunities.md
-   ```
-   Ou lancer l'engine avec `config/presets/paper_500_funding_research.json` pour un scan continu.
+# 3. Après une session — analyser ce qui s'est passé
+python scripts/analyze_seconds_filtered_paper.py \
+  --fills logs/fills_v9.csv \
+  --orders logs/orders_v9.csv \
+  --decisions logs/decisions_v9.csv \
+  --seconds logs/seconds_features.csv \
+  --out reports/seconds_filtered_paper_report.md
 
-4. **Décider** : un signal n'est branché en stratégie (`enabled=true`,
-   toujours en paper) que s'il passe :
-   - Spearman IC stable,
-   - bucket analysis monotone,
-   - PnL net > 0 après 8–16 bps de coûts,
-   - walk-forward positif,
-   - IC résiduel hors-bêta-BTC,
-   - performance robuste multi-symboles.
+# 4. Recherche d'alpha sur les features collectées (notebook ou CLI)
+python scripts/run_alpha_research.py \
+  --features logs/seconds_features.csv \
+  --out reports/alpha_research_report.md
+# Ou ouvrir : research/alpha_research_hyperliquid_seconds.ipynb
 
-   Voir `docs/ALPHA_RESEARCH_FRAMEWORK.md` pour la grille complète.
+# 5. Scanner les funding rates (Hyperliquid + Aster quand wired)
+python scripts/scan_funding_opportunities.py \
+  --exchanges hyperliquid,aster --symbols BTC,ETH,SOL,HYPE \
+  --out reports/funding_opportunities.md
+```
+
+### Les gates microstructure (ordre d'application)
+
+```
+StrategyDecision
+    → SanityCheckEngine        (book/TP/SL/cap journaliers)
+    → MarketQualityGate ★      (spread, OFI, toxicity, liquidity, stale book, queue drops)
+    → DecisionThrottle ★       (min gap par symbole/strat, hourly caps)
+    → StrategyCapitalLedger    (budget par strat)
+    → PortfolioRiskManager     (concentration / famille / net)
+    → KillSwitch               (drawdown, BTC vol guard)
+    → ExecutionFilter          (RR, net profit minimum)
+    → LLM overlay (si activé)
+    → HighFreqExecutor         (paper)
+```
+
+★ = nouveaux composants. Chaque blocage est loggé dans `logs/decisions_v9.csv` avec une raison parseable (`market_quality:spread_too_wide:7.5>5`, `throttle:symbol_gap:BTC:18s`, …).
+
+### Données produites (toutes loggées)
+
+| Fichier | Contenu |
+|---------|---------|
+| `logs/seconds_features.csv` | Snapshot/sec/symbole : mid, spread_bps, OBI 1/3/5/10, OFI 5/30/60s, microprice, VWAP 5/15/30/60s, returns, rv, liquidity_score, toxicity_score, pressure_score_raw, book_flow_divergence, absorption_{buy,sell}_proxy |
+| `logs/fills_v9.csv` | Trades fillés : entry/exit, gross, **entry_fee_usd, exit_fee_usd, total_fees_usd, exit_slippage_bps, paper_latency_ms, exit_mode** |
+| `logs/orders_v9.csv` | Cycle de vie des ordres pending/fill/cancel/expire |
+| `logs/decisions_v9.csv` | Chaque décision (place/skip) + raison de blocage |
+| `logs/risk_events.csv` | Réservations / réjections du ledger |
+| `logs/funding_snapshots.csv`, `logs/funding_opportunities.csv` | Si FundingArbEnhanced activé |
+| `runtime/calibration_data.json` | Snapshot live (5s) : features par symbole + health data feed + stats MQG/Throttle |
+
+### Le concept d'alertes GUI
+
+L'onglet Overview affiche désormais des **alertes typées** par stratégie/portefeuille :
+- `KILLED` (strat coupée par perte streak) → critical
+- `drawdown > 15%` → warning ou critical selon ampleur
+- Capital nul sur une strat *qui trade* → warning (les strats research-only sont **filtrées** — plus de faux positifs)
+- Distance à la kill-switch quotidienne → progress bar
+- Anomalies data feed (queue drops, stale books) → visibles via `runtime/calibration_data.json`
+
+Les seuils sont conservateurs par défaut (`max_dd_daily_pct: 3%`, `max_loss_streak: 6`) et peuvent être ajustés dans le preset.
 
 ### Documents
 
-- `docs/ALPHA_MODELS_THEORY.md` — formalisation mathématique des 8 modèles (Pressure, Divergence, Absorption, Liquidity Vacuum, BTC Residual, Regime, Composite, Funding Carry).
-- `docs/ALPHA_RESEARCH_FRAMEWORK.md` — méthodologie, critères de validation, anti-patterns.
-- `docs/DATA_COLLECTION_SECONDS.md` — WebSocket-first, univers, qualité de données.
-- `docs/ALPHA_RESEARCH_IMPLEMENTATION_PLAN.md` — plan d'audit et d'intégration.
+- `docs/ALPHA_MODELS_THEORY.md` — formalisation mathématique des 8 modèles (Pressure, Divergence, Absorption, Liquidity Vacuum, BTC Residual, Regime, Composite, Funding Carry)
+- `docs/ALPHA_RESEARCH_FRAMEWORK.md` — méthodologie, critères de validation, anti-patterns
+- `docs/DATA_COLLECTION_SECONDS.md` — WebSocket-first, univers, qualité de données
+- `docs/ALPHA_RESEARCH_IMPLEMENTATION_PLAN.md` — plan d'audit et d'intégration
 
-### Stratégies ajoutées (toutes `enabled=false` par défaut)
+### Comment activer/désactiver les filtres
 
-- `SecondsResearchStrategy` — no-op, sert uniquement à activer le flux features.
-- `AlphaPressureScalper` — utilise `pressure_score_raw`.
-- `BookFlowDivergenceReversal` — utilise `trade_imbalance_10s - obi_5`.
-- `AbsorptionReversal` — utilise `absorption_{buy,sell}_proxy`.
-- `FundingArbitrageEnhanced` — single + cross-exchange funding, **research_only**, jamais live.
+Dans n'importe quel preset, ajouter (ou retirer) :
+
+```json
+"market_quality_gate": { "enabled": false }  // pour désactiver MQG
+"decision_throttle":   { "enabled": false }  // pour désactiver le throttle
+"paper_simulation":    { "tp_fill_mode": "legacy" }  // exits TP au prix exact
+"fees": { /* absent */ }                     // utilise les fees module-level (legacy)
+```
+
+Les anciens presets (`paper_500_clean`, `paper_500_per_strategy`) restent fonctionnels et n'activent pas les nouveaux gates — back-compat 100%.
+
+### Critères de validation d'un signal alpha
+
+Un signal n'est branché en stratégie active (`enabled: true`) **que** s'il passe TOUS ces critères :
+- Spearman IC stable et non nul (sur ≥ plusieurs jours de données)
+- Bucket analysis monotone
+- PnL net positif après 8–16 bps de coûts
+- Walk-forward positif (train ≠ test)
+- IC résiduel hors-bêta-BTC non nul
+- Performance robuste sur plusieurs symboles
+- Pas de dépendance à des fills irréalistes
 
 La recherche d'alpha doit **précéder** le paper trading qui doit **précéder** le live. Aucun raccourci.
 

@@ -535,7 +535,9 @@ def static_layout() -> html.Div:
                 dbc.Col(dcc.Dropdown(
                     id="engine-config-select",
                     options=[
-                        {"label": "★ Paper 500 IDEAL — 5 strats + alpha research + funding scan (RECOMMENDED)",
+                        {"label": "★ Paper 500 IDEAL — $500 per strat, all enabled, seconds-filtered (RECOMMENDED)",
+                         "value": "config/presets/paper_500_total_seconds_filtered.json"},
+                        {"label": "Paper 500 LEGACY-aggressive — old 5 strats + scalpers (no filter)",
                          "value": "config/presets/paper_500_ideal.json"},
                         {"label": "Alpha Research only (collecte seconds features)",
                          "value": "config/presets/paper_500_alpha_research.json"},
@@ -548,7 +550,7 @@ def static_layout() -> html.Div:
                         {"label": "Default (config_v9.json)",
                          "value": "config_v9.json"},
                     ],
-                    value="config/presets/paper_500_ideal.json",
+                    value="config/presets/paper_500_total_seconds_filtered.json",
                     clearable=False,
                     className="dropdown-dark",
                 ), width=5),
