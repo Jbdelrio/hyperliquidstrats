@@ -9,5 +9,3 @@ logs/decisions_v9.csv filter=lfs diff=lfs merge=lfs -text
 >>>>>>> 413da59b759b43b2ccd82bb9fd2a13ffbeccdf9d
 *.csv filter=lfs diff=lfs merge=lfs -text
 *.json filter=lfs diff=lfs merge=lfs -text
-logs/** filter=lfs diff=lfs merge=lfs -text
-runtime/** filter=lfs diff=lfs merge=lfs -text

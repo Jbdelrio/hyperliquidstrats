@@ -2,3 +2,7 @@
 runtime/
 *.csv
 *.json
+*.pid
+__pycache__/
+.claude/
+logs/archive/
