@@ -1,8 +1,21 @@
-﻿logs/
+﻿# Dossiers temporaires
+logs/
 runtime/
 *.csv
 *.json
 *.pid
+
+# Cache Python
 __pycache__/
+*.pyc
+
+# Environnement virtuel et dépendances
+artemisia/Lib/
+artemisia/etc/
+artemisia/share/
+
+# Claude
 .claude/
-logs/archive/
+
+# Fichiers de configuration locaux
+.config/
