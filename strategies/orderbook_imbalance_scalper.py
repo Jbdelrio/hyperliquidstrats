@@ -33,6 +33,9 @@ class OrderBookImbalanceScalper(BaseStrategy):
         self._positions:  dict[str, dict]  = {}
         self._last_mid:   dict[str, Optional[float]] = {c: None for c in config.coins}
         self._cooldowns:  dict[str, float]           = {}
+        # Trade-flow buffer for soft "don't fight massive OFI" gate.
+        # Each entry: (ts, side("B"/"A"), volume_usd).
+        self._trade_buf:  dict[str, deque] = {c: deque(maxlen=500) for c in config.coins}
 
     def data_requirements(self) -> dict:
         return {
@@ -66,7 +69,34 @@ class OrderBookImbalanceScalper(BaseStrategy):
         return self._check_entry(symbol, bid, ask, mid, imb, ts)
 
     def on_trade_update(self, symbol: str, trade, ts: float) -> None:
-        pass
+        buf = self._trade_buf.get(symbol)
+        if buf is None:
+            return
+        try:
+            side = getattr(trade, "side", "B")
+            vol = float(getattr(trade, "volume_usd", 0.0))
+        except Exception:
+            return
+        buf.append((ts, side, vol))
+
+    def _trade_ofi(self, symbol: str, window_s: float = 30.0) -> float:
+        """Recent (buy_vol - sell_vol) / total over the last `window_s`."""
+        buf = self._trade_buf.get(symbol)
+        if not buf:
+            return 0.0
+        import time as _time
+        cutoff = _time.time() - window_s
+        b = 0.0
+        s = 0.0
+        for ts, side, vol in reversed(buf):
+            if ts < cutoff:
+                break
+            if side == "B":
+                b += vol
+            elif side == "A":
+                s += vol
+        denom = b + s
+        return (b - s) / denom if denom > 0 else 0.0
 
     def on_bar_minute(self, symbol: str, bar: BarData, ts: float) -> Optional[StrategyDecision]:
         return None
@@ -185,34 +215,48 @@ class OrderBookImbalanceScalper(BaseStrategy):
         sl_pct = float(p.get("stop_loss_pct", 0.004))
         tp_pct = float(p.get("take_profit_pct", 0.003))
 
+        # Soft "don't fight massive trade flow" gate. Same intent as the
+        # MQG ofi_block_threshold but keeps the strategy honest BEFORE the
+        # decision is emitted (cleaner logs + no spam).
+        max_against_flow = float(p.get("max_against_trade_ofi", 0.55))
+        trade_ofi = self._trade_ofi(symbol, window_s=30.0)
+
         if all(x > thr for x in recent):
             # Mid must not be declining (would indicate fake buy-side imbalance)
             if require_mid and len(mid_hist) >= 2 and mid_hist[-1] < mid_hist[0]:
                 return None
+            # Don't fight a strongly negative trade flow: takers selling
+            # heavily means the visible book is being absorbed.
+            if trade_ofi < -max_against_flow:
+                return None
             stop_p = ask * (1.0 - sl_pct)
             tp_p   = ask * (1.0 + tp_pct)
-            reason = f"obimb_buy imb={imb:.3f} (>{thr})"
+            reason = f"obimb_buy imb={imb:.3f} (>{thr}) ofi={trade_ofi:+.2f}"
             return StrategyDecision(
                 action="PLACE_BUY", symbol=symbol, reason=reason,
                 buy_price=ask, size=notional / max(ask, 1e-9),
                 notional_usd=notional, max_hold_seconds=max_hold_s,
                 stop_loss=stop_p, take_profit=tp_p,
-                metadata={"imbalance": imb, "threshold": thr, "persist": persist},
+                metadata={"imbalance": imb, "threshold": thr,
+                          "persist": persist, "trade_ofi": trade_ofi},
             )
 
         if all(x < -thr for x in recent):
             # Mid must not be rising (would indicate fake sell-side imbalance)
             if require_mid and len(mid_hist) >= 2 and mid_hist[-1] > mid_hist[0]:
                 return None
+            if trade_ofi > max_against_flow:
+                return None
             stop_p = bid * (1.0 + sl_pct)
             tp_p   = bid * (1.0 - tp_pct)
-            reason = f"obimb_sell imb={imb:.3f} (<-{thr})"
+            reason = f"obimb_sell imb={imb:.3f} (<-{thr}) ofi={trade_ofi:+.2f}"
             return StrategyDecision(
                 action="PLACE_SELL", symbol=symbol, reason=reason,
                 sell_price=bid, size=notional / max(bid, 1e-9),
                 notional_usd=notional, max_hold_seconds=max_hold_s,
                 stop_loss=stop_p, take_profit=tp_p,
-                metadata={"imbalance": imb, "threshold": thr, "persist": persist},
+                metadata={"imbalance": imb, "threshold": thr,
+                          "persist": persist, "trade_ofi": trade_ofi},
             )
 
         return None
@@ -225,7 +269,14 @@ class OrderBookImbalanceScalper(BaseStrategy):
 
         p    = self.config.params
         side = pos["side"]
-        thr  = p.get("imbalance_exit_threshold", 0.05)
+        # Exit on a genuine pressure REVERSAL, not on every dip through zero.
+        # Default = the entry threshold, so a BUY only force-closes when the
+        # book has flipped to the opposite side as strongly as it was on
+        # entry. The old 0.05 default was a hair-trigger: book imbalance is
+        # very noisy and crosses ±0.05 within seconds, so every position got
+        # scratched flat (paying fees) long before TP/SL could be reached.
+        thr  = p.get("imbalance_exit_threshold",
+                     p.get("imbalance_entry_threshold", 0.30))
 
         stop_h = (side == "SELL" and mid >= pos["stop"]) or (side == "BUY" and mid <= pos["stop"])
         tp_h   = (side == "SELL" and mid <= pos["tp"])   or (side == "BUY" and mid >= pos["tp"])

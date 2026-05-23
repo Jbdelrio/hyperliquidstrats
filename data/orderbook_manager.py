@@ -34,6 +34,11 @@ HL_WS_URL = "wss://api.hyperliquid.xyz/ws"
 # Rate limit on noisy warnings (one log line per key per N seconds).
 _WARN_INTERVAL_S = 30.0
 
+# Latency samples above this (after clock-offset correction) are treated as
+# glitch frames — stale snapshots replayed after a reconnect — and excluded
+# from the p95/avg/max aggregates so a single bad frame can't poison them.
+_LATENCY_GLITCH_CAP_MS = 30_000.0
+
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -255,18 +260,33 @@ class OrderbookManager:
         any_stale = False
         any_invalid = False
         for sym, st in self._stats.items():
-            last_book_age = (now - st.last_book_ts) if st.last_book_ts > 0 else float("inf")
-            last_trade_age = (now - st.last_trade_ts) if st.last_trade_ts > 0 else float("inf")
+            # Staleness is measured against the LOCAL receive clock — the
+            # exchange ts (last_book_ts) lives on a different clock and would
+            # yield negative / skewed ages.
+            last_book_age = (now - st.last_book_recv_ts) if st.last_book_recv_ts > 0 else float("inf")
+            last_trade_age = (now - st.last_trade_recv_ts) if st.last_trade_recv_ts > 0 else float("inf")
             # Stream rates (last 60 s window from history)
             cutoff = now - 60.0
             bu_rate = sum(1 for ts in st.book_update_history if ts >= cutoff) / 60.0
             tr_rate = sum(1 for ts in st.trade_history if ts >= cutoff) / 60.0
-            # Latency / spread aggregates
-            lats = list(st.latency_samples)
+            # Latency aggregates. Samples are RAW cross-clock deltas; the
+            # constant local↔exchange clock offset is the smallest observed
+            # delta, so subtracting min() yields a true relative latency that
+            # is immune to NTP skew. Glitch frames (stale snapshots after a
+            # reconnect) are dropped so they can't poison p95/avg/max.
+            raw_lat = list(st.latency_samples)
+            if raw_lat:
+                _offset = min(raw_lat)
+                _corr = [v - _offset for v in raw_lat]
+                _clean = [c for c in _corr if c <= _LATENCY_GLITCH_CAP_MS]
+                if not _clean:
+                    _clean = _corr
+                lat_mean = float(np.mean(_clean))
+                lat_p95 = float(np.percentile(_clean, 95)) if len(_clean) >= 20 else float("nan")
+                lat_max = float(np.max(_clean))
+            else:
+                lat_mean = lat_p95 = lat_max = float("nan")
             sps = list(st.spread_samples)
-            lat_mean = float(np.mean(lats)) if lats else float("nan")
-            lat_p95 = float(np.percentile(lats, 95)) if len(lats) >= 20 else float("nan")
-            lat_max = float(np.max(lats)) if lats else float("nan")
             spread_mean = float(np.mean(sps)) if sps else float("nan")
             spread_p95 = float(np.percentile(sps, 95)) if len(sps) >= 20 else float("nan")
             spread_max = float(np.max(sps)) if sps else float("nan")
@@ -338,7 +358,7 @@ class OrderbookManager:
                 log.warning("WS error (%s). Reconnect in %ds (attempt %d)",
                             e, backoff, self.reconnections)
                 await asyncio.sleep(backoff)
-                backoff = min(backoff * 2, 64)
+                backoff = min(backoff * 2, 15)   # cap at 15s — overnight DNS hiccups must not strand us
 
     async def _run_ws(self) -> None:
         async with websockets.connect(
@@ -401,7 +421,12 @@ class OrderbookManager:
         ts_ms  = data.get("time", time.time() * 1000)
         ex_ts  = ts_ms / 1000.0
         recv_ts = time.time()
-        latency_ms = max(0.0, (recv_ts - ex_ts) * 1000.0)
+        # Raw cross-clock delta (local recv − exchange ts). Stored RAW in the
+        # sample deque; the constant clock offset is removed at read time in
+        # health_snapshot() via a min-filter. max(0,…) is only for the
+        # per-event field, which a few consumers still read.
+        raw_latency_ms = (recv_ts - ex_ts) * 1000.0
+        latency_ms = max(0.0, raw_latency_ms)
 
         try:
             bids = [(float(l["px"]), float(l["sz"])) for l in levels[0]]
@@ -434,7 +459,7 @@ class OrderbookManager:
         st.book_updates += 1
         st.last_book_ts = ex_ts
         st.last_book_recv_ts = recv_ts
-        st.latency_samples.append(latency_ms)
+        st.latency_samples.append(raw_latency_ms)
         st.book_update_history.append(recv_ts)
         st.current_mid = book.mid
         sb = book.spread_bps
@@ -481,7 +506,8 @@ class OrderbookManager:
                 continue
 
             recv_ts = time.time()
-            latency_ms = max(0.0, (recv_ts - ex_ts) * 1000.0)
+            raw_latency_ms = (recv_ts - ex_ts) * 1000.0
+            latency_ms = max(0.0, raw_latency_ms)
 
             book = self._books.get(symbol)
             best_bid = book.best_bid if book else None
@@ -499,7 +525,7 @@ class OrderbookManager:
             st.last_trade_ts = ex_ts
             st.last_trade_recv_ts = recv_ts
             st.trade_history.append(recv_ts)
-            st.latency_samples.append(latency_ms)
+            st.latency_samples.append(raw_latency_ms)
             self.trade_events_count += 1
 
             event = TradeEvent(

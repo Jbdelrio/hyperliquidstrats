@@ -1,7 +1,7 @@
 {
   "_comment": "ADAPTIVE — $500 per strategy, all strategies whose dependencies are wired. Strategies needing external feeds (spot for SpotPerpBasis, hedge leg for FundingCarryHedged) stay DISABLED with explicit reason. RegimeController + manual execution + per-strategy data_requirements + warmup tracking.",
-  "_capital_note": "capital = $500 × (active trading strategies). funding/basis strategies stay disabled until their data feeds are wired — DO NOT enable naïvely or paper PnL won't reflect any real trade.",
-  "capital": 6500,
+  "_capital_note": "capital = $500 × 12 active trading strategies = $6000. S8EMS + funding/basis stay disabled. DO NOT enable naïvely.",
+  "capital": 6000,
   "paper_mode": true,
   "websocket_url": "wss://api.hyperliquid.xyz/ws",
   "subscription_delay_s": 0.15,
@@ -18,25 +18,26 @@
   },
 
   "market_quality_gate": {
+    "_comment": "Loosened drastically — original thresholds blocked 99% of night trades. Volume floors divided by 5x, OFI threshold raised to 0.65 (only block truly extreme situations), spread caps doubled. Strategies still have their own internal filters.",
     "enabled": true,
     "decision_interval_s": 20,
-    "min_seconds_warmup": 90,
-    "max_book_age_s": 3.0,
-    "max_trade_age_s": 30.0,
-    "max_latency_p95_ms": 1500,
+    "min_seconds_warmup": 60,
+    "max_book_age_s": 5.0,
+    "max_trade_age_s": 60.0,
+    "max_latency_p95_ms": 2500,
     "max_spread_bps_by_symbol": {
-      "BTC": 6.0, "ETH": 7.0, "SOL": 10.0, "HYPE": 14.0, "DEFAULT": 18.0
+      "BTC": 10.0, "ETH": 12.0, "SOL": 18.0, "HYPE": 25.0, "DEFAULT": 30.0
     },
     "min_volume_30s_usd_by_symbol": {
-      "BTC": 15000, "ETH": 8000, "SOL": 4000, "HYPE": 1500, "DEFAULT": 1000
+      "BTC": 3000, "ETH": 1500, "SOL": 800, "HYPE": 300, "DEFAULT": 200
     },
-    "max_realized_vol_60s_bps": 80,
-    "max_toxicity_score": 0.80,
-    "min_liquidity_score": 0.25,
+    "max_realized_vol_60s_bps": 150,
+    "max_toxicity_score": 0.92,
+    "min_liquidity_score": 0.15,
     "block_if_queue_drops": true,
     "block_if_crossed_book_seen": true,
-    "ofi_block_threshold": 0.35,
-    "depth_block_threshold": 0.35
+    "ofi_block_threshold": 0.65,
+    "depth_block_threshold": 0.55
   },
 
   "decision_throttle": {
@@ -73,15 +74,16 @@
   },
 
   "execution_filters": {
+    "_comment": "min_net_profit lowered from $0.50 → $0.08 — the $0.50 floor made scalpers ($50 notional) mathematically unable to pass (50bps TP = $0.25 gross, ~$0.18 net). RR floor 0.75 so thin-edge scalps still trade (this is paper, we collect data).",
     "enabled": true,
-    "min_expected_net_profit_usd": 0.50,
-    "min_expected_net_profit_pct_of_notional": 0.0006,
-    "min_reward_risk_ratio": 1.0,
+    "min_expected_net_profit_usd": 0.08,
+    "min_expected_net_profit_pct_of_notional": 0.0005,
+    "min_reward_risk_ratio": 0.75,
     "taker_fee_bps": 4.5,
     "slippage_bps": 2.0,
-    "min_hold_seconds": 30,
-    "cooldown_win_s": 120,
-    "cooldown_loss_s": 300
+    "min_hold_seconds": 20,
+    "cooldown_win_s": 90,
+    "cooldown_loss_s": 240
   },
 
   "strategies": [
@@ -98,9 +100,10 @@
       "coins": ["BTC", "ETH", "SOL", "HYPE"],
       "params": {
         "imbalance_levels": 5, "imbalance_entry_threshold": 0.30,
-        "min_persistence_updates": 2, "max_spread_bps": 10.0,
+        "min_persistence_updates": 2, "max_spread_bps": 15.0,
         "require_mid_confirmation": true,
-        "stop_loss_pct": 0.004, "take_profit_pct": 0.005,
+        "max_against_trade_ofi": 0.55,
+        "stop_loss_pct": 0.0035, "take_profit_pct": 0.0065,
         "max_hold_seconds": 120, "cooldown_s": 20,
         "taker_fee_bps": 4.5, "slippage_bps": 2.0, "min_cost_ratio": 1.0
       }
@@ -117,9 +120,9 @@
       "suspend_minutes_on_kill": 15,
       "coins": ["BTC", "ETH", "SOL", "HYPE"],
       "params": {
-        "threshold": 0.35, "max_spread_bps": 10.0, "max_rv_30s": 0.008,
-        "min_trade_volume_30s": 200.0, "cost_bps": 9.0, "margin_bps": 2.0,
-        "stop_loss_bps": 18.0, "take_profit_bps": 30.0,
+        "threshold": 0.35, "max_spread_bps": 15.0, "max_rv_30s": 0.012,
+        "min_trade_volume_30s": 100.0, "cost_bps": 9.0, "margin_bps": 2.0,
+        "stop_loss_bps": 16.0, "take_profit_bps": 42.0,
         "max_hold_seconds": 120, "cooldown_seconds": 20,
         "notional_usd": 50.0, "maker_only": false, "max_positions": 1
       }
@@ -137,9 +140,9 @@
       "coins": ["BTC", "ETH", "SOL", "HYPE"],
       "params": {
         "threshold": 0.30, "positive_ti": 0.18, "negative_ti": -0.18,
-        "max_spread_bps": 10.0, "max_rv_30s": 0.008,
+        "max_spread_bps": 15.0, "max_rv_30s": 0.012,
         "cost_bps": 9.0, "margin_bps": 2.0,
-        "stop_loss_bps": 22.0, "take_profit_bps": 30.0,
+        "stop_loss_bps": 18.0, "take_profit_bps": 46.0,
         "max_hold_seconds": 180, "cooldown_seconds": 30,
         "notional_usd": 50.0, "maker_only": false, "max_positions": 1
       }
@@ -156,9 +159,9 @@
       "suspend_minutes_on_kill": 15,
       "coins": ["BTC", "ETH", "SOL", "HYPE"],
       "params": {
-        "threshold": 0.0001, "max_spread_bps": 10.0, "max_rv_30s": 0.008,
+        "threshold": 0.0001, "max_spread_bps": 15.0, "max_rv_30s": 0.012,
         "cost_bps": 9.0, "margin_bps": 2.0,
-        "stop_loss_bps": 24.0, "take_profit_bps": 30.0,
+        "stop_loss_bps": 18.0, "take_profit_bps": 46.0,
         "max_hold_seconds": 180, "cooldown_seconds": 30,
         "notional_usd": 50.0, "maker_only": false, "max_positions": 1
       }
@@ -195,7 +198,7 @@
       "params": {
         "lookback_bars": 10, "bo_max_pct": 8.0, "vr_min": 0.8,
         "spread_bps_max": 20.0, "take_profit_pct": 1.5,
-        "stop_below_resistance_pct": 1.0, "max_hold_hours": 8
+        "stop_below_resistance_pct": 1.0, "max_hold_hours": 3
       }
     },
     {
@@ -254,15 +257,13 @@
       }
     },
     {
-      "_comment": "BAR — S8 econophysics maker scalper.",
+      "_disabled_reason": "S8EMS is a maker market-maker that needs WIDE spreads to quote profitably. In tight-spread majors it spams 'spread_too_tight' (~40k skips/session, pure log noise) and never trades. Re-enable only on a wide-spread / illiquid universe.",
       "name": "S8EMS",
       "class": "S8EconophysicsMakerScalping",
-      "enabled": true,
-      "capital_allocated_usd": 500,
-      "max_positions": 1,
-      "max_position_size_usd": 100,
-      "kill_after_consecutive_losses": 4,
-      "suspend_minutes_on_kill": 30,
+      "enabled": false,
+      "capital_allocated_usd": 0,
+      "max_positions": 0,
+      "max_position_size_usd": 0,
       "coins": ["BTC", "ETH", "SOL"],
       "params": {}
     },
@@ -374,8 +375,8 @@
     "max_dd_daily_pct": 0.030,
     "max_dd_total_pct": 0.080,
     "max_open_positions": 18,
-    "max_notional_total": 6500,
-    "network_timeout_s": 60,
+    "max_notional_total": 6000,
+    "network_timeout_s": 300,
     "max_trades_per_hour": 150,
     "max_loss_streak": 6,
     "btc_move_5m_pct": 2.5,

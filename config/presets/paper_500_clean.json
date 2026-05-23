@@ -4,6 +4,15 @@
   "paper_mode": true,
   "websocket_url": "wss://api.hyperliquid.xyz/ws",
   "subscription_delay_s": 0.15,
+  "seconds_features": {
+    "_comment": "Required so per-second strategies (BTC_5MIN_BINARY_REPL) receive on_second_features. log_enabled=false: BTC_5MIN_BINARY_REPL keeps its own logs and we avoid the multi-MB seconds_features.csv.",
+    "enabled": true,
+    "feature_interval_s": 1.0,
+    "max_history_seconds": 600,
+    "log_enabled": false,
+    "min_warmup_seconds": 90,
+    "stale_book_s": 5.0
+  },
   "execution_filters": {
     "enabled": true,
     "min_expected_net_profit_usd": 3.0,
@@ -188,14 +197,33 @@
       "params": { "trade_when_external_spot_missing": false }
     },
     {
+      "_comment": "DELTA-NEUTRAL funding carry. hedged=true => self-contained paper sim (perp + spot/oracle legs, funding accrual). Realised PnL goes to logs/funding_carry_paper.csv, NOT to the directional engine equity (it is a separate market-neutral book). Entry needs funding whose carry beats the ~31 bps two-leg round-trip: episodic, sits idle when funding is near the floor.",
       "name": "FundingCarryHedged",
       "class": "FundingCarryHedgedStrategy",
-      "enabled": false,
-      "capital_allocated_usd": 0,
-      "max_positions": 1,
-      "max_position_size_usd": 0,
-      "coins": ["BTC", "ETH"],
-      "params": { "allow_unhedged_perp": false }
+      "enabled": true,
+      "capital_allocated_usd": 500,
+      "max_positions": 3,
+      "max_position_size_usd": 200,
+      "kill_after_consecutive_losses": 99,
+      "suspend_minutes_on_kill": 5,
+      "coins": ["BTC", "ETH", "SOL"],
+      "params": {
+        "hedged": true,
+        "refresh_interval_s": 60,
+        "funding_entry_bps_per_hour": 1.0,
+        "funding_exit_bps_per_hour": 0.3,
+        "expected_hold_hours": 24,
+        "min_expected_edge_bps": 5.0,
+        "max_hold_hours": 96,
+        "max_basis_bps": 60.0,
+        "stop_loss_pct": 0.03,
+        "taker_fee_bps": 4.5,
+        "slippage_bps": 2.0,
+        "spot_fee_bps": 7.0,
+        "spot_slippage_bps": 2.0,
+        "safety_buffer_bps": 2.0,
+        "paper_log_path": "logs/funding_carry_paper.csv"
+      }
     },
     {
       "name": "OBImbalanceScalper",
@@ -216,6 +244,35 @@
       "max_position_size_usd": 0,
       "coins": ["BTC", "ETH", "SOL"],
       "params": {}
+    },
+    {
+      "_comment": "Synthetic 'BTC up/down in 5 min' replication via BTC perp. PAPER-ONLY, disabled by default — flip enabled:true to test. Needs ~30 min warmup before any trade. leverage is clamped to max_leverage; 10x with a $1 stop = a 0.10% stop distance, already near 5-min noise. Going above 10x makes the stop thinner than the spread (instant stop-outs) — do NOT raise max_leverage without reading docs/BTC_5MIN_BINARY_REPL.md.",
+      "name": "BTC_5MIN_BINARY_REPL",
+      "class": "BTC5MinBinaryReplStrategy",
+      "enabled": false,
+      "capital_allocated_usd": 500,
+      "max_positions": 1,
+      "max_position_size_usd": 100,
+      "kill_after_consecutive_losses": 99,
+      "suspend_minutes_on_kill": 5,
+      "coins": ["BTC"],
+      "params": {
+        "symbol": "BTC",
+        "leverage": 10,
+        "max_leverage": 10,
+        "max_margin_per_trade_usd": 10,
+        "max_position_notional_usd": 100,
+        "take_profit_usd": 1.5,
+        "stop_loss_usd": 1.0,
+        "max_holding_seconds": 300,
+        "min_warmup_seconds": 1800,
+        "max_daily_loss_usd": 20,
+        "max_consecutive_losses": 3,
+        "max_trades_per_hour": 6,
+        "paper_only": true,
+        "live_enabled": false,
+        "log_features": true
+      }
     }
   ],
   "risk": {

@@ -32,6 +32,8 @@ _WARMUP_BARS = {
     "RSIBollingerReversion":20,
     "VolatilityRegimeBreakout": 14,
     "MetaAlpha":            20,
+    "BTC_5MIN_BINARY_REPL": 30,
+    "BTC_BINARY_HIGHLEV":   30,
 }
 
 _ALL_STRATS = [
@@ -40,7 +42,8 @@ _ALL_STRATS = [
     "DonchianTrend", "RSIBollingerReversion",
     "RotationMomentum", "RelativeValue",
     "SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
-    "VolatilityRegimeBreakout", "MetaAlpha",
+    "VolatilityRegimeBreakout", "MetaAlpha", "BTC_5MIN_BINARY_REPL",
+    "BTC_BINARY_HIGHLEV",
 ]
 _DFLT_CAP = {s: 500 for s in _ALL_STRATS}
 # Total capital = sum of all strategy allocations (computed dynamically)
@@ -528,6 +531,36 @@ def register_callbacks(app) -> None:
         # Total capital = sum of all strategy allocations (dynamic)
         init_cap = _total_capital(live_list)
 
+        # Engine start — for warmup bars AND to scope fills/decisions to the
+        # CURRENT run. fills_v9.csv accumulates across engine restarts; without
+        # this filter the dashboard blends dead old sessions into the KPIs.
+        engine_start_ts = 0.0
+        try:
+            _ecfg = _REPO / "runtime" / "engine_config.json"
+            if _ecfg.exists():
+                _ecfg_data = json.load(open(_ecfg, encoding="utf-8"))
+                engine_start_ts = float(_ecfg_data.get("started_at")
+                                        or _ecfg_data.get("ts") or 0)
+        except Exception:
+            pass
+
+        # fills "ts" is a local-time ISO string — parse to a real epoch, then
+        # keep only the current run so KPIs / equity curve / cards reflect THIS
+        # session and not a previous one still sitting in the same CSV.
+        if not fills.empty and "ts" in fills.columns:
+            import datetime as _dt
+
+            def _iso_epoch(v):
+                try:
+                    return _dt.datetime.fromisoformat(str(v)).timestamp()
+                except Exception:
+                    return float("nan")
+
+            fills = fills.copy()
+            fills["_epoch"] = fills["ts"].map(_iso_epoch)
+            if engine_start_ts > 0:
+                fills = fills[fills["_epoch"] >= engine_start_ts - 5].copy()
+
         # Per-strategy stats from fills (always up-to-date)
         strat_stats: dict = {}
         if not fills.empty and "net" in fills.columns and "strategy" in fills.columns:
@@ -551,30 +584,17 @@ def register_callbacks(app) -> None:
             total_pnl = float(net.sum())
             wins      = int((net > 0).sum())
             losses    = int((net < 0).sum())
-            if "ts" in fills.columns:
-                ts_col  = fills["ts"]
-                try:
-                    ts_num  = ts_col.astype(float)
-                except Exception:
-                    ts_num  = net * 0  # zeros
-                pnl_day = float(net[ts_num > now - 86400].sum())
-                pnl_1h  = float(net[ts_num > now - 3600].sum())
+            if "_epoch" in fills.columns:
+                # _epoch is a real epoch parsed from the ISO ts. The old code
+                # did fills["ts"].astype(float) on an ISO string, which always
+                # threw → pnl_day / pnl_1h were silently stuck at $0.00.
+                ep = pd.to_numeric(fills["_epoch"], errors="coerce").fillna(0)
+                pnl_day = float(net[ep > now - 86400].sum())
+                pnl_1h  = float(net[ep > now - 3600].sum())
         equity = init_cap + total_pnl
         total  = wins + losses
         wr_txt = f"{100*wins/total:.1f}%" if total else "—"
         dd     = total_pnl / init_cap * 100 if init_cap else 0.0
-
-        # Engine start time — for warmup progress bars
-        engine_start_ts = 0.0
-        try:
-            _ecfg = _REPO / "runtime" / "engine_config.json"
-            if _ecfg.exists():
-                _ecfg_data = json.load(open(_ecfg, encoding="utf-8"))
-                engine_start_ts = float(
-                    _ecfg_data.get("started_at") or _ecfg_data.get("ts") or 0
-                )
-        except Exception:
-            pass
 
         # Decisions since engine start (not 24h — avoids mixing old sessions)
         decisions_today = 0
@@ -635,7 +655,8 @@ def register_callbacks(app) -> None:
         phase1    = ["DonchianTrend", "RSIBollingerReversion",
                      "RotationMomentum", "RelativeValue"]
         phase2    = ["SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
-                     "VolatilityRegimeBreakout", "MetaAlpha"]
+                     "VolatilityRegimeBreakout", "MetaAlpha",
+                     "BTC_5MIN_BINARY_REPL", "BTC_BINARY_HIGHLEV"]
 
         # Phase 8: operational alerts derived from runtime state
         alerts = _build_alerts(live_list, now)

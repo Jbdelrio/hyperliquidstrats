@@ -147,7 +147,24 @@ class KillSwitch:
                         move * 100)
 
     def check_network(self) -> None:
-        lag = time.time() - self._last_heartbeat
+        now = time.time()
+        # Wake-from-sleep guard: this method is polled every ~5s by the
+        # watchdog loop. If the wall clock jumped much more than that
+        # between two consecutive calls, the whole process was frozen
+        # (laptop suspend / hibernation) — that is NOT a network outage.
+        # Reset the heartbeat and skip the kill; the WebSocket layer
+        # reconnects on its own.
+        last_check = getattr(self, "_last_net_check_ts", 0.0)
+        if last_check > 0.0 and (now - last_check) > 90.0:
+            log.warning("Detected a %.0fs process freeze (likely sleep/"
+                        "suspend) — resetting heartbeat, skipping kill.",
+                        now - last_check)
+            self._last_heartbeat = now
+            self._last_net_check_ts = now
+            return
+        self._last_net_check_ts = now
+
+        lag = now - self._last_heartbeat
         if lag > self.net_timeout:
             self._hard_kill(f"network_timeout={lag:.0f}s")
 

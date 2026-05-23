@@ -195,19 +195,32 @@ class MeanReversionKalman(BaseStrategy):
         p = self.config.params
         max_hold = int(p.get("max_hold_minutes", 30) * 60)
         fv = self._fv_cache.get(symbol, price)
-        stop = price * (1 - 0.02) if side == "BUY" else price * (1 + 0.02)
+        # Stop/TP must match the entry-decision logic. Previously the stop was
+        # hard-coded at 2% (ignoring stop_loss_pct) and the TP was the raw
+        # Kalman FV with no min_take_profit_pct floor — so a "winning" TP
+        # could sit only a few bps from entry, inside the round-trip cost.
+        sl_pct     = float(p.get("stop_loss_pct", 0.02))
+        min_tp_pct = float(p.get("min_take_profit_pct", 0.003))
+        if side == "BUY":
+            stop = price * (1.0 - sl_pct)
+            tp   = fv if (fv is not None and fv > price * (1.0 + min_tp_pct)) \
+                      else price * (1.0 + min_tp_pct)
+        else:
+            stop = price * (1.0 + sl_pct)
+            tp   = fv if (fv is not None and fv < price * (1.0 - min_tp_pct)) \
+                      else price * (1.0 - min_tp_pct)
 
         self._positions[symbol] = {
             "side":       side,
             "entry":      price,
             "size":       size,
-            "tp":         fv,
+            "tp":         tp,
             "stop":       stop,
             "opened_at":  ts,
             "max_hold_ts": ts + max_hold,
             "pos_id":     pos_id,
         }
-        return {"tp_price": fv, "stop_price": stop, "max_hold_seconds": max_hold}
+        return {"tp_price": tp, "stop_price": stop, "max_hold_seconds": max_hold}
 
     def check_position_exits(self, symbol: str, book, ts: float) -> Optional[StrategyDecision]:
         if symbol not in self._positions:

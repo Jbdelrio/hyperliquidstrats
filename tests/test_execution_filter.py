@@ -128,8 +128,9 @@ def test_ob_imbalance_scalper_disabled_in_preset():
     assert ob.get("capital_allocated_usd", 999) == 0, "OBImbalanceScalper capital should be 0"
 
 
-def test_five_strategies_enabled_in_preset():
-    """Exactly 5 strategies should be enabled in paper_500_clean.json."""
+def test_enabled_strategies_in_preset():
+    """paper_500_clean.json: 5 directional bar strategies + the delta-neutral
+    funding carry. All microstructure scalpers must stay disabled."""
     preset_path = (
         Path(__file__).resolve().parents[1]
         / "config" / "presets" / "paper_500_clean.json"
@@ -139,8 +140,13 @@ def test_five_strategies_enabled_in_preset():
 
     enabled = [s["name"] for s in cfg["strategies"] if s.get("enabled")]
     expected = {"MomentumLS", "BreakoutControlled", "DonchianTrend",
-                "VolatilityRegimeBreakout", "RSIBollingerReversion"}
+                "VolatilityRegimeBreakout", "RSIBollingerReversion",
+                "FundingCarryHedged"}
     assert set(enabled) == expected, f"Enabled strategies mismatch: {enabled}"
+
+    # FundingCarryHedged must run in delta-neutral (hedged) mode.
+    fch = next(s for s in cfg["strategies"] if s["name"] == "FundingCarryHedged")
+    assert fch["params"].get("hedged") is True, "FundingCarryHedged must be hedged"
 
 
 def test_short_trade_economics():

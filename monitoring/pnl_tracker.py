@@ -169,7 +169,10 @@ class PnLTracker:
                                  "stops", "tps", "max_holds", "reconnections",
                                  "wavelet_alerts", "pick_rate"])
                 w.writerow([
-                    time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(snap.ts)),
+                    # Local time — consistent with fills_v9.csv (which uses
+                    # local time). Previously gmtime() → metrics were UTC while
+                    # fills were local, a ~2 h mismatch in the GUI.
+                    time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(snap.ts)),
                     round(snap.equity, 2), snap.open_pos, snap.quotes_active,
                     snap.fills_min,
                     round(snap.pnl_min, 6), round(snap.pnl_hour, 6),

@@ -7,6 +7,9 @@ from dash import html
 
 THEME = dbc.themes.CYBORG
 
+# Unified monospace font — matches the GUI's terminal look (custom.css).
+FONT_FAMILY = "JetBrains Mono, Consolas, Courier New, monospace"
+
 COLORS = {
     "bg":         "#060606",
     "card_bg":    "#1a1a1a",
@@ -45,10 +48,10 @@ def apply_dark_theme(fig, height: int = None) -> go.Figure:
     layout_kw = dict(
         paper_bgcolor=COLORS["bg"],
         plot_bgcolor=COLORS["card_bg"],
-        font_color=COLORS["text"],
+        font=dict(color=COLORS["text"], family=FONT_FAMILY),
         margin=dict(l=40, r=20, t=35, b=40),
         legend=dict(bgcolor=COLORS["card_bg"], bordercolor=COLORS["grid"],
-                    font=dict(size=11)),
+                    font=dict(size=11, family=FONT_FAMILY)),
     )
     if height is not None:
         layout_kw["height"] = height
@@ -103,7 +106,7 @@ def gauge_fig(value: float, min_val: float, max_val: float, title: str,
     ))
     fig.update_layout(
         paper_bgcolor=COLORS["bg"],
-        font_color=COLORS["text"],
+        font=dict(color=COLORS["text"], family=FONT_FAMILY),
         margin=dict(l=10, r=10, t=30, b=10),
         height=height,
     )

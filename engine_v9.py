@@ -23,6 +23,7 @@ import logging
 import signal
 import sys
 import time
+from collections import deque
 from pathlib import Path
 from typing import Optional
 
@@ -49,6 +50,7 @@ from strategies.alpha_pressure_scalper import AlphaPressureScalper
 from strategies.book_flow_divergence_reversal import BookFlowDivergenceReversal
 from strategies.absorption_reversal import AbsorptionReversal
 from strategies.funding_arbitrage_enhanced import FundingArbitrageEnhanced
+from strategies.btc_5min_binary_repl import BTC5MinBinaryReplStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from execution.execution_planner import ExecutionPlanner
 from risk.kill_switch import KillSwitch
@@ -83,6 +85,8 @@ _STRATEGY_CLASSES = {
     "BookFlowDivergenceReversal":         BookFlowDivergenceReversal,
     "AbsorptionReversal":                 AbsorptionReversal,
     "FundingArbitrageEnhanced":           FundingArbitrageEnhanced,
+    # ── Synthetic 5-min binary replication (paper-only, disabled by default) ──
+    "BTC5MinBinaryReplStrategy":          BTC5MinBinaryReplStrategy,
 }
 
 
@@ -337,6 +341,29 @@ class EngineV9:
                 log.warning("DecisionThrottle init failed: %s", _dt_exc)
                 self.decision_throttle = None
 
+        # ── Adaptive RegimeController (opt-in via config) ───────────────
+        # Detects the market regime (driven by BTC) and pushes BOUNDED
+        # parameter adjustments into the strategies — wider/shorter holds,
+        # smaller size in chaos/crash, etc. Adjustments are reverted to the
+        # captured baseline on every evaluation, so they never compound.
+        self.regime_controller = None
+        self._regime_active: list = []        # [(strat, param, baseline_value)]
+        self._regime_last_eval: float = 0.0
+        self._regime_interval: float = 30.0
+        self._regime_market: str = "NORMAL"
+        self._btc_mid_hist: deque = deque(maxlen=400)   # (ts, mid) for r_5m
+        rc_cfg = self.cfg.get("regime_controller", {}) or {}
+        if rc_cfg.get("enabled", False):
+            try:
+                from risk.regime_controller import RegimeController
+                self.regime_controller = RegimeController(rc_cfg)
+                self._regime_interval = float(rc_cfg.get("snapshot_interval_s", 30.0))
+                log.info("RegimeController enabled (interval=%.0fs)",
+                         self._regime_interval)
+            except Exception as _rc_exc:
+                log.warning("RegimeController init failed: %s", _rc_exc)
+                self.regime_controller = None
+
         # ── Phase-6: ExecutionPlanner — chooses MAKER/TAKER + max_pending
         self.exec_planner = ExecutionPlanner(self.cfg)
 
@@ -534,7 +561,11 @@ class EngineV9:
             # BTC vol guard
             if sym == "BTC" and book.mid:
                 self.ks.update_btc_price(book.mid)
-                self.ks.record_heartbeat()
+            # Heartbeat from ANY symbol — previously only BTC, which
+            # silently masked WebSocket dropouts when BTC stopped but
+            # other symbols continued (or vice-versa). Now any live
+            # update resets the watchdog clock.
+            self.ks.record_heartbeat()
 
             # Fill detection — calls _on_fill internally for each fill
             self.executor.check_fills(sym, book.best_bid, book.best_ask)
@@ -757,6 +788,14 @@ class EngineV9:
                 except Exception as _de:
                     log.debug("on_second_features dispatch error: %s", _de)
 
+            # Adaptive regime parameters (throttled internally to the
+            # configured snapshot interval).
+            if self.regime_controller is not None:
+                try:
+                    self._apply_regime_adaptations(all_feats, ts)
+                except Exception as _re:
+                    log.debug("regime adaptation error: %s", _re)
+
             # Write the latest features snapshot to runtime calibration file
             # (debounced to every 5 seconds to keep disk I/O light).
             if ts - last_calib_write >= 5.0 and all_feats:
@@ -802,6 +841,105 @@ class EngineV9:
                     last_calib_write = ts
                 except Exception as _ce:
                     log.debug("data_feed_status write error: %s", _ce)
+
+    # ------------------------------------------------------------------
+    # Adaptive regime parameters
+    # ------------------------------------------------------------------
+
+    def _apply_regime_adaptations(self, all_feats: dict, ts: float) -> None:
+        """Detect the market regime (BTC-driven) and push BOUNDED parameter
+        adjustments into the strategies. Each evaluation first reverts the
+        previous adjustments to their captured baseline, so adjustments are
+        always recomputed from clean params and never compound.
+
+        Note: this adapts strategy *risk* parameters to market conditions
+        (size, holds, cooldowns). It is robustness, NOT alpha — it does not
+        create returns uncorrelated with BTC beta."""
+        rc = self.regime_controller
+        if rc is None or (ts - self._regime_last_eval) < self._regime_interval:
+            return
+        self._regime_last_eval = ts
+
+        # 1. Revert previous regime adjustments to their baseline values.
+        for strat, param, baseline in self._regime_active:
+            try:
+                strat.update_params({param: baseline})
+            except Exception:
+                pass
+        self._regime_active = []
+
+        # 2. BTC 5-minute context (drives the market regime).
+        btc = all_feats.get("BTC") or {}
+        btc_mid = btc.get("mid")
+        if btc_mid:
+            self._btc_mid_hist.append((ts, float(btc_mid)))
+        r_5m_pct = 0.0
+        old = [m for (t, m) in self._btc_mid_hist if t <= ts - 300.0]
+        if old and btc_mid:
+            r_5m_pct = (float(btc_mid) - old[-1]) / old[-1] * 100.0
+        btc_context = {"r_5m_pct": r_5m_pct}
+
+        # 3. Per-symbol regimes (status display); market regime = BTC's.
+        per_symbol: dict = {}
+        for sym, feats in all_feats.items():
+            if not feats:
+                continue
+            try:
+                per_symbol[sym] = rc.detect_regime(feats, btc_context).regime
+            except Exception:
+                pass
+        btc_snap = rc.get_snapshot("BTC")
+        self._regime_market = btc_snap.regime if btc_snap is not None else "NORMAL"
+
+        # 4. Apply bounded adjustments to every enabled strategy.
+        applied: list = []
+        if btc_snap is not None and self._regime_market != "NORMAL":
+            for strat in list(self.manager.strategies.values()):
+                if not getattr(strat, "enabled", False):
+                    continue
+                try:
+                    adjs = rc.propose_adjustments(
+                        strat.name, "MARKET", btc_snap,
+                        dict(strat.config.params or {}),
+                        ttl_seconds=self._regime_interval * 4.0)
+                except Exception:
+                    adjs = []
+                for adj in adjs:
+                    self._regime_active.append(
+                        (strat, adj.param_name, adj.old_value))
+                    try:
+                        strat.update_params({adj.param_name: adj.new_value})
+                        applied.append({
+                            "strategy": strat.name, "param": adj.param_name,
+                            "old": round(adj.old_value, 6),
+                            "new": round(adj.new_value, 6),
+                            "reason": adj.reason,
+                        })
+                    except Exception:
+                        pass
+        if applied:
+            log.info("[REGIME] market=%s → %d param adjustment(s) applied",
+                     self._regime_market, len(applied))
+
+        # 5. Publish regime status for the GUI.
+        try:
+            path = Path(self._runtime_cfg.get(
+                "regime_status_file", "runtime/regime_status.json"))
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump({
+                    "ts": ts,
+                    "market_regime": self._regime_market,
+                    "btc_r_5m_pct": round(r_5m_pct, 4),
+                    "per_symbol": per_symbol,
+                    "active_adjustments": applied,
+                    "stats": {
+                        "by_regime": dict(rc.stats.by_regime),
+                        "total_applied": rc.stats.total_applied,
+                    },
+                }, fh, default=str)
+        except Exception as _we:
+            log.debug("regime_status write error: %s", _we)
 
     # ------------------------------------------------------------------
     # Loop E — watchdog (5s)

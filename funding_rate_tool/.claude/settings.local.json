@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} bytes=%{size_download}\\\\n\" http://127.0.0.1:8050/)",
+      "Bash(curl -s http://127.0.0.1:8050/_dash-layout)",
+      "Bash(curl)"
+    ]
+  }
+}
