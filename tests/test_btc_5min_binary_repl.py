@@ -290,3 +290,58 @@ def test_calibration_data_keys():
               "no_trade_reason", "leverage", "notional_usd", "in_position"):
         assert k in cal
     assert cal["leverage"] == 10.0
+
+
+# ---------------------------------------------------------------------------
+# Early-exit tuning (2026-05-24): grace period + adjustable thresholds
+# ---------------------------------------------------------------------------
+
+def test_grace_period_blocks_early_exit(tmp_path):
+    """With min_hold_seconds_before_early_exit > 0, early exit must not fire
+    while inside the grace window even if the signal has reversed."""
+    s = _strat({"min_hold_seconds_before_early_exit": 90}, tmp_path=tmp_path)
+    s._position = {"side": "long", "entry_px": 100_000.0, "notional": 100.0,
+                   "opened_at": 2000.0, "pos_id": "x"}
+    # Strongly reversed signal but only 30s elapsed → grace blocks the exit.
+    dec = s._check_early_exit(_feat(p_up=0.20, obi_10=-0.9, flow_60s=-0.9), 2030.0)
+    assert dec is None
+
+
+def test_grace_period_lets_early_exit_fire_after_window(tmp_path):
+    """After the grace window, early exit resumes its normal behaviour."""
+    s = _strat({"min_hold_seconds_before_early_exit": 90}, tmp_path=tmp_path)
+    s._position = {"side": "long", "entry_px": 100_000.0, "notional": 100.0,
+                   "opened_at": 2000.0, "pos_id": "x"}
+    dec = s._check_early_exit(_feat(p_up=0.20), 2200.0)  # 200s > 90s grace
+    assert dec is not None and dec.action == "CLOSE"
+
+
+def test_tighter_signal_exit_threshold_holds_position(tmp_path):
+    """With early_exit_signal_p_up_long_below=0.42 (was 0.50), p_up=0.45 is no
+    longer a reversal — position holds."""
+    s = _strat({"early_exit_signal_p_up_long_below": 0.42}, tmp_path=tmp_path)
+    s._position = {"side": "long", "entry_px": 100_000.0, "notional": 100.0,
+                   "opened_at": 2000.0, "pos_id": "x"}
+    dec = s._check_early_exit(_feat(p_up=0.45), 2100.0)
+    assert dec is None
+
+
+def test_tighter_flow_exit_threshold_holds_position(tmp_path):
+    """With early_exit_flow_magnitude=0.55 (was 0.35), obi=-0.40 is no longer a
+    reversal — position holds."""
+    s = _strat({"early_exit_flow_magnitude": 0.55}, tmp_path=tmp_path)
+    s._position = {"side": "long", "entry_px": 100_000.0, "notional": 100.0,
+                   "opened_at": 2000.0, "pos_id": "x"}
+    dec = s._check_early_exit(_feat(p_up=0.70, obi_10=-0.40, flow_60s=-0.40), 2100.0)
+    assert dec is None
+
+
+def test_legacy_defaults_still_match_pre_2026_05_24(tmp_path):
+    """Default early-exit thresholds must remain at the original hardcoded
+    values so existing tunings keep their behaviour."""
+    s = _strat(tmp_path=tmp_path)
+    p = s.config.params
+    assert p["early_exit_signal_p_up_long_below"]  == pytest.approx(0.50)
+    assert p["early_exit_signal_p_up_short_above"] == pytest.approx(0.50)
+    assert p["early_exit_flow_magnitude"]          == pytest.approx(0.35)
+    assert p["min_hold_seconds_before_early_exit"] == 0

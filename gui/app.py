@@ -10,6 +10,12 @@ import os as _os
 import sys as _sys
 from pathlib import Path as _Path
 
+# Allow `python gui/app.py` (not just `python -m gui.app`): ensure the repo
+# root is importable so the absolute `from gui...` imports resolve.
+_REPO_ROOT = _Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_REPO_ROOT))
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, dcc, html
@@ -232,7 +238,7 @@ def _update_global_conn(_n):
         "borderRadius":    "4px",
         "padding":         "5px 14px",
         "marginBottom":    "8px",
-        "backgroundColor": "#0d0d0d",
+        "backgroundColor": "#0c1018",
         "display":         "flex",
         "alignItems":      "center",
         "gap":             "6px",

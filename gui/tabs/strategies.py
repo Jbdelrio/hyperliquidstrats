@@ -34,7 +34,9 @@ _RESET_FILES = [
 
 _api = ControlAPI()
 
-# All strategies in display order (Phase-1 original + Phase-2 new)
+# All strategies in display order (Phase-1 + Phase-2 + Phase-3 added 2026-05-24).
+# Must include EVERY strategy in the preset, otherwise the GUI multi-select will
+# silently exclude them when launching and the toggles panel won't render them.
 _ALL = [
     "S8EMS", "MomentumLS", "BreakoutControlled",
     "MeanReversionKalman", "FundingArbitrage",
@@ -43,6 +45,10 @@ _ALL = [
     # Phase-2
     "SpotPerpBasis", "FundingCarryHedged",
     "OBImbalanceScalper", "VolatilityRegimeBreakout", "MetaAlpha",
+    # Phase-3 — seconds scalpers + BTC binaries + scanners (added 2026-05-24)
+    "AlphaPressureScalper", "BookFlowDivergenceReversal", "AbsorptionReversal",
+    "BTC_5MIN_BINARY_REPL", "BTC_BINARY_HIGHLEV",
+    "SecondsResearch", "FundingArbEnhanced",
 ]
 
 _DEF = {
@@ -128,18 +134,66 @@ _DEF = {
     "MetaAlpha": {"capital": 500, "enabled": False,
                   "params": {"min_agreement_score": 2, "stop_loss_pct": 0.012,
                              "take_profit_pct": 0.018, "max_hold_hours": 6}},
+    # ── Phase-3 (added 2026-05-24): GUI placeholders. Live params come from
+    # the preset (paper_500_all_active.json) — these are just defaults for
+    # rendering before the engine reports back.
+    "AlphaPressureScalper": {"capital": 500, "enabled": True,
+                             "params": {"threshold": 0.18, "max_spread_bps": 15.0,
+                                        "max_rv_30s": 0.012, "cost_bps": 3.5,
+                                        "margin_bps": 2.0, "stop_loss_bps": 16.0,
+                                        "take_profit_bps": 42.0, "max_hold_seconds": 120,
+                                        "cooldown_seconds": 5, "notional_usd": 100.0,
+                                        "maker_only": True}},
+    "BookFlowDivergenceReversal": {"capital": 500, "enabled": False,
+                                   "params": {"threshold": 0.3, "positive_ti": 0.18,
+                                              "negative_ti": -0.18, "max_spread_bps": 15.0,
+                                              "stop_loss_bps": 18.0, "take_profit_bps": 46.0,
+                                              "max_hold_seconds": 180}},
+    "AbsorptionReversal": {"capital": 500, "enabled": False,
+                           "params": {"threshold": 0.0001, "max_spread_bps": 15.0,
+                                      "stop_loss_bps": 18.0, "take_profit_bps": 46.0,
+                                      "max_hold_seconds": 180}},
+    "BTC_5MIN_BINARY_REPL": {"capital": 500, "enabled": True,
+                             "params": {"leverage": 25, "max_leverage": 30,
+                                        "max_margin_per_trade_usd": 10,
+                                        "max_position_notional_usd": 250,
+                                        "take_profit_usd": 5.0, "stop_loss_usd": 3.0,
+                                        "max_holding_seconds": 450,
+                                        "long_threshold": 0.53, "short_threshold": 0.47,
+                                        "min_rv_300s_bps": 3.0,
+                                        "early_exit_signal_p_up_long_below": 0.35,
+                                        "min_hold_seconds_before_early_exit": 180,
+                                        "max_trades_per_hour": 15}},
+    "BTC_BINARY_HIGHLEV": {"capital": 500, "enabled": True,
+                           "params": {"leverage": 150, "max_leverage": 200,
+                                      "max_margin_per_trade_usd": 10,
+                                      "max_position_notional_usd": 1500,
+                                      "take_profit_usd": 10.0, "stop_loss_usd": 2.5,
+                                      "max_holding_seconds": 240,
+                                      "long_threshold": 0.55, "short_threshold": 0.45,
+                                      "min_rv_300s_bps": 5.0,
+                                      "early_exit_signal_p_up_long_below": 0.40,
+                                      "min_hold_seconds_before_early_exit": 60,
+                                      "max_trades_per_hour": 20}},
+    "SecondsResearch": {"capital": 0, "enabled": True,
+                        "params": {"trade_enabled": False, "research_only": True}},
+    "FundingArbEnhanced": {"capital": 0, "enabled": True,
+                           "params": {"trade_enabled": False, "research_only": True,
+                                      "cross_exchange_paper_only": True,
+                                      "allow_live": False, "refresh_interval_s": 60,
+                                      "horizon_hours": 8}},
 }
 
 _BTN = {"fontWeight": "700", "fontSize": "11px"}
 _BDR = f"1px solid {COLORS['grid']}"
 
-_TH = {"backgroundColor": "#060606", "color": COLORS["accent"],
+_TH = {"backgroundColor": "#060a10", "color": COLORS["accent"],
        "fontWeight": "bold", "fontSize": "11px", "border": _BDR, "padding": "4px 8px"}
 _TD_DT = {"backgroundColor": "#111111", "color": COLORS["text_light"],
           "border": _BDR, "fontSize": "12px", "padding": "4px 8px",
           "textAlign": "left", "fontFamily": "Consolas, monospace"}
 
-_TH_POS = {"backgroundColor": "#060606", "color": COLORS["accent"],
+_TH_POS = {"backgroundColor": "#060a10", "color": COLORS["accent"],
            "fontWeight": "bold", "fontSize": "10px",
            "border": _BDR, "padding": "3px 6px", "letterSpacing": "1px",
            "textTransform": "uppercase"}
@@ -315,7 +369,7 @@ def _strat_card(name: str) -> dbc.Card:
         className="card-glow",
         children=[
             dbc.CardHeader(
-                style={"backgroundColor": "#0d0d0d", "padding": "7px 14px"},
+                style={"backgroundColor": "#0c1018", "padding": "7px 14px"},
                 children=dbc.Row([
                     dbc.Col(html.B(f"{name}{extra}",
                                    style={"color": accent, "fontSize": "12px"}),
@@ -336,26 +390,34 @@ def _strat_card(name: str) -> dbc.Card:
                 style={"backgroundColor": "#0a0a0a", "padding": "9px 14px"},
                 children=[
                     dbc.Row([
-                        dbc.Col(dbc.Button("▶ Activer",    id=f"en-{name}",  color="success",
-                                           size="sm", style=_BTN), width="auto"),
-                        dbc.Col(dbc.Button("⏸ Seulement",  id=f"dis-{name}", color="secondary",
+                        dbc.Col(dbc.Button("▶ START",      id=f"en-{name}",  color="success",
                                            size="sm", style=_BTN,
-                                           title="Disable only — garde les positions ouvertes"),
+                                           title="START — active la stratégie (signaux + nouvelles positions)"),
                                 width="auto"),
-                        dbc.Col(dbc.Button("⏸+✗ Cancel",   id=f"dco-{name}", color="warning",
+                        dbc.Col(dbc.Button("🧊 FREEZE",    id=f"dis-{name}", color="secondary",
                                            size="sm", style=_BTN,
-                                           title="Disable + annuler les ordres en attente"),
+                                           title="FREEZE — stoppe les signaux d'entrée mais garde les positions ouvertes (l'exit logic continue)"),
                                 width="auto"),
-                        dbc.Col(dbc.Button("⏸+⚡ Flatten",  id=f"dfl-{name}", color="danger",
+                        dbc.Col(dbc.Button("🔓 UNFREEZE",  id=f"res-{name}", color="info",
                                            size="sm", style=_BTN,
-                                           title="Disable + cancel + fermer les positions"),
+                                           title="UNFREEZE — relance les signaux après FREEZE (équivalent fonctionnel de START)"),
                                 width="auto"),
-                        dbc.Col(dbc.Button("▶ Reprendre",  id=f"res-{name}", color="info",
-                                           size="sm", style=_BTN), width="auto"),
+                        dbc.Col(dbc.Button("⏹ STOP",       id=f"dfl-{name}", color="danger",
+                                           size="sm", style=_BTN,
+                                           title="STOP — ferme toutes les positions de la strat + cancel ordres + désactive"),
+                                width="auto"),
+                        dbc.Col(dbc.Button("✗ Cancel",     id=f"dco-{name}", color="warning",
+                                           size="sm", style=_BTN,
+                                           title="Cancel — désactive + annule les ordres en attente (garde positions)"),
+                                width="auto"),
                         dbc.Col(dbc.Button("↺ Reset",      id=f"rst-{name}", color="info",
-                                           size="sm", style=_BTN), width="auto"),
+                                           size="sm", style=_BTN,
+                                           title="Reset — efface streak de pertes + lève suspension kill-switch"),
+                                width="auto"),
                         dbc.Col(dbc.Button("⚡ Flatten",   id=f"flt-{name}", color="danger",
-                                           size="sm", style=_BTN), width="auto"),
+                                           size="sm", style=_BTN,
+                                           title="Flatten — ferme les positions sans désactiver la strat"),
+                                width="auto"),
                         dbc.Col(html.Div(id=_fb(name), style={"fontSize": "12px"}),
                                 className="d-flex align-items-center"),
                     ], className="g-1 align-items-center mb-2"),
@@ -501,10 +563,10 @@ def static_layout() -> html.Div:
         html.Div(id="conn-status-bar",
                  style={"padding": "7px 14px", "borderRadius": "4px",
                         "border": _BDR, "marginBottom": "10px",
-                        "backgroundColor": "#0d0d0d"}),
+                        "backgroundColor": "#0c1018"}),
 
         # ── Engine start / stop ────────────────────────────────────────
-        html.Div(style={"backgroundColor": "#0d0d0d", "padding": "10px 14px",
+        html.Div(style={"backgroundColor": "#0c1018", "padding": "10px 14px",
                         "border": f"2px solid {COLORS['warning']}",
                         "borderRadius": "4px", "marginBottom": "10px"}, children=[
 
@@ -517,13 +579,18 @@ def static_layout() -> html.Div:
                 dbc.Col(dcc.Dropdown(
                     id="engine-strat-select", options=strat_opts,
                     value=[],
-                    multi=True, placeholder="Toutes (selon config)...",
+                    multi=True,
+                    placeholder="⚠ VIDE = utilise preset (recommandé) | sélection = OVERRIDE force enable",
                     className="dropdown-dark",
                 ), width=7),
-                dbc.Col(dbc.Button("☑ Tout",   id="engine-select-all-btn",
-                                   color="secondary", size="sm", style=_BTN), width="auto"),
-                dbc.Col(dbc.Button("☐ Aucun",  id="engine-select-none-btn",
-                                   color="secondary", size="sm", style=_BTN), width="auto"),
+                dbc.Col(dbc.Button("✓ Preset",  id="engine-select-none-btn",
+                                   color="success", size="sm", style=_BTN,
+                                   title="Vide la sélection — l'engine utilise les enabled/disabled du preset"),
+                        width="auto"),
+                dbc.Col(dbc.Button("☑ Tout (override)",  id="engine-select-all-btn",
+                                   color="warning", size="sm", style=_BTN,
+                                   title="⚠ FORCE l'activation de TOUTES les strats (y compris les disabled dans le preset). À utiliser uniquement si tu sais ce que tu fais."),
+                        width="auto"),
             ], className="g-2 align-items-center mb-2"),
 
             # Row 2: preset config
@@ -535,7 +602,9 @@ def static_layout() -> html.Div:
                 dbc.Col(dcc.Dropdown(
                     id="engine-config-select",
                     options=[
-                        {"label": "★ Paper 500 ADAPTIVE — all strats $500 + regime controller + manual exec (RECOMMENDED)",
+                        {"label": "★ Paper 500 ALL ACTIVE — recalibré 2026-05-24 (RECOMMENDED)",
+                         "value": "config/presets/paper_500_all_active.json"},
+                        {"label": "Paper 500 ADAPTIVE — all strats $500 + regime controller + manual exec",
                          "value": "config/presets/paper_500_all_strategies_adaptive.json"},
                         {"label": "Paper 500 IDEAL — $500 per strat, seconds-filtered (no regime ctrl)",
                          "value": "config/presets/paper_500_total_seconds_filtered.json"},
@@ -552,7 +621,7 @@ def static_layout() -> html.Div:
                         {"label": "Default (config_v9.json)",
                          "value": "config_v9.json"},
                     ],
-                    value="config/presets/paper_500_all_strategies_adaptive.json",
+                    value="config/presets/paper_500_all_active.json",
                     clearable=False,
                     className="dropdown-dark",
                 ), width=5),
@@ -657,10 +726,10 @@ def static_layout() -> html.Div:
                                            "fontSize": "10px", "fontWeight": "700",
                                            "textTransform": "uppercase", "cursor": "pointer"})),
             html.Div(id="engine-log-box",
-                     style={"backgroundColor": "#060606", "border": f"1px solid {COLORS['grid']}",
+                     style={"backgroundColor": "#060a10", "border": f"1px solid {COLORS['grid']}",
                             "borderRadius": "3px", "padding": "8px 12px",
                             "fontFamily": "Consolas,monospace", "fontSize": "11px",
-                            "color": "#ADAFAE", "maxHeight": "180px",
+                            "color": "#d7e3f4", "maxHeight": "180px",
                             "overflowY": "auto", "whiteSpace": "pre-wrap",
                             "marginTop": "6px"}),
         ], style={"marginBottom": "10px"}),
@@ -727,7 +796,7 @@ def register_callbacks(app) -> None:
         return (
             html.Span([dot, html.B(txt, style={"color": c, "fontSize": "12px"})]),
             {"padding": "7px 14px", "borderRadius": "4px", "border": b,
-             "backgroundColor": "#0d0d0d", "marginBottom": "10px",
+             "backgroundColor": "#0c1018", "marginBottom": "10px",
              "display": "flex", "alignItems": "center", "gap": "8px"},
         )
 
@@ -1016,13 +1085,13 @@ def register_callbacks(app) -> None:
         if not trig:
             return empty
         for prefix, label_fn, api_fn in [
-            ("en-",  lambda n: f"▶ {n} activé",                  _api.enable_strategy),
-            ("dis-", lambda n: f"⏸ {n} désactivé",               _api.disable_strategy),
-            ("dco-", lambda n: f"⏸+✗ {n} cancel pending",        _api.disable_strategy_cancel),
-            ("dfl-", lambda n: f"⏸+⚡ {n} flatten",               _api.disable_strategy_flatten),
-            ("res-", lambda n: f"▶ {n} suspension levée",        _api.reset_strategy),
-            ("rst-", lambda n: f"↺ {n} streak à zéro",           _api.reset_strategy),
-            ("flt-", lambda n: f"⚡ {n} flatten",                 _api.flatten_strategy),
+            ("en-",  lambda n: f"▶ START — {n} activé",          _api.start_strategy),
+            ("dis-", lambda n: f"🧊 FREEZE — {n} signaux pausés", _api.freeze_strategy),
+            ("res-", lambda n: f"🔓 UNFREEZE — {n} signaux on",   _api.unfreeze_strategy),
+            ("dfl-", lambda n: f"⏹ STOP — {n} flattened + off",   _api.stop_strategy),
+            ("dco-", lambda n: f"✗ Cancel — {n} ordres annulés",  _api.disable_strategy_cancel),
+            ("rst-", lambda n: f"↺ Reset — {n} streak à zéro",    _api.reset_strategy),
+            ("flt-", lambda n: f"⚡ Flatten — {n} positions fermées", _api.flatten_strategy),
         ]:
             if trig.startswith(prefix):
                 name = trig[len(prefix):]

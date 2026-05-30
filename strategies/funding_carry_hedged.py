@@ -45,7 +45,7 @@ _LOG_COLUMNS = [
     "perp_entry", "perp_exit", "spot_entry", "spot_exit", "hold_h",
     "perp_pnl", "spot_pnl", "funding_collected",
     "entry_fees", "exit_fees", "net_pnl", "exit_reason",
-    "entry_funding_bps_h", "exit_funding_bps_h",
+    "entry_funding_bps_h", "exit_funding_bps_h", "entry_mode",
 ]
 
 
@@ -73,6 +73,8 @@ class FundingCarryHedgedStrategy(BaseStrategy):
         # Spot/perp reference prices from metaAndAssetCtxs.
         self._prices:   dict[str, dict]            = {}
         self._perp_mid: dict[str, Optional[float]] = {c: None for c in coins}
+        # Latest L2 book per coin (used for depth-aware slippage estimation).
+        self._perp_book: dict[str, object] = {}
 
         # Legacy unhedged-perp engine positions.
         self._positions: dict[str, dict] = {}
@@ -107,6 +109,7 @@ class FundingCarryHedgedStrategy(BaseStrategy):
                 return None
             mid = (bid + ask) / 2.0
         self._perp_mid[symbol] = mid
+        self._perp_book[symbol] = book
 
         if self._hedged:
             return None  # hedged carry is managed entirely in on_bar_minute
@@ -193,13 +196,91 @@ class FundingCarryHedgedStrategy(BaseStrategy):
             self._funding_hist[coin].append(f)
             self._prices[coin] = info
 
-    def _leg_cost_bps(self) -> float:
-        """One-direction cost across BOTH legs (perp + spot), in bps."""
+    def _book_impact_bps(self, book, notional_usd: float, side: str) -> Optional[float]:
+        """VWAP impact in bps for a market order of `notional_usd` on `book`.
+
+        side='BUY'  walks asks  (we lift offers, pay above mid)
+        side='SELL' walks bids  (we hit bids,    sell below mid)
+
+        Returns None if the book is empty / not deep enough for `notional_usd`.
+        """
+        if book is None:
+            return None
+        levels = book.asks if side == "BUY" else book.bids
+        mid = getattr(book, "mid", None)
+        if not levels or not mid or mid <= 0:
+            return None
+        remaining = float(notional_usd)
+        cost_usd = 0.0
+        filled_size = 0.0
+        for price, size in levels:
+            if remaining <= 0:
+                break
+            lvl_notional = price * size
+            take_notional = min(lvl_notional, remaining)
+            if price <= 0:
+                continue
+            take_size = take_notional / price
+            cost_usd   += take_size * price
+            filled_size += take_size
+            remaining  -= take_notional
+        if remaining > 0 or filled_size <= 0:
+            return None  # not enough depth — caller falls back to configured slip
+        vwap = cost_usd / filled_size
+        return abs(vwap - mid) / mid * 10_000.0
+
+    def _estimate_perp_slippage_bps(self, coin: str, notional_usd: float) -> Optional[float]:
+        """Round-trip-symmetric depth estimate: average of buy + sell side impact
+        for `notional_usd` against the latest cached L2 book for `coin`."""
+        book = self._perp_book.get(coin)
+        if book is None:
+            return None
+        buy  = self._book_impact_bps(book, notional_usd, "BUY")
+        sell = self._book_impact_bps(book, notional_usd, "SELL")
+        if buy is None or sell is None:
+            return None
+        return (buy + sell) / 2.0
+
+    def _leg_cost_bps(self, coin: Optional[str] = None,
+                      notional_usd: Optional[float] = None) -> float:
+        """One-direction cost across BOTH legs (perp + spot), in bps.
+
+        Two execution modes via params["entry_mode"]:
+
+        - "taker" (default): pay taker fee + slippage on both legs. If `coin`
+          and `notional_usd` are given and a cached L2 book exists, the perp
+          slippage is depth-aware (microstructure); the configured floor is a
+          lower bound so we never under-estimate reality.
+
+        - "maker": post-only on both legs. Pay maker fees (much lower) but
+          carry a `maker_no_fill_penalty_bps` charge to account for the EV
+          cost of unfilled quotes (you sometimes have to cross to complete
+          the hedge). This is the honest paper-side proxy for fill risk —
+          a real fill simulator is out of scope for this layer.
+        """
         p = self.config.params
+        mode = str(p.get("entry_mode", "taker")).lower()
+
+        if mode == "maker":
+            perp_fee = float(p.get("maker_perp_fee_bps", 1.5))
+            spot_fee = float(p.get("maker_spot_fee_bps", 4.0))
+            # Per-LEG share of the round-trip no-fill penalty. _leg_cost_bps is
+            # called twice (open + close), so dividing by 2 here gives the
+            # configured penalty as a round-trip total.
+            no_fill_per_leg = float(p.get("maker_no_fill_penalty_bps", 5.0)) / 2.0
+            return perp_fee + spot_fee + no_fill_per_leg
+
+        # Taker mode (original).
         perp_fee = float(p.get("taker_fee_bps", 4.5))
-        perp_slp = float(p.get("slippage_bps", 2.0))
+        perp_slp_floor = float(p.get("slippage_bps", 2.0))
         spot_fee = float(p.get("spot_fee_bps", 7.0))
         spot_slp = float(p.get("spot_slippage_bps", 2.0))
+
+        perp_slp = perp_slp_floor
+        if coin is not None and notional_usd is not None and notional_usd > 0:
+            est = self._estimate_perp_slippage_bps(coin, notional_usd)
+            if est is not None:
+                perp_slp = max(perp_slp_floor, est)
         return perp_fee + perp_slp + spot_fee + spot_slp
 
     def _spot_price(self, coin: str) -> Optional[float]:
@@ -288,8 +369,11 @@ class FundingCarryHedgedStrategy(BaseStrategy):
         expected_hold_h = float(p.get("expected_hold_hours", 24))
         buf_bps = float(p.get("safety_buffer_bps", 2.0))
         min_edge = float(p.get("min_expected_edge_bps", 3.0))
+        # Use the prospective entry notional so depth-aware slippage reflects
+        # the actual order we'd send. compute_order_notional reads capital_allocated.
+        probe_notional = self.compute_order_notional()
         expected_edge = (abs(funding_bps_h) * expected_hold_h
-                         - 2.0 * self._leg_cost_bps() - buf_bps)
+                         - 2.0 * self._leg_cost_bps(coin, probe_notional) - buf_bps)
         if expected_edge < min_edge:
             return
 
@@ -310,7 +394,7 @@ class FundingCarryHedgedStrategy(BaseStrategy):
             return
 
         direction = "short_perp" if funding_bps_h > 0 else "long_perp"
-        entry_fees = notional * self._leg_cost_bps() / 10_000.0
+        entry_fees = notional * self._leg_cost_bps(coin, notional) / 10_000.0
         max_hold_s = float(p.get("max_hold_hours", 72)) * 3600.0
 
         self._carry[coin] = {
@@ -326,6 +410,7 @@ class FundingCarryHedgedStrategy(BaseStrategy):
             "accrued_funding":     0.0,
             "entry_fees":          entry_fees,
             "entry_funding_bps_h": funding_bps_h,
+            "entry_mode":          str(p.get("entry_mode", "taker")).lower(),
         }
         self._used_notional += notional
         log.info("[FundingCarry] OPEN %s %s notional=$%.0f funding=%.3fbps/h "
@@ -363,7 +448,7 @@ class FundingCarryHedgedStrategy(BaseStrategy):
         if pos is None:
             return
         perp_pnl, spot_pnl = self._mark(pos, coin)
-        exit_fees = pos["notional"] * self._leg_cost_bps() / 10_000.0
+        exit_fees = pos["notional"] * self._leg_cost_bps(coin, pos["notional"]) / 10_000.0
         net = (perp_pnl + spot_pnl + pos["accrued_funding"]
                - pos["entry_fees"] - exit_fees)
 
@@ -407,6 +492,7 @@ class FundingCarryHedgedStrategy(BaseStrategy):
                     f"{net:.6f}", reason,
                     f"{pos['entry_funding_bps_h']:.4f}",
                     f"{exit_funding_bps_h:.4f}",
+                    pos.get("entry_mode", "taker"),
                 ])
         except Exception as exc:                       # pragma: no cover
             log.debug("FundingCarry log write failed: %s", exc)

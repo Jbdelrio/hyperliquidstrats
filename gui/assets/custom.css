@@ -1,20 +1,46 @@
-/* ── Artemisia v9 — Cyborg theme overrides ───────────────────────── */
+/* ── Artemisia v9 — Cyborg theme (neon-cyan, aligned to cyborg_dash.py) ──── */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
-/* ── Typography — Cyborg dark, unified monospace ("terminal") ─────── */
-/* One font everywhere: headers, tabs, labels, buttons, cards, tables,
-   inputs, dropdowns. The whole dashboard reads as a trading terminal. */
+/* Palette (matches reference T):
+   bg #060a10 · card #0c1018 · border #1a2535 · cyan #00e5ff · green #00ff88
+   red #ff4d6d · amber #ffb000 · text #d7e3f4 · dim #70839f · white #f3f7ff
+   purple #9b6bff */
+
+/* ── Typography — unified monospace ("terminal") ─────────────────── */
 *, body, h1, h2, h3, h4, h5, h6, p, span, div, a, li, small, b, strong, em,
 label, .btn, .badge, .card, .card-body, .nav, .nav-link, .nav-tabs,
 .tab, .tab-content, .dropdown, .dropdown-menu, .dropdown-item,
 select, input, textarea, button, table, thead, tbody, tr, th, td,
 pre, code, .font-mono, .dash-spreadsheet td, .dash-spreadsheet th,
 .Select, .Select-control, .Select-menu-outer, .Select-value, .Select-option {
-    font-family: "JetBrains Mono", "Consolas", "Courier New", monospace !important;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace !important;
 }
-/* Cyborg dark base — make sure no white gaps bleed through. */
+
+/* Deep blue-black base — no white gaps bleed through. */
 html, body {
-    background-color: #060606 !important;
-    color: #ADAFAE !important;
+    background-color: #060a10 !important;
+    color: #d7e3f4 !important;
+}
+
+/* ── Card surface — match reference (card bg, blue-grey border, radius 8) ── */
+.card {
+    background-color: #0c1018 !important;
+    border: 1px solid #1a2535 !important;
+    border-radius: 8px !important;
+}
+.card-body { background-color: #0c1018 !important; }
+
+/* Inputs / checkboxes / radios / sliders accent → cyan */
+input[type=checkbox], input[type=radio], input[type=range] { accent-color: #00e5ff; }
+
+/* ── Tabs (dbc nav) — dim idle, cyan active + underline ──────────── */
+.nav-tabs { border-bottom: 1px solid #1a2535 !important; }
+.nav-tabs .nav-link { color: #70839f !important; border: none !important; background: transparent !important; }
+.nav-tabs .nav-link:hover { color: #d7e3f4 !important; }
+.nav-tabs .nav-link.active {
+    color: #00e5ff !important;
+    background-color: #0c1018 !important;
+    border-bottom: 2px solid #00e5ff !important;
 }
 
 /* ── Connection status dot animations ──────────────────────────── */
@@ -22,8 +48,8 @@ html, body {
     display: inline-block;
     width: 9px; height: 9px;
     border-radius: 50%;
-    background-color: #77B300;
-    box-shadow: 0 0 6px 2px rgba(119,179,0,0.8);
+    background-color: #00ff88;
+    box-shadow: 0 0 6px 2px rgba(0,255,136,0.8);
     animation: pulse-green 1.5s ease-in-out infinite;
     margin-right: 7px;
     vertical-align: middle;
@@ -32,8 +58,8 @@ html, body {
     display: inline-block;
     width: 9px; height: 9px;
     border-radius: 50%;
-    background-color: #FF8800;
-    box-shadow: 0 0 6px 2px rgba(255,136,0,0.8);
+    background-color: #ffb000;
+    box-shadow: 0 0 6px 2px rgba(255,176,0,0.8);
     animation: pulse-orange 1.5s ease-in-out infinite;
     margin-right: 7px;
     vertical-align: middle;
@@ -42,40 +68,40 @@ html, body {
     display: inline-block;
     width: 9px; height: 9px;
     border-radius: 50%;
-    background-color: #CC0000;
-    box-shadow: 0 0 4px 1px rgba(204,0,0,0.6);
+    background-color: #ff4d6d;
+    box-shadow: 0 0 4px 1px rgba(255,77,109,0.6);
     margin-right: 7px;
     vertical-align: middle;
 }
 
 @keyframes pulse-green {
-    0%,100% { box-shadow: 0 0 4px 1px rgba(119,179,0,0.7); }
-    50%      { box-shadow: 0 0 12px 4px rgba(119,179,0,0.35); }
+    0%,100% { box-shadow: 0 0 4px 1px rgba(0,255,136,0.7); }
+    50%      { box-shadow: 0 0 12px 4px rgba(0,255,136,0.35); }
 }
 @keyframes pulse-orange {
-    0%,100% { box-shadow: 0 0 4px 1px rgba(255,136,0,0.7); }
-    50%      { box-shadow: 0 0 12px 4px rgba(255,136,0,0.35); }
+    0%,100% { box-shadow: 0 0 4px 1px rgba(255,176,0,0.7); }
+    50%      { box-shadow: 0 0 12px 4px rgba(255,176,0,0.35); }
 }
 
 /* ── PAPER MODE badge ───────────────────────────────────────────── */
 .paper-mode-badge {
     display: inline-block;
-    background: linear-gradient(90deg, #FF8800, #CC5500);
-    color: #000;
+    background: linear-gradient(90deg, #ffb000, #cc7a00);
+    color: #060a10;
     font-weight: 900;
     font-size: 10px;
     letter-spacing: 2px;
     padding: 3px 11px;
     border-radius: 3px;
     text-transform: uppercase;
-    box-shadow: 0 0 10px rgba(255,136,0,0.55);
+    box-shadow: 0 0 10px rgba(255,176,0,0.55);
     vertical-align: middle;
     margin-left: 10px;
 }
 
 /* ── Global header bar ──────────────────────────────────────────── */
 #global-conn-bar {
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 6px 14px;
     margin-bottom: 8px;
     font-size: 12px;
@@ -83,8 +109,8 @@ html, body {
     display: flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid #2a2a2a;
-    background-color: #0d0d0d;
+    border: 1px solid #1a2535;
+    background-color: #0c1018;
 }
 
 /* ── Card hover glow ────────────────────────────────────────────── */
@@ -92,18 +118,18 @@ html, body {
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .card-glow:hover {
-    box-shadow: 0 0 14px rgba(42,159,214,0.25) !important;
-    border-color: rgba(42,159,214,0.4) !important;
+    box-shadow: 0 0 14px rgba(0,229,255,0.25) !important;
+    border-color: rgba(0,229,255,0.4) !important;
 }
 
 /* ── Kill-switch alert ──────────────────────────────────────────── */
 .ks-killed {
-    border: 2px solid #CC0000 !important;
+    border: 2px solid #ff4d6d !important;
     animation: flash-red 1s ease-in-out infinite;
 }
 @keyframes flash-red {
-    0%,100% { box-shadow: 0 0 8px rgba(204,0,0,0.3); }
-    50%      { box-shadow: 0 0 22px rgba(204,0,0,0.8); }
+    0%,100% { box-shadow: 0 0 8px rgba(255,77,109,0.3); }
+    50%      { box-shadow: 0 0 22px rgba(255,77,109,0.8); }
 }
 
 /* ── Suspended strategy badge pulse ────────────────────────────── */
@@ -112,88 +138,88 @@ html, body {
 }
 
 /* ── Progress bar dark ──────────────────────────────────────────── */
-.progress { background-color: #222 !important; height: 5px !important; border-radius: 2px; }
-.progress-bar { border-radius: 2px; transition: width 0.4s ease; }
+.progress { background-color: #0c1018 !important; height: 5px !important; border-radius: 999px; }
+.progress-bar { border-radius: 999px; transition: width 0.4s ease; }
 
 /* ── Strategy category header divider ──────────────────────────── */
 .strat-group-hdr {
-    color: #2A9FD6;
+    color: #00e5ff;
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 700;
     margin: 14px 0 6px;
     padding-bottom: 4px;
-    border-bottom: 1px solid #1a1a1a;
+    border-bottom: 1px solid #1a2535;
 }
 
 /* ── Rejected trade log row ─────────────────────────────────────── */
-.rejected-row td { background-color: #1a0000 !important; }
+.rejected-row td { background-color: #1a0008 !important; }
 
 /* ── DCC Dropdown — dark react-select ──────────────────────────── */
 .dropdown-dark .Select-control,
 .dropdown-dark [class*="-control"] {
-    background-color: #1a1a1a !important;
-    border: 1px solid #2a2a2a !important;
-    color: #ffffff !important;
-    border-radius: 4px !important;
+    background-color: #0c1018 !important;
+    border: 1px solid #1a2535 !important;
+    color: #f3f7ff !important;
+    border-radius: 6px !important;
 }
 .dropdown-dark .Select-control:hover,
-.dropdown-dark [class*="-control"]:hover { border-color: #2A9FD6 !important; }
-.dropdown-dark .Select-placeholder { color: #555 !important; }
+.dropdown-dark [class*="-control"]:hover { border-color: #00e5ff !important; }
+.dropdown-dark .Select-placeholder { color: #70839f !important; }
 .dropdown-dark .Select-value-label,
-.dropdown-dark [class*="-singleValue"] { color: #ffffff !important; }
+.dropdown-dark [class*="-singleValue"] { color: #f3f7ff !important; }
 .dropdown-dark .Select-input input,
-.dropdown-dark input { color: #ffffff !important; }
-.dropdown-dark .Select-arrow { border-top-color: #ADAFAE !important; }
+.dropdown-dark input { color: #f3f7ff !important; }
+.dropdown-dark .Select-arrow { border-top-color: #d7e3f4 !important; }
 .dropdown-dark .Select-menu-outer,
 .dropdown-dark [class*="-menu"] {
-    background-color: #1a1a1a !important;
-    border: 1px solid #2a2a2a !important;
+    background-color: #0c1018 !important;
+    border: 1px solid #1a2535 !important;
     z-index: 9999 !important;
 }
 .dropdown-dark .Select-option,
 .dropdown-dark [class*="-option"] {
-    background-color: #1a1a1a !important;
-    color: #ADAFAE !important;
+    background-color: #0c1018 !important;
+    color: #d7e3f4 !important;
 }
 .dropdown-dark .Select-option:hover,
 .dropdown-dark .Select-option.is-focused,
-.dropdown-dark [class*="-option"]:hover { background-color: #2A9FD6 !important; color: #fff !important; }
+.dropdown-dark [class*="-option"]:hover { background-color: #00e5ff !important; color: #060a10 !important; }
 .dropdown-dark .Select-option.is-selected,
-.dropdown-dark [class*="-option"][class*="selected"] { background-color: #155a7a !important; color: #fff !important; }
+.dropdown-dark [class*="-option"][class*="selected"] { background-color: #0a3a44 !important; color: #f3f7ff !important; }
 .dropdown-dark .Select-multi-value-wrapper .Select-value,
-.dropdown-dark [class*="-multiValue"] { background-color: #155a7a !important; border-color: #2A9FD6 !important; color: #fff !important; }
-.dropdown-dark [class*="-multiValueLabel"] { color: #ffffff !important; }
-.dropdown-dark .Select-value-icon:hover { background-color: #2A9FD6 !important; }
+.dropdown-dark [class*="-multiValue"] { background-color: #0a3a44 !important; border-color: #00e5ff !important; color: #f3f7ff !important; }
+.dropdown-dark [class*="-multiValueLabel"] { color: #f3f7ff !important; }
+.dropdown-dark .Select-value-icon:hover { background-color: #00e5ff !important; }
 
 /* ── Textarea / input dark ──────────────────────────────────────── */
 textarea.dark-textarea {
-    background-color: #1a1a1a !important;
-    color: #ffffff !important;
-    border: 1px solid #2a2a2a !important;
-    font-family: "Consolas","Courier New",monospace !important;
+    background-color: #0c1018 !important;
+    color: #f3f7ff !important;
+    border: 1px solid #1a2535 !important;
+    font-family: "JetBrains Mono","Consolas","Courier New",monospace !important;
     font-size: 12px !important;
     resize: vertical;
-    border-radius: 4px;
+    border-radius: 6px;
 }
-textarea.dark-textarea:focus { border-color: #2A9FD6 !important; outline: none !important; box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important; }
-input.dark-input { background-color: #1a1a1a !important; color: #ffffff !important; border: 1px solid #2a2a2a !important; }
-input.dark-input:focus { border-color: #2A9FD6 !important; box-shadow: 0 0 0 2px rgba(42,159,214,0.25) !important; }
+textarea.dark-textarea:focus { border-color: #00e5ff !important; outline: none !important; box-shadow: 0 0 0 2px rgba(0,229,255,0.25) !important; }
+input.dark-input { background-color: #0c1018 !important; color: #f3f7ff !important; border: 1px solid #1a2535 !important; }
+input.dark-input:focus { border-color: #00e5ff !important; box-shadow: 0 0 0 2px rgba(0,229,255,0.25) !important; }
 
 /* ── Scrollbar ──────────────────────────────────────────────────── */
 ::-webkit-scrollbar             { width: 6px; height: 6px; }
-::-webkit-scrollbar-track       { background: #060606; }
-::-webkit-scrollbar-thumb       { background: #2a2a2a; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #2A9FD6; }
+::-webkit-scrollbar-track       { background: #060a10; }
+::-webkit-scrollbar-thumb       { background: #1a2535; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #00e5ff; }
 
 /* ── Feedback spans ─────────────────────────────────────────────── */
-.feedback-ok  { color: #77B300 !important; font-size: 12px; }
-.feedback-err { color: #CC0000 !important; font-size: 12px; }
+.feedback-ok  { color: #00ff88 !important; font-size: 12px; }
+.feedback-err { color: #ff4d6d !important; font-size: 12px; }
 
 /* ── Equity curve fill gradient ─────────────────────────────────── */
-.equity-positive { color: #77B300; }
-.equity-negative { color: #CC0000; }
+.equity-positive { color: #00ff88; }
+.equity-negative { color: #ff4d6d; }
 
 /* ── Cyborg scanline overlay (subtle texture on the background) ─── */
 body::before {
@@ -204,8 +230,8 @@ body::before {
         0deg,
         transparent,
         transparent 2px,
-        rgba(42,159,214,0.015) 2px,
-        rgba(42,159,214,0.015) 4px
+        rgba(0,229,255,0.02) 2px,
+        rgba(0,229,255,0.02) 4px
     );
     pointer-events: none;
     z-index: 0;
@@ -221,25 +247,25 @@ body::before {
     position: absolute;
     bottom: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #2A9FD6, transparent);
+    background: linear-gradient(90deg, transparent, #00e5ff, transparent);
     animation: tab-glow 2s ease-in-out infinite;
 }
 @keyframes tab-glow {
     0%,100% { opacity: 0.6; }
-    50%      { opacity: 1; box-shadow: 0 0 12px #2A9FD6; }
+    50%      { opacity: 1; box-shadow: 0 0 12px #00e5ff; }
 }
 
 /* ── Scanner-mode badge ─────────────────────────────────────────── */
 .scanner-badge {
     display: inline-block;
-    background: linear-gradient(90deg, #1a3a4a, #0d1f2d);
-    color: #2A9FD6;
+    background: linear-gradient(90deg, #0a2a36, #0a1a26);
+    color: #00e5ff;
     font-weight: 700;
     font-size: 9px;
     letter-spacing: 1.5px;
     padding: 2px 8px;
     border-radius: 3px;
-    border: 1px solid #2A9FD620;
+    border: 1px solid rgba(0,229,255,0.2);
     text-transform: uppercase;
     vertical-align: middle;
     margin-left: 6px;
@@ -248,23 +274,23 @@ body::before {
 /* ── Quorum badge (MetaAlpha) ───────────────────────────────────── */
 .quorum-badge {
     display: inline-block;
-    background: linear-gradient(90deg, #1a1a2a, #0d0d1a);
-    color: #7B68EE;
+    background: linear-gradient(90deg, #14142a, #0d0d1a);
+    color: #9b6bff;
     font-weight: 700;
     font-size: 9px;
     letter-spacing: 1.5px;
     padding: 2px 8px;
     border-radius: 3px;
-    border: 1px solid #7B68EE20;
+    border: 1px solid rgba(155,107,255,0.2);
     text-transform: uppercase;
     vertical-align: middle;
     margin-left: 6px;
 }
 
 /* ── Funding positive/negative indicator ────────────────────────── */
-.funding-positive { color: #FFD700 !important; font-weight: 700; }
-.funding-negative { color: #FF6B6B !important; font-weight: 700; }
-.funding-neutral  { color: #ADAFAE !important; }
+.funding-positive { color: #ffd700 !important; font-weight: 700; }
+.funding-negative { color: #ff4d6d !important; font-weight: 700; }
+.funding-neutral  { color: #d7e3f4 !important; }
 
 /* ── Imbalance bar (visual inline indicator) ────────────────────── */
 .imb-bar {
@@ -274,53 +300,53 @@ body::before {
     vertical-align: middle;
     transition: width 0.3s ease;
 }
-.imb-bar-buy  { background: linear-gradient(90deg, #77B300, #00D4AA); }
-.imb-bar-sell { background: linear-gradient(90deg, #FF6B6B, #CC0000); }
+.imb-bar-buy  { background: linear-gradient(90deg, #00ff88, #00e5ff); }
+.imb-bar-sell { background: linear-gradient(90deg, #ff4d6d, #cc0033); }
 
 /* ── Calibration table row highlighting ─────────────────────────── */
-.cal-row-active td   { background-color: #0d1f2d !important; }
-.cal-row-scanner td  { background-color: #0d0d1a !important; color: #2A9FD6 !important; }
+.cal-row-active td   { background-color: #0a1a26 !important; }
+.cal-row-scanner td  { background-color: #0c1018 !important; color: #00e5ff !important; }
 
 /* ── DataTable dark polish ──────────────────────────────────────── */
 .dash-spreadsheet-container .dash-spreadsheet-inner td,
 .dash-spreadsheet-container .dash-spreadsheet-inner th {
-    background-color: #1a1a1a !important;
-    color: #ADAFAE !important;
-    border: 1px solid #2a2a2a !important;
+    background-color: #0c1018 !important;
+    color: #d7e3f4 !important;
+    border: 1px solid #1a2535 !important;
     font-size: 12px;
 }
 .dash-spreadsheet-container .dash-spreadsheet-inner th {
-    background-color: #0d0d0d !important;
-    color: #2A9FD6 !important;
+    background-color: #0a0e16 !important;
+    color: #00e5ff !important;
     font-weight: 700;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     font-size: 11px;
 }
 .dash-spreadsheet-container .dash-spreadsheet-inner tr:hover td {
-    background-color: #1e2a30 !important;
+    background-color: #12202e !important;
 }
 
 /* ── Stat card accent top border ────────────────────────────────── */
 .card-glow {
-    border-top: 2px solid #2A9FD6 !important;
+    border-top: 2px solid #00e5ff !important;
 }
-.card-glow.card-success { border-top-color: #77B300 !important; }
-.card-glow.card-danger  { border-top-color: #CC0000 !important; }
-.card-glow.card-warning { border-top-color: #FF8800 !important; }
+.card-glow.card-success { border-top-color: #00ff88 !important; }
+.card-glow.card-danger  { border-top-color: #ff4d6d !important; }
+.card-glow.card-warning { border-top-color: #ffb000 !important; }
 
 /* ── LLM overlay agent row ──────────────────────────────────────── */
 .llm-agent-row {
     padding: 6px 12px;
-    border-left: 3px solid #2A9FD6;
+    border-left: 3px solid #00e5ff;
     margin-bottom: 4px;
-    background: #0d0d0d;
-    border-radius: 0 4px 4px 0;
+    background: #0c1018;
+    border-radius: 0 6px 6px 0;
     font-size: 12px;
 }
-.llm-agent-row.bullish { border-left-color: #77B300; }
-.llm-agent-row.bearish { border-left-color: #CC0000; }
-.llm-agent-row.neutral { border-left-color: #ADAFAE; }
+.llm-agent-row.bullish { border-left-color: #00ff88; }
+.llm-agent-row.bearish { border-left-color: #ff4d6d; }
+.llm-agent-row.neutral { border-left-color: #70839f; }
 
 /* ── Fresh start guide section ──────────────────────────────────── */
 .guide-step {
@@ -329,9 +355,9 @@ body::before {
     gap: 14px;
     padding: 10px 14px;
     margin-bottom: 6px;
-    background: #0d0d0d;
-    border-radius: 4px;
-    border: 1px solid #1a1a1a;
+    background: #0c1018;
+    border-radius: 6px;
+    border: 1px solid #1a2535;
 }
 .guide-step-num {
     display: inline-flex;
@@ -341,47 +367,47 @@ body::before {
     height: 26px;
     min-width: 26px;
     border-radius: 50%;
-    background: #2A9FD6;
-    color: #000;
+    background: #00e5ff;
+    color: #060a10;
     font-weight: 900;
     font-size: 13px;
 }
-.guide-step-text { color: #ADAFAE; font-size: 13px; line-height: 1.5; }
+.guide-step-text { color: #d7e3f4; font-size: 13px; line-height: 1.5; }
 .guide-cmd {
     display: inline-block;
-    background: #060606;
-    border: 1px solid #2A9FD620;
-    color: #2A9FD6;
-    font-family: "Consolas","Courier New",monospace;
+    background: #060a10;
+    border: 1px solid rgba(0,229,255,0.2);
+    color: #00e5ff;
+    font-family: "JetBrains Mono","Consolas","Courier New",monospace;
     font-size: 12px;
     padding: 1px 8px;
     border-radius: 3px;
 }
 
 /* ── Exchange adapter status pill ───────────────────────────────── */
-.exchange-enabled  { color: #77B300; font-weight: 700; font-size: 11px; }
-.exchange-disabled { color: #555; font-size: 11px; }
+.exchange-enabled  { color: #00ff88; font-weight: 700; font-size: 11px; }
+.exchange-disabled { color: #70839f; font-size: 11px; }
 
 /* ── Brier score color scale ────────────────────────────────────── */
-.brier-good    { color: #77B300 !important; font-weight: 700; }
-.brier-ok      { color: #FF8800 !important; font-weight: 700; }
-.brier-bad     { color: #CC0000 !important; font-weight: 700; }
-.brier-missing { color: #555 !important; }
+.brier-good    { color: #00ff88 !important; font-weight: 700; }
+.brier-ok      { color: #ffb000 !important; font-weight: 700; }
+.brier-bad     { color: #ff4d6d !important; font-weight: 700; }
+.brier-missing { color: #70839f !important; }
 
 /* ── Regime badge (VolBreakout) ─────────────────────────────────── */
-.regime-high { color: #FF8800 !important; font-weight: 700; }
-.regime-low  { color: #2A9FD6 !important; }
-.regime-mid  { color: #ADAFAE !important; }
+.regime-high { color: #ffb000 !important; font-weight: 700; }
+.regime-low  { color: #00e5ff !important; }
+.regime-mid  { color: #d7e3f4 !important; }
 
 /* ── Arbitrage monitor alert row ────────────────────────────────── */
 .arb-alert-row {
-    border-left: 3px solid #FFD700;
+    border-left: 3px solid #ffd700;
     background: #1a1500 !important;
 }
 
 /* ── Pulse for live PnL positive ────────────────────────────────── */
 @keyframes pulse-profit {
-    0%,100% { text-shadow: 0 0 0px #77B300; }
-    50%      { text-shadow: 0 0 10px rgba(119,179,0,0.8); }
+    0%,100% { text-shadow: 0 0 0px #00ff88; }
+    50%      { text-shadow: 0 0 10px rgba(0,255,136,0.8); }
 }
 .pnl-live-positive { animation: pulse-profit 2.5s ease-in-out infinite; }

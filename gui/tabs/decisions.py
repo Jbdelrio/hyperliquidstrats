@@ -120,7 +120,7 @@ def register_callbacks(app) -> None:
             data=table_df.drop(columns=["_place_rate"]).to_dict("records"),
             columns=[{"name": c, "id": c} for c in table_df.columns if c != "_place_rate"],
             style_table={"overflowX": "auto"},
-            style_header={"backgroundColor": "#1a1a1a", "color": COLORS["accent"],
+            style_header={"backgroundColor": "#0c1018", "color": COLORS["accent"],
                           "fontWeight": "bold"},
             style_cell={"backgroundColor": COLORS["card_bg"], "color": COLORS["text"],
                         "border": f"1px solid {COLORS['grid']}", "textAlign": "left",

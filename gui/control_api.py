@@ -88,6 +88,30 @@ class ControlAPI:
         self.send_nowait("close_position", {"pos_id": pos_id})
 
     # ------------------------------------------------------------------
+    # User-facing strategy modes (2026-05-24)
+    #   STOP     — close all positions + cancel orders + disable
+    #   START    — re-enable (use after STOP)
+    #   FREEZE   — disable signal generation, keep open positions
+    #   UNFREEZE — re-enable (use after FREEZE)
+    # ------------------------------------------------------------------
+
+    def stop_strategy(self, name: str) -> None:
+        """STOP: close all positions, cancel pending orders, disable strategy."""
+        self.disable_strategy_flatten(name)
+
+    def start_strategy(self, name: str) -> None:
+        """START: re-enable strategy (use after STOP)."""
+        self.enable_strategy(name)
+
+    def freeze_strategy(self, name: str) -> None:
+        """FREEZE: stop signal generation but keep existing positions running."""
+        self.disable_strategy(name)
+
+    def unfreeze_strategy(self, name: str) -> None:
+        """UNFREEZE: resume signal generation (use after FREEZE)."""
+        self.enable_strategy(name)
+
+    # ------------------------------------------------------------------
     # Global controls
     # ------------------------------------------------------------------
 

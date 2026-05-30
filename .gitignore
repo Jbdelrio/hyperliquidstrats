@@ -5,6 +5,11 @@ runtime/
 *.json
 *.pid
 
+# Données de marché (régénérables via scripts/hl_top20_behavior.py — trop
+# volumineux pour git ; le parquet seconds fait 163 Mo > limite GitHub 100 Mo)
+data/processed/
+*.parquet
+
 # Cache Python
 __pycache__/
 *.pyc

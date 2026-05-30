@@ -24,7 +24,7 @@ _ALL_STRATS  = ["ALL",
                 "SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
                 "VolatilityRegimeBreakout", "MetaAlpha"]
 
-_HDR = {"backgroundColor": "#1a1a1a", "color": COLORS["accent"], "fontWeight": "bold"}
+_HDR = {"backgroundColor": "#0c1018", "color": COLORS["accent"], "fontWeight": "bold"}
 _CEL = {"backgroundColor": COLORS["card_bg"], "color": COLORS["text"],
         "border": f"1px solid {COLORS['grid']}", "padding": "5px",
         "textAlign": "right", "fontSize": "0.82rem"}

@@ -92,7 +92,7 @@ def register_callbacks(app) -> None:
 
         table = dash_table.DataTable(
             data=rows, columns=cols,
-            style_header={"backgroundColor": "#1a1a1a", "color": accent,
+            style_header={"backgroundColor": "#0c1018", "color": accent,
                            "fontWeight": "bold", "fontSize": "11px"},
             style_cell={"backgroundColor": COLORS["card_bg"],
                         "color": COLORS["text"],

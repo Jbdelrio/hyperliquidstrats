@@ -22,19 +22,28 @@ _cache: dict = {}
 
 
 def _cached_csv(path: str) -> pd.DataFrame:
+    """Read a CSV with mtime-based cache.
+
+    Returns a defensive **copy** on every call — Dash fires multiple callback
+    threads in parallel and they all mutate `df['col'] = ...`. Sharing the
+    cached object caused `IndexError: index 1 is out of bounds for axis 0
+    with size 1` deep in pandas' block manager (race between concurrent
+    column assignments). The cost of one copy per call is negligible vs.
+    parsing the file again.
+    """
     p = Path(path)
     if not p.exists():
         return pd.DataFrame()
     try:
         mtime = p.stat().st_mtime
         if path in _cache and _cache[path][0] == mtime:
-            return _cache[path][1]
+            return _cache[path][1].copy()
         df = pd.read_csv(p, low_memory=False, on_bad_lines="skip")
         # Drop duplicate columns that appear when CSV is read mid-write
         # .copy() is required: loc slicing leaves internal block indices inconsistent
         df = df.loc[:, ~df.columns.duplicated()].copy().reset_index(drop=True)
         _cache[path] = (mtime, df)
-        return df
+        return df.copy()
     except Exception:
         return pd.DataFrame()
 
@@ -59,11 +68,20 @@ def load_fills() -> pd.DataFrame:
     df = _cached_csv(FILLS_PATH)
     if df.empty:
         return df
-    if "ts" in df.columns:
-        df["dt"] = pd.to_datetime(df["ts"], errors="coerce")
+    # Guard every conversion — a half-flushed CSV row can corrupt one column
+    # without invalidating the whole frame; we want the rest to still render.
+    try:
+        if "ts" in df.columns:
+            df["dt"] = pd.to_datetime(df["ts"], errors="coerce")
+    except Exception:
+        df["dt"] = pd.NaT
     for col in ("notional", "entry", "exit", "gross", "fee", "net", "hold_s"):
-        if col in df.columns:
+        if col not in df.columns:
+            continue
+        try:
             df[col] = pd.to_numeric(df[col], errors="coerce")
+        except Exception:
+            df[col] = pd.NA
     # Backfill strategy column if missing (old CSV format without strategy column)
     if "strategy" not in df.columns:
         df["strategy"] = ""

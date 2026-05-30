@@ -51,6 +51,12 @@ from strategies.book_flow_divergence_reversal import BookFlowDivergenceReversal
 from strategies.absorption_reversal import AbsorptionReversal
 from strategies.funding_arbitrage_enhanced import FundingArbitrageEnhanced
 from strategies.btc_5min_binary_repl import BTC5MinBinaryReplStrategy
+# Alpha discovery 2026-05-25 — decile-threshold productionised signals.
+from strategies.alpha_signal_decile import AlphaSignalDecileStrategy
+# Vol-gated directional micro-scalp (GARCH-lite cost gate + leverage-aware).
+from strategies.garch_vol_breakout import GarchVolBreakoutStrategy
+# 1h range-breakout, both directions (validated edge: ZEC/WLD/HYPE).
+from strategies.hourly_breakout import HourlyBreakoutStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from execution.execution_planner import ExecutionPlanner
 from risk.kill_switch import KillSwitch
@@ -87,6 +93,12 @@ _STRATEGY_CLASSES = {
     "FundingArbitrageEnhanced":           FundingArbitrageEnhanced,
     # ── Synthetic 5-min binary replication (paper-only, disabled by default) ──
     "BTC5MinBinaryReplStrategy":          BTC5MinBinaryReplStrategy,
+    # ── Alpha discovery 2026-05-25 — productionised decile-threshold signals ──
+    "AlphaSignalDecileStrategy":          AlphaSignalDecileStrategy,
+    # ── Vol-gated directional micro-scalp (leverage-aware, paper-only) ──
+    "GarchVolBreakoutStrategy":           GarchVolBreakoutStrategy,
+    # ── 1h range-breakout, both directions (validated on HL 1h candles) ──
+    "HourlyBreakoutStrategy":             HourlyBreakoutStrategy,
 }
 
 
@@ -1005,9 +1017,33 @@ class EngineV9:
         except Exception:
             pass
 
+        # Heartbeat path — refreshed every 2s so the GUI can detect a dead
+        # engine. `engine_config.json` is static (written once at launch);
+        # the GUI watches the mtime of THIS file to know the engine is alive.
+        heartbeat_file = Path(self._runtime_cfg.get(
+            "heartbeat_file", "runtime/heartbeat.json"))
+        _ecfg_path = Path(self._runtime_cfg.get(
+            "engine_config_file", "runtime/engine_config.json"))
+        _session_id = ""
+        try:
+            if _ecfg_path.exists():
+                _session_id = json.load(open(_ecfg_path, encoding="utf-8")
+                                        ).get("session_id", "")
+        except Exception:
+            pass
+        _hb_pid = __import__("os").getpid()
+
         while self._running:
             await asyncio.sleep(2.0)
             ts = time.time()
+
+            # Heartbeat (cheap, every 2s).
+            try:
+                with open(heartbeat_file, "w", encoding="utf-8") as _hb:
+                    json.dump({"ts": ts, "session_id": _session_id,
+                               "pid": _hb_pid}, _hb)
+            except Exception:
+                pass
 
             if ts - last_status_t >= status_s:
                 await self._write_status(status_file, calib_file)
@@ -2449,15 +2485,46 @@ async def _main(args: argparse.Namespace) -> None:
     _rt = Path("runtime")
     _rt.mkdir(parents=True, exist_ok=True)
     import os as _os_pid
+    import uuid as _uuid
+    # Unique id per engine launch — GUI uses it to separate runs in the same
+    # CSVs and to detect "you're looking at a session that has restarted since".
+    _session_id = _uuid.uuid4().hex[:12]
+    _started_at = time.time()
+    # Total capital pinned at launch — the GUI reads THIS instead of summing
+    # the live strategy_status (which can flicker as strategies suspend /
+    # re-enable, or if multiple sessions wrote different rosters).
+    # Load directly from the JSON preset — engine.cfg is not built yet here.
+    _total_cap = 0.0
+    try:
+        _cfg_path = Path(args.config)
+        if not _cfg_path.is_absolute():
+            _cfg_path = Path(__file__).parent / args.config
+        _preset = json.load(open(_cfg_path, encoding="utf-8"))
+        _total_cap = float(_preset.get("capital", 0)) or float(sum(
+            float(s.get("capital_allocated_usd", 0) or 0)
+            for s in _preset.get("strategies", [])))
+    except Exception:
+        _total_cap = 0.0
     with open(_rt / "engine_config.json", "w") as _f:
         json.dump({
             "exchange":            args.exchange,
             "paper":               paper,
-            "started_at":          time.time(),
+            "started_at":          _started_at,
+            "session_id":          _session_id,
             "config_path":         args.config,
             "selected_strategies": enable_strategies or [],
             "pid":                 _os_pid.getpid(),
+            "total_capital_usd":   _total_cap,
         }, _f)
+    # Heartbeat — engine refreshes its mtime each control-loop tick; the GUI
+    # uses (now - mtime) to detect a dead engine.
+    try:
+        (_rt / "heartbeat.json").write_text(
+            json.dumps({"ts": _started_at, "session_id": _session_id,
+                        "pid": _os_pid.getpid()}),
+            encoding="utf-8")
+    except Exception:
+        pass
     log.info("[ENGINE] started — exchange=%s paper=%s config=%s selected_strategies=%s",
              args.exchange, paper, args.config, enable_strategies)
 

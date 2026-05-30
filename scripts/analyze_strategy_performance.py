@@ -85,7 +85,14 @@ def main() -> int:
     net = pd.to_numeric(fills["net"], errors="coerce").fillna(0.0)
     fee = pd.to_numeric(fills.get("fee"), errors="coerce").fillna(0.0)
     hold = pd.to_numeric(fills.get("hold_s"), errors="coerce").fillna(0.0)
-    fills = fills.assign(net=net, fee=fee, hold_s=hold)
+    # Gross PnL (before fees) — the honest live predictor. Also as bps of
+    # notional so it is directly comparable to the backtest's avg_bps and to
+    # the round-trip cost.
+    gross = pd.to_numeric(fills.get("gross"), errors="coerce").fillna(net + fee)
+    notional = pd.to_numeric(fills.get("notional"), errors="coerce").replace(0, np.nan)
+    gross_bps = (gross / notional * 1e4)
+    fills = fills.assign(net=net, fee=fee, hold_s=hold, gross=gross,
+                         gross_bps=gross_bps)
 
     # 1. Aggregate
     lines.append("## 1. Aggregate")
@@ -93,7 +100,10 @@ def main() -> int:
     lines.append(f"- Net PnL             : ${net.sum():.4f}")
     lines.append(f"- Total fees          : ${fee.sum():.4f}")
     lines.append(f"- Win rate            : {float((net > 0).mean()):.2%}")
-    lines.append(f"- Expectancy / trade  : ${net.mean():.4f}")
+    lines.append(f"- Expectancy / trade  : ${net.mean():.4f}  (net, after fees)")
+    lines.append(f"- **Avg gross / trade** : ${gross.mean():.4f}  "
+                 f"(**{gross_bps.mean():.2f} bps** — the honest edge; must exceed the "
+                 f"round-trip cost to be net-positive)")
     lines.append(f"- Profit factor       : {_pf(net):.2f}")
     cum = net.cumsum()
     dd = (cum - cum.cummax()).min()
@@ -109,6 +119,7 @@ def main() -> int:
             trades=("net", "size"),
             net_total=("net", "sum"),
             expectancy=("net", "mean"),
+            avg_gross_bps=("gross_bps", "mean"),
             win_rate=("net", lambda x: float((x > 0).mean())),
             fees_total=("fee", "sum"),
             avg_hold_s=("hold_s", "mean"),

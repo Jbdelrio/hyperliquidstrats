@@ -10,17 +10,18 @@ THEME = dbc.themes.CYBORG
 # Unified monospace font — matches the GUI's terminal look (custom.css).
 FONT_FAMILY = "JetBrains Mono, Consolas, Courier New, monospace"
 
+# Palette aligned to the reference cyborg_dash.py — neon cyan on deep blue-black.
 COLORS = {
-    "bg":         "#060606",
-    "card_bg":    "#1a1a1a",
-    "accent":     "#2A9FD6",
-    "success":    "#77B300",
-    "danger":     "#CC0000",
-    "warning":    "#FF8800",
-    "text":       "#ADAFAE",
-    "text_light": "#FFFFFF",
-    "grid":       "#2a2a2a",
-    "card_bg2":   "#0d0d0d",
+    "bg":         "#060a10",   # deep blue-black page background
+    "card_bg":    "#0c1018",   # card surface
+    "accent":     "#00e5ff",   # neon cyan accent
+    "success":    "#00ff88",   # neon green
+    "danger":     "#ff4d6d",   # pink-red
+    "warning":    "#ffb000",   # amber
+    "text":       "#d7e3f4",   # light blue-white
+    "text_light": "#f3f7ff",   # white
+    "grid":       "#1a2535",   # blue-grey border/grid
+    "card_bg2":   "#0a0e16",   # slightly darker surface (table header / bars)
 }
 
 # Per-strategy accent colours for charts/badges

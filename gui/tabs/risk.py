@@ -151,7 +151,7 @@ def register_callbacks(app) -> None:
                 table = dash_table.DataTable(
                     data=loss_rows.to_dict("records"),
                     columns=[{"name": c, "id": c} for c in loss_rows.columns],
-                    style_header={"backgroundColor": "#1a1a1a",
+                    style_header={"backgroundColor": "#0c1018",
                                   "color": COLORS["danger"], "fontWeight": "bold",
                                   "fontSize": "11px"},
                     style_cell={"backgroundColor": "#180000",

@@ -37,13 +37,22 @@ _WARMUP_BARS = {
 }
 
 _ALL_STRATS = [
+    # Phase 0/1 — original 5 + bar strats
     "S8EMS", "MomentumLS", "BreakoutControlled",
     "MeanReversionKalman", "FundingArbitrage",
     "DonchianTrend", "RSIBollingerReversion",
     "RotationMomentum", "RelativeValue",
+    # Phase 2 — funding + binaries
     "SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
     "VolatilityRegimeBreakout", "MetaAlpha", "BTC_5MIN_BINARY_REPL",
     "BTC_BINARY_HIGHLEV",
+    # Phase 3 — seconds scalpers + scanners (added 2026-05-24)
+    "AlphaPressureScalper", "BookFlowDivergenceReversal", "AbsorptionReversal",
+    "SecondsResearch", "FundingArbEnhanced",
+    # Phase 4 — alpha discovery decile signals (added 2026-05-25)
+    "AlphaDecile_WLD_LV300", "AlphaDecile_INJ_LV300",
+    "AlphaDecile_INJ_TI120", "AlphaDecile_WLD_OBI120",
+    "AlphaDecile_APE_MP300",
 ]
 _DFLT_CAP = {s: 500 for s in _ALL_STRATS}
 # Total capital = sum of all strategy allocations (computed dynamically)
@@ -51,7 +60,23 @@ _DFLT_TOTAL_CAP = float(sum(_DFLT_CAP.values()))  # 7000.0
 
 
 def _total_capital(live_list: list) -> float:
-    """Sum of capital_allocated_usd from live engine data, or fall back to defaults."""
+    """Pinned total capital — read engine_config.json once per refresh.
+
+    Reading the live strategy_status used to flicker (6000 ↔ 9000) when the
+    engine cycled strategies through SUSPENDED, or when multiple sessions
+    accumulated different rosters. The engine now writes the canonical total
+    to engine_config.json at launch; the GUI trusts that value.
+    """
+    try:
+        _ecfg_path = _REPO / "runtime" / "engine_config.json"
+        if _ecfg_path.exists():
+            _ecfg = json.load(open(_ecfg_path, encoding="utf-8"))
+            pinned = float(_ecfg.get("total_capital_usd") or 0)
+            if pinned > 0:
+                return pinned
+    except Exception:
+        pass
+    # Legacy fallback (no engine_config yet, or running an older engine).
     if live_list:
         total = sum(float(s.get("capital_allocated_usd", 0) or 0) for s in live_list)
         if total > 0:
@@ -82,7 +107,7 @@ def _build_equity_curve(fills: "pd.DataFrame", init_cap: float) -> "pd.DataFrame
 _BDR = f"1px solid {COLORS['grid']}"
 _TD  = {"border": _BDR, "padding": "4px 8px", "fontSize": "11px",
         "fontFamily": "Consolas,monospace", "color": COLORS["text_light"]}
-_TH2 = {"backgroundColor": "#060606", "color": COLORS["accent"],
+_TH2 = {"backgroundColor": "#060a10", "color": COLORS["accent"],
         "fontWeight": "bold", "fontSize": "10px",
         "border": _BDR, "padding": "4px 8px", "letterSpacing": "1px"}
 
@@ -187,6 +212,19 @@ def _strat_card(name, state, cap, cum_pnl, n_trades, wr, n_pos,
            "borderRadius": "4px", "borderLeft": f"3px solid {accent}"})
 
 
+def _fmt_hold(seconds) -> str:
+    """`5034` → `1h23m`. Keeps long-held bar-strategy positions readable."""
+    try:
+        s = int(float(seconds or 0))
+    except (TypeError, ValueError):
+        return "—"
+    if s < 60:
+        return f"{s}s"
+    if s < 3600:
+        return f"{s // 60}m{s % 60:02d}s"
+    return f"{s // 3600}h{(s % 3600) // 60:02d}m"
+
+
 def _pos_table(positions):
     if not positions:
         return html.Div()
@@ -204,7 +242,7 @@ def _pos_table(positions):
             html.Td(f"{p.get('entry_price', 0):.5g}",   style=_TD),
             html.Td(f"{p.get('current_price', 0):.5g}", style=_TD),
             html.Td(f"${upnl:+.4f}", style={**_TD, "color": uc, "fontWeight": "700"}),
-            html.Td(f"{p.get('hold_s', 0)}s", style=_TD),
+            html.Td(_fmt_hold(p.get("hold_s", 0)), style=_TD),
         ]))
     thead = html.Thead(html.Tr(
         [html.Th(h, style=_TH2)
@@ -387,7 +425,29 @@ def _build_alerts(live_list: list, now: float) -> list[dict]:
     except Exception:
         pass
 
-    # 4. WebSocket stale — last_heartbeat_ts > 30s ago from strategy_status mtime
+    # 4a. Engine heartbeat — the truest "is the engine alive?" signal.
+    # The engine refreshes heartbeat.json every 2 s; anything > 30 s = dead.
+    try:
+        _hb = _REPO / "runtime" / "heartbeat.json"
+        if _hb.exists():
+            hb_age = now - _hb.stat().st_mtime
+            if hb_age > 30:
+                level = "critical" if hb_age > 120 else "warning"
+                txt = (f"ENGINE DEAD — pas de heartbeat depuis "
+                       f"{hb_age/60:.1f} min. La GUI affiche peut-être des "
+                       f"positions obsolètes. Relance avec restart_engine.bat.")
+                alerts.append({"level": level, "text": txt})
+        else:
+            alerts.append({
+                "level": "warning",
+                "text": ("Pas de heartbeat — soit ancien moteur sans le "
+                         "patch, soit moteur jamais démarré. Restart pour "
+                         "activer la détection de moteur mort."),
+            })
+    except Exception:
+        pass
+
+    # 4b. WebSocket stale — last_heartbeat_ts > 30s ago from strategy_status mtime
     try:
         _sf = _REPO / "runtime" / "strategy_status.json"
         if _sf.exists():
@@ -497,6 +557,41 @@ def _health_row(live_list: list, decisions_today: int, now: float) -> html.Div:
     n_active = sum(1 for s in live_list if s.get("state") == "ACTIVE")
     n_total  = len(live_list) or len(_ALL_STRATS)
 
+    # Engine session id — unique per launch; lets the user spot a silent
+    # restart (the CSVs accumulate across sessions, the id does not).
+    session_id = "—"
+    engine_age = None
+    hb_age = None
+    try:
+        _ecfg_path = _REPO / "runtime" / "engine_config.json"
+        if _ecfg_path.exists():
+            _ecfg = json.load(open(_ecfg_path, encoding="utf-8"))
+            session_id = str(_ecfg.get("session_id") or "—")[:12]
+            ts = float(_ecfg.get("started_at") or 0)
+            if ts > 0:
+                engine_age = now - ts
+        _hb_path = _REPO / "runtime" / "heartbeat.json"
+        if _hb_path.exists():
+            hb_age = now - _hb_path.stat().st_mtime
+    except Exception:
+        pass
+    sid_color = COLORS["accent"] if session_id != "—" else COLORS["text"]
+    # Engine status — driven by heartbeat, not by started_at. A growing
+    # engine_age with stale heartbeat = engine DEAD; the GUI must say so.
+    if hb_age is None:
+        engine_txt = "—"
+        engine_color = COLORS["text"]
+    elif hb_age < 15:
+        engine_txt = (f"UP {engine_age/3600:.1f}h" if (engine_age or 0) >= 3600
+                       else f"UP {(engine_age or 0)/60:.0f}min")
+        engine_color = COLORS["success"]
+    elif hb_age < 60:
+        engine_txt = f"slow ({hb_age:.0f}s)"
+        engine_color = COLORS["warning"]
+    else:
+        engine_txt = f"DEAD ({hb_age/60:.0f}min)"
+        engine_color = COLORS["danger"]
+
     def _pill(label, val, color):
         return html.Span([
             html.Span(label, style={"color": COLORS["text"], "fontSize": "10px"}),
@@ -508,6 +603,8 @@ def _health_row(live_list: list, decisions_today: int, now: float) -> html.Div:
         _pill("Data:", feed_txt, feed_color),
         _pill("Stratégies actives:", f"{n_active}/{n_total}", COLORS["accent"]),
         _pill("Signaux aujourd'hui:", str(decisions_today), COLORS["text_light"]),
+        _pill("Session:", session_id, sid_color),
+        _pill("Engine:", engine_txt, engine_color),
     ], style={"display": "flex", "alignItems": "center", "flexWrap": "wrap",
               "padding": "5px 10px", "marginBottom": "8px",
               "backgroundColor": "#0a0a0a",
@@ -657,11 +754,25 @@ def register_callbacks(app) -> None:
         phase2    = ["SpotPerpBasis", "FundingCarryHedged", "OBImbalanceScalper",
                      "VolatilityRegimeBreakout", "MetaAlpha",
                      "BTC_5MIN_BINARY_REPL", "BTC_BINARY_HIGHLEV"]
+        phase3    = ["AlphaPressureScalper", "BookFlowDivergenceReversal",
+                     "AbsorptionReversal", "SecondsResearch", "FundingArbEnhanced"]
+
+        # Phase 4 added 2026-05-25 — productionised alpha discovery signals.
+        # Auto-detect any AlphaDecile_* strategy from live status so new
+        # signals appear in the dashboard without further code edits.
+        phase4 = sorted(s.get("name") for s in live_list
+                        if s.get("name", "").startswith("AlphaDecile"))
+
+        # Catch-all: any strategy known to the engine but not listed above so
+        # nothing is silently invisible.
+        known = set(existing) | set(phase1) | set(phase2) | set(phase3) | set(phase4)
+        other = sorted(s.get("name") for s in live_list
+                       if s.get("name") and s.get("name") not in known)
 
         # Phase 8: operational alerts derived from runtime state
         alerts = _build_alerts(live_list, now)
 
-        cards = html.Div([
+        sections = [
             g_cards,
             _health_row(live_list, decisions_today, now),
             _alerts_card(alerts),
@@ -671,8 +782,16 @@ def register_callbacks(app) -> None:
             _make_row(phase1),
             _grp("Phase 2"),
             _make_row(phase2),
-            _pos_table(all_pos),
-        ])
+            _grp("Phase 3 — seconds scalpers + scanners"),
+            _make_row(phase3),
+        ]
+        if phase4:
+            sections += [_grp("Phase 4 — Alpha discovery (decile signals)"),
+                         _make_row(phase4)]
+        if other:
+            sections += [_grp("Autres"), _make_row(other)]
+        sections.append(_pos_table(all_pos))
+        cards = html.Div(sections)
 
         # ── Charts ────────────────────────────────────────────────────
         fig_eq = go.Figure()
@@ -694,7 +813,12 @@ def register_callbacks(app) -> None:
         apply_dark_theme(fig_eq)
 
         fig_strat = go.Figure()
-        active_strats = [n for n in _ALL_STRATS if n in strat_stats]
+        # 2026-05-25: was filtering by hardcoded _ALL_STRATS → any strategy
+        # added after release date (e.g. AlphaDecile_*) was silently absent
+        # from the PnL chart. Render every strategy that has ANY fills since
+        # engine start.
+        active_strats = sorted(strat_stats.keys(),
+                                key=lambda n: strat_stats[n].get("pnl", 0.0))
         if active_strats:
             pnls   = [strat_stats[n]["pnl"] for n in active_strats]
             colors = [STRAT_COLORS.get(n, COLORS["accent"]) for n in active_strats]

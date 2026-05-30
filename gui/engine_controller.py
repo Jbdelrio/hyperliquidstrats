@@ -27,8 +27,19 @@ class EngineController:
 
     def start(self, strategies: list = None, paper: bool = True,
               exchange: str = "hyperliquid", config: str = None) -> dict:
+        # 2026-05-24: hardened against duplicate-engine race. Previously the
+        # is_running() check could miss an engine started by a different
+        # Python process (e.g. restart_engine.py CLI) if its pid file was
+        # stale or its tasklist entry wasn't yet visible. Now we ALSO scan
+        # `tasklist` for any python.exe whose command line includes
+        # engine_v9.py and kill it before spawning a new one. Belt + braces.
         if self.is_running():
-            return {"ok": False, "error": f"Moteur déjà en cours (PID {self.pid})"}
+            stop_res = self.stop()
+            if not stop_res.get("ok"):
+                return {"ok": False,
+                        "error": f"Moteur déjà en cours (PID {self.pid}) et stop a échoué: {stop_res.get('error')}"}
+        # Belt: also kill any engine_v9.py python.exe that survived stop().
+        self._kill_stray_engines()
 
         cmd = [sys.executable, str(_REPO / "engine_v9.py"), "--paper"]
         if not paper:
@@ -129,6 +140,41 @@ class EngineController:
                 return True
             except OSError:
                 return False
+
+    @staticmethod
+    def _kill_stray_engines() -> int:
+        """Find any python.exe whose command line contains engine_v9.py and
+        kill them. Belt + braces against duplicate engines.
+
+        Returns the count of killed processes (0 if none).
+        """
+        killed = 0
+        try:
+            # WMIC is the simplest way to read command lines on Windows.
+            result = subprocess.run(
+                ["wmic", "process", "where",
+                 "name='python.exe'", "get", "ProcessId,CommandLine",
+                 "/format:csv"],
+                capture_output=True, text=True, timeout=10,
+            )
+            for line in result.stdout.splitlines():
+                if "engine_v9.py" not in line:
+                    continue
+                parts = [p.strip() for p in line.split(",")]
+                for p in reversed(parts):
+                    if p.isdigit():
+                        try:
+                            subprocess.run(
+                                ["taskkill", "/F", "/PID", p],
+                                capture_output=True, timeout=5,
+                            )
+                            killed += 1
+                        except Exception:
+                            pass
+                        break
+        except Exception:
+            pass
+        return killed
 
 
 engine_ctrl = EngineController()

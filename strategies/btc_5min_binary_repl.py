@@ -115,6 +115,14 @@ class BTC5MinBinaryReplStrategy(BaseStrategy):
         entry_order_type_default="post_only_limit",
         allow_taker_on_strong_signal=True,
 
+        # Early-exit tuning (hardcoded before 2026-05-24 — exposed so the 5-min
+        # binary thesis has room to play out before the first noise blip yanks
+        # the position. Defaults match the original hardcoded values.)
+        early_exit_signal_p_up_long_below=0.50,   # long bails if p_up < this
+        early_exit_signal_p_up_short_above=0.50,  # short bails if p_up > this
+        early_exit_flow_magnitude=0.35,           # |obi|/|flow| crossing this against position → bail
+        min_hold_seconds_before_early_exit=0,     # grace period after fill (0 = legacy)
+
         # Risk
         max_daily_loss_usd=20.0,
         max_consecutive_losses=3,
@@ -490,25 +498,40 @@ class BTC5MinBinaryReplStrategy(BaseStrategy):
     def _check_early_exit(self, feat: dict, ts: float) -> Optional[StrategyDecision]:
         """Engine enforces TP / SL / max-hold from the decision; this adds the
         signal-reversal / spread-blowout early exit."""
-        if not self.config.params["early_exit_enabled"] or self._position is None:
+        p = self.config.params
+        if not p["early_exit_enabled"] or self._position is None:
             return None
+
+        # Grace period: trade log analysis showed every paper trade exited
+        # within 20-30s via flow/signal-reverse, never letting the 5-min
+        # thesis play out. min_hold_seconds_before_early_exit lets the user
+        # opt into a cooling-off window.
+        opened = self._position.get("opened_at") or self._position.get("ts")
+        if opened is not None:
+            min_hold = float(p.get("min_hold_seconds_before_early_exit", 0))
+            if min_hold > 0 and (ts - opened) < min_hold:
+                return None
+
         side  = self._position["side"]
         p_up  = feat.get("p_up")
         obi   = feat.get("obi_10") or 0.0
         flow  = feat.get("flow_60s") or 0.0
         sbps  = feat.get("spread_bps")
-        crit  = self.config.params["critical_spread_bps"]
+        crit  = p["critical_spread_bps"]
+        sig_long  = float(p["early_exit_signal_p_up_long_below"])
+        sig_short = float(p["early_exit_signal_p_up_short_above"])
+        flow_mag  = float(p["early_exit_flow_magnitude"])
 
         reason = None
         if sbps is not None and sbps > crit:
             reason = "EARLY_EXIT_SPREAD"
-        elif p_up is not None and side == "long" and p_up < 0.50:
+        elif p_up is not None and side == "long" and p_up < sig_long:
             reason = "EARLY_EXIT_SIGNAL_REVERSE"
-        elif p_up is not None and side == "short" and p_up > 0.50:
+        elif p_up is not None and side == "short" and p_up > sig_short:
             reason = "EARLY_EXIT_SIGNAL_REVERSE"
-        elif side == "long" and (obi < -0.35 or flow < -0.35):
+        elif side == "long" and (obi < -flow_mag or flow < -flow_mag):
             reason = "EARLY_EXIT_FLOW_REVERSE"
-        elif side == "short" and (obi > 0.35 or flow > 0.35):
+        elif side == "short" and (obi > flow_mag or flow > flow_mag):
             reason = "EARLY_EXIT_FLOW_REVERSE"
 
         if reason is None:

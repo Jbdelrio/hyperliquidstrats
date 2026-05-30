@@ -98,7 +98,7 @@ def _render_table(rows: list[dict]) -> html.Div:
             "textAlign": "left",
         },
         style_header={
-            "backgroundColor": "#060606",
+            "backgroundColor": "#060a10",
             "color": COLORS["accent"],
             "fontSize": "10px",
             "fontWeight": "700",
