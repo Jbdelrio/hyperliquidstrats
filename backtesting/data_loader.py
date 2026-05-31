@@ -71,16 +71,70 @@ def load_fills_as_trades(path: str = _DEFAULT_FILLS_PATH) -> list[dict]:
     return trades
 
 
-def load_ohlcv(symbol: str, interval: str,
-               start: float, end: float) -> list[dict]:
-    """
-    Stub OHLCV loader. Wire this to your historical data source
-    (Hyperliquid REST, CSV cache, Binance dump, …).
+# ── PHASE 0 wiring : chargement des parquets historiques HL ──────────────────
+# Produits par data/historical_data.py → data/historical/{coin}_{interval}.parquet
 
-    Until wired, this raises NotImplementedError with guidance.
+_HIST_DIR = Path(__file__).resolve().parents[1] / "data" / "historical"
+
+
+def historical_path(coin: str, interval: str) -> Path:
+    return _HIST_DIR / f"{coin}_{interval}.parquet"
+
+
+def load_historical_bars(coin: str, interval: str,
+                         start: float = 0.0, end: float = 0.0) -> list:
     """
-    raise NotImplementedError(
-        f"load_ohlcv({symbol!r}, {interval!r}, {start}, {end}) is a stub. "
-        "Implement a data fetch (REST / parquet cache / CSV) before running "
-        "the BacktestEngine, or feed pre-computed bars directly."
-    )
+    Charge data/historical/{coin}_{interval}.parquet en objets BarData
+    (ts en SECONDES, volume_usd = volume×close, return_1m = variation close).
+    `start`/`end` en secondes epoch filtrent la fenêtre (0 = pas de borne).
+    Zéro look-ahead : on renvoie les barres telles quelles, triées par ts.
+    """
+    from strategies.base_strategy import BarData  # import local (évite cycle)
+    import pandas as pd  # local
+
+    p = historical_path(coin, interval)
+    if not p.exists():
+        raise FileNotFoundError(
+            f"{p} introuvable. Lance d'abord : python -m data.historical_data")
+    df = pd.read_parquet(p).sort_values("ts").reset_index(drop=True)
+    ts_s = df["ts"].astype("int64") / 1000.0
+    if start:
+        df = df[ts_s >= start]
+    if end:
+        df = df[ts_s <= end]
+    df = df.reset_index(drop=True)
+    closes = df["close"].to_numpy(dtype=float)
+    bars: list = []
+    for i, row in df.iterrows():
+        r = 0.0 if i == 0 or closes[i - 1] <= 0 else (closes[i] - closes[i - 1]) / closes[i - 1]
+        bars.append(BarData(
+            symbol=coin, ts=float(row["ts"]) / 1000.0,
+            open=float(row["open"]), high=float(row["high"]),
+            low=float(row["low"]), close=float(row["close"]),
+            volume_usd=float(row["volume"]) * float(row["close"]),
+            return_1m=float(r),
+        ))
+    return bars
+
+
+def load_funding_series(coin: str) -> list:
+    """
+    Charge le funding historique → liste de (time_s, funding_rate) triée.
+    Utilisée par BacktestEngine pour l'accrual aux frontières de funding.
+    Renvoie [] si le parquet funding n'existe pas.
+    """
+    import pandas as pd  # local
+    p = _HIST_DIR / f"{coin}_funding.parquet"
+    if not p.exists():
+        return []
+    df = pd.read_parquet(p).sort_values("time").reset_index(drop=True)
+    return [(float(t) / 1000.0, float(fr))
+            for t, fr in zip(df["time"], df["funding_rate"])]
+
+
+def load_ohlcv(symbol: str, interval: str,
+               start: float = 0.0, end: float = 0.0) -> list[dict]:
+    """OHLCV en dicts (ts en secondes) depuis le cache historique HL."""
+    bars = load_historical_bars(symbol, interval, start, end)
+    return [{"ts": b.ts, "open": b.open, "high": b.high, "low": b.low,
+             "close": b.close, "volume_usd": b.volume_usd} for b in bars]
