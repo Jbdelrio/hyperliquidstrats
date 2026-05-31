@@ -57,6 +57,8 @@ from strategies.alpha_signal_decile import AlphaSignalDecileStrategy
 from strategies.garch_vol_breakout import GarchVolBreakoutStrategy
 # 1h range-breakout, both directions (validated edge: ZEC/WLD/HYPE).
 from strategies.hourly_breakout import HourlyBreakoutStrategy
+# Suivi de tendance 4h/daily, sizing vol-target (PHASE 5).
+from strategies.trend_following_vol_target import TrendFollowingVolTargetStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from execution.execution_planner import ExecutionPlanner
 from risk.kill_switch import KillSwitch
@@ -99,6 +101,8 @@ _STRATEGY_CLASSES = {
     "GarchVolBreakoutStrategy":           GarchVolBreakoutStrategy,
     # ── 1h range-breakout, both directions (validated on HL 1h candles) ──
     "HourlyBreakoutStrategy":             HourlyBreakoutStrategy,
+    # ── Suivi de tendance 4h/daily vol-target (PHASE 5, validation requise) ──
+    "TrendFollowingVolTargetStrategy":    TrendFollowingVolTargetStrategy,
 }
 
 

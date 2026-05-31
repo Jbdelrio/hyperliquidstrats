@@ -15,6 +15,7 @@ from typing import Optional
 
 from strategies.base_strategy import BaseStrategy, StrategyConfig, StrategyDecision
 from strategies.hourly_breakout import HourlyBreakoutStrategy
+from strategies.trend_following_vol_target import TrendFollowingVolTargetStrategy
 from backtesting.backtest_engine import BacktestEngine
 from backtesting import data_loader
 
@@ -113,5 +114,77 @@ def breakout_run_fn(interval: str = "1h", leverage: float = 5.0):
         eng = BacktestEngine(_BarBreakout, cfg, bars,
                              fee_bps=fee_bps, slippage_bps=slip_bps,
                              funding_by_symbol=funding)
+        return eng.run()
+    return run_fn
+
+
+class _EmaTrend(BaseStrategy):
+    """Suivi de tendance EMA-cross sur barres natives (réutilise trend_sign).
+    À plat → entre dans le sens de la tendance ; en position → retourne au flip."""
+
+    def __init__(self, config: StrategyConfig, **kw):
+        super().__init__(config, **kw)
+        p = config.params
+        self._fast = int(p["ema_fast"]); self._slow = int(p["ema_slow"])
+        self._hold_s = int(p.get("max_hold_bars", 60)) * int(p.get("bar_seconds", 14400))
+        self._min_atr = float(p.get("min_atr_bps", 20.0))
+        self._notional = float(p.get("notional", 1000.0))
+        self._closes: list[float] = []
+        self._highs: list[float] = []
+        self._lows: list[float] = []
+        self._side: Optional[str] = None
+
+    def on_orderbook_update(self, s, b, t): return None
+    def on_trade_update(self, s, tr, t): return None
+
+    def on_bar_minute(self, symbol, bar, ts):
+        self._closes.append(bar.close); self._highs.append(bar.high); self._lows.append(bar.low)
+        if len(self._closes) < self._slow:
+            return None
+        sign = TrendFollowingVolTargetStrategy.trend_sign(self._closes, self._fast, self._slow)
+        if self._side is not None:
+            flip = (sign < 0 and self._side == "BUY") or (sign > 0 and self._side == "SELL")
+            if flip:
+                return StrategyDecision(action="CLOSE", symbol=symbol, reason="trend_flip")
+            return None
+        atr = TrendFollowingVolTargetStrategy.atr_bps(self._highs, self._lows, self._closes)
+        if sign == 0 or atr < self._min_atr:
+            return None
+        if sign > 0:
+            return StrategyDecision(action="PLACE_BUY", symbol=symbol, buy_price=bar.close,
+                                    notional_usd=self._notional, max_hold_seconds=self._hold_s,
+                                    reason="ema_long", metadata={"leverage": 1.0})
+        return StrategyDecision(action="PLACE_SELL", symbol=symbol, sell_price=bar.close,
+                                notional_usd=self._notional, max_hold_seconds=self._hold_s,
+                                reason="ema_short", metadata={"leverage": 1.0})
+
+    def on_fill(self, symbol, side, price, size, ts, pos_id=""):
+        self._side = side
+        return None
+
+    def on_position_closed(self, symbol, pnl_net, exit_reason):
+        self._side = None
+        super().on_position_closed(symbol, pnl_net, exit_reason)
+
+
+def ema_cross_run_fn(interval: str = "4h"):
+    """run_fn EMA-cross trend-following sur barres `interval` via le moteur véridique."""
+    bar_seconds = _INTERVAL_SECONDS[interval]
+
+    def run_fn(params: dict, coin: str, fee_bps: float, slip_bps: float) -> list:
+        try:
+            bars = data_loader.load_historical_bars(coin, interval)
+        except FileNotFoundError:
+            return []
+        if len(bars) < int(params.get("ema_slow", 30)) + 10:
+            return []
+        funding = {coin: data_loader.load_funding_series(coin)}
+        cfg = StrategyConfig(
+            name=f"bt_ema_{coin}", coins=[coin], max_positions=1,
+            max_position_size_usd=params.get("notional", 1000.0),
+            params={**params, "bar_seconds": bar_seconds},
+        )
+        eng = BacktestEngine(_EmaTrend, cfg, bars, fee_bps=fee_bps,
+                             slippage_bps=slip_bps, funding_by_symbol=funding)
         return eng.run()
     return run_fn
