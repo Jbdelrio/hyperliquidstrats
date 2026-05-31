@@ -154,10 +154,12 @@ class StratVerdict:
     dsr: float
     sr: float
     sr0: float
+    significant: bool        # DSR ≥ seuil (typ. 0.95)
     stress: dict             # {rt_bps: avg_net_bps}
     per_coin: dict           # {coin: avg_net_bps}
     go: bool
     reasons: list = field(default_factory=list)
+    warnings: list = field(default_factory=list)
 
 
 def evaluate_strategy(
@@ -225,18 +227,25 @@ def evaluate_strategy(
     # 6) breadth
     breadth_pos = sum(1 for v in best["per_coin"].values() if v > 0)
 
-    # 7) critères GO
-    reasons = []
+    # 7) critères GO (TOUS requis). Le critère "Deflated Sharpe > 0" = edge
+    #    déflaté positif (SR observé > seuil multiple-testing SR0). La
+    #    significativité à 95% (DSR_proba) est un AVERTISSEMENT, pas un gate dur.
+    reasons, warnings = [], []
+    significant = dsr >= dsr_significant
     c_net = best["avg_net_bps"] > 0
     c_plateau = plateau
     c_stress = stress.get(max(stress_rt), -1) > 0 if stress else False
-    c_dsr = dsr >= dsr_significant
+    c_dsr = sr > sr0                      # edge survit à la déflation multiple-testing
     c_breadth = breadth_pos >= min_coins
     if not c_net: reasons.append(f"AvgNet_bps OOS ≤ 0 ({best['avg_net_bps']:.2f})")
     if not c_plateau: reasons.append("pas de plateau (pic isolé = overfit)")
     if not c_stress: reasons.append(f"ne survit pas au stress {max(stress_rt):.0f}bps ({stress.get(max(stress_rt),0):.2f})")
-    if not c_dsr: reasons.append(f"Deflated Sharpe non significatif (DSR={dsr:.2f} < {dsr_significant})")
+    if not c_dsr: reasons.append(f"edge déflaté ≤ seuil multiple-testing (SR={sr:.3f} ≤ SR0={sr0:.3f})")
     if not c_breadth: reasons.append(f"breadth insuffisante ({breadth_pos}/{len(coins)} coins > 0, requis ≥{min_coins})")
+    if not significant:
+        warnings.append(f"NON significatif à 95% après déflation (DSR={dsr:.2f}) — résultat à confirmer")
+    if confidence == "LOW":
+        warnings.append("données LOW (ex. 1m ~5j) — GO provisoire au mieux")
     go = c_net and c_plateau and c_stress and c_dsr and c_breadth
 
     verdict = StratVerdict(
@@ -244,8 +253,8 @@ def evaluate_strategy(
         best_params=best["params"], n_trials=len(param_grid),
         oos_avg_net_bps=best["avg_net_bps"], oos_n_trades=best["n"],
         breadth_pos=breadth_pos, n_coins=len(coins), plateau=plateau,
-        dsr=dsr, sr=sr, sr0=sr0, stress=stress, per_coin=best["per_coin"],
-        go=go, reasons=reasons,
+        dsr=dsr, sr=sr, sr0=sr0, significant=significant, stress=stress,
+        per_coin=best["per_coin"], go=go, reasons=reasons, warnings=warnings,
     )
     if write_report:
         _write_report(verdict, per_config, sweep_axes, best_key)
@@ -256,12 +265,19 @@ def _write_report(v: StratVerdict, per_config: dict, axes: list[str], best_key: 
     L = [f"# Verdict OOS — {v.name}\n",
          f"*Intervalle {v.interval} · confidence données **{v.confidence}** · "
          f"{v.n_trials} configs testées · {v.n_coins} coins (TOP 20)*\n"]
-    tag = "✅ **GO**" if v.go else "❌ **NO-GO**"
-    if v.go and v.confidence == "LOW":
-        tag = "🟡 **GO (PROVISOIRE — données LOW)**"
+    if v.go:
+        tag = "✅ **GO**"
+        if v.confidence == "LOW":
+            tag = "🟡 **GO (PROVISOIRE — données LOW)**"
+        elif not v.significant:
+            tag = "🟡 **GO (non significatif à 95% — à confirmer)**"
+    else:
+        tag = "❌ **NO-GO**"
     L.append(f"## {tag}\n")
     if v.reasons:
         L.append("**Raisons du rejet :** " + " ; ".join(v.reasons) + "\n")
+    if v.warnings:
+        L.append("**Avertissements :** " + " ; ".join(v.warnings) + "\n")
     L.append("## Métriques (meilleur config, OOS purgé)\n")
     L.append(f"- Params : `{v.best_params}`")
     L.append(f"- **AvgNet_bps OOS** : {v.oos_avg_net_bps:+.2f} bps/trade (après 14 bps) · {v.oos_n_trades} trades OOS")
