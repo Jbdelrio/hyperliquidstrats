@@ -100,9 +100,20 @@ def test_load_fills_parses_csv(tmp_path):
     assert trades[1]["ts"] == pytest.approx(1747000000.0, abs=1.0)
 
 
-def test_load_ohlcv_raises_not_implemented():
-    with pytest.raises(NotImplementedError):
-        load_ohlcv("BTC", "1m", 0, 0)
+def test_load_ohlcv_loads_or_raises_filenotfound():
+    """PHASE 0 : load_ohlcv lit désormais le cache historique. Si le parquet
+    existe → liste de barres OHLCV (ts en secondes) ; sinon FileNotFoundError
+    (plus de NotImplementedError stub)."""
+    from backtesting.data_loader import historical_path
+    if historical_path("BTC", "1h").exists():
+        rows = load_ohlcv("BTC", "1h", 0, 0)
+        assert isinstance(rows, list) and len(rows) > 0
+        r = rows[0]
+        assert {"ts", "open", "high", "low", "close"} <= set(r)
+        assert r["high"] >= r["low"] > 0
+    else:
+        with pytest.raises(FileNotFoundError):
+            load_ohlcv("BTC", "1h", 0, 0)
 
 
 # ---------------------------------------------------------------------------
