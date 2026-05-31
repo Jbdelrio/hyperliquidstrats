@@ -59,6 +59,8 @@ from strategies.garch_vol_breakout import GarchVolBreakoutStrategy
 from strategies.hourly_breakout import HourlyBreakoutStrategy
 # Suivi de tendance 4h/daily, sizing vol-target (PHASE 5).
 from strategies.trend_following_vol_target import TrendFollowingVolTargetStrategy
+# Réversion sur funding extrême (PHASE 5).
+from strategies.funding_extreme_reversal import FundingExtremeReversalStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from execution.execution_planner import ExecutionPlanner
 from risk.kill_switch import KillSwitch
@@ -103,6 +105,8 @@ _STRATEGY_CLASSES = {
     "HourlyBreakoutStrategy":             HourlyBreakoutStrategy,
     # ── Suivi de tendance 4h/daily vol-target (PHASE 5, validation requise) ──
     "TrendFollowingVolTargetStrategy":    TrendFollowingVolTargetStrategy,
+    # ── Réversion sur funding extrême (PHASE 5, validation requise) ──
+    "FundingExtremeReversalStrategy":     FundingExtremeReversalStrategy,
 }
 
 
