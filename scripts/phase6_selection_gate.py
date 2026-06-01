@@ -24,13 +24,13 @@ HARNESS_REPORTS = [
     ("BTC_5MIN_BINARY", "D1 Binaire BTC 5x", "LOW"),
     ("TrendFollowingVolTarget", "Trend EMA-cross 4h", "HIGH"),
     ("FundingExtremeReversal", "Réversion funding 1h", "HIGH"),
+    ("CrossSectionalReversal", "Réversion transversale 1h", "MEDIUM"),
+    ("ResidualBTCReversion", "Réversion résidu vs BTC 1h", "MEDIUM"),
+    ("LiquidationCascadeReversal", "Réversion cascade 15m", "MEDIUM"),
 ]
 
-# Stratégies Phase 5 non encore testées (à implémenter / data manquante).
+# Stratégies Phase 5 non testables (donnée manquante).
 UNTESTED = [
-    ("CrossSectionalReversal", "15m/1h", "réversion transversale (réutilise momentum_long_short inversé) — adaptateur panel à écrire"),
-    ("LiquidationCascadeReversal", "1m/15m", "cascade de liquidation (range>k·ATR + spike volume) — adaptateur à écrire"),
-    ("ResidualBTCReversion", "15m/1h", "réversion du résidu alt~BTC — adaptateur 2-actifs à écrire"),
     ("MarkOracleDislocation", "1m/15m", "DONNÉE INDISPONIBLE : oracle historique non exposé par l'API HL → testable seulement en live"),
 ]
 

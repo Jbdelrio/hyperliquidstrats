@@ -15,17 +15,17 @@ Critères GO (TOUS requis) : AvgNet_bps OOS > 0 après 14 bps · plateau paramé
 | Breakout 1h — décile haut-vol (8 coins) | HIGH | +11.23 bps | edge déflaté ≤ seuil multiple-testing (SR=0.025 ≤ SR0=0.046) |
 | B6 Décile (maker) | LOW | -0.49 bps | AvgNet_bps OOS ≤ 0 (-0.49) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-0.99) ; edge déflaté… |
 | D1 Binaire BTC 5x | LOW | -4.32 bps | AvgNet_bps OOS ≤ 0 (-4.32) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-4.82) ; edge déflaté… |
+| Réversion cascade 15m | MEDIUM | -6.13 bps | AvgNet_bps OOS ≤ 0 (-6.13) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-7.13) ; edge déflaté… |
+| Réversion résidu vs BTC 1h | MEDIUM | -7.79 bps | AvgNet_bps OOS ≤ 0 (-7.79) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-8.79) ; edge déflaté… |
 | B6 Décile (taker) | LOW | -8.70 bps | AvgNet_bps OOS ≤ 0 (-8.70) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-9.20) ; edge déflaté… |
 | Réversion funding 1h | HIGH | -8.75 bps | AvgNet_bps OOS ≤ 0 (-8.75) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-9.75) ; edge déflaté… |
+| Réversion transversale 1h | MEDIUM | -9.05 bps | AvgNet_bps OOS ≤ 0 (-9.05) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-10.05) ; edge déflat… |
 | Trend EMA-cross 4h | HIGH | -50.85 bps | AvgNet_bps OOS ≤ 0 (-50.85) ; pas de plateau (pic isolé = overfit) ; ne survit pas au stress 15bps (-51.85) ; edge défla… |
 
 ## ⏳ Non testé (à venir / donnée manquante)
 
 | Stratégie | Intervalle | Note |
 |---|---|---|
-| CrossSectionalReversal | 15m/1h | réversion transversale (réutilise momentum_long_short inversé) — adaptateur panel à écrire |
-| LiquidationCascadeReversal | 1m/15m | cascade de liquidation (range>k·ATR + spike volume) — adaptateur à écrire |
-| ResidualBTCReversion | 15m/1h | réversion du résidu alt~BTC — adaptateur 2-actifs à écrire |
 | MarkOracleDislocation | 1m/15m | DONNÉE INDISPONIBLE : oracle historique non exposé par l'API HL → testable seulement en live |
 
 ## Résumé priorisé (français)
