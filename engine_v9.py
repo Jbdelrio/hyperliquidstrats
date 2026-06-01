@@ -61,6 +61,10 @@ from strategies.hourly_breakout import HourlyBreakoutStrategy
 from strategies.trend_following_vol_target import TrendFollowingVolTargetStrategy
 # Réversion sur funding extrême (PHASE 5).
 from strategies.funding_extreme_reversal import FundingExtremeReversalStrategy
+# Réversions PHASE 5 (NO-GO, recherche — désactivées par défaut).
+from strategies.cross_sectional_reversal import CrossSectionalReversalStrategy
+from strategies.liquidation_cascade_reversal import LiquidationCascadeReversalStrategy
+from strategies.residual_btc_reversion import ResidualBTCReversionStrategy
 from execution.high_freq_executor import HighFreqExecutor, OpenPosition
 from execution.execution_planner import ExecutionPlanner
 from risk.kill_switch import KillSwitch
@@ -107,6 +111,10 @@ _STRATEGY_CLASSES = {
     "TrendFollowingVolTargetStrategy":    TrendFollowingVolTargetStrategy,
     # ── Réversion sur funding extrême (PHASE 5, validation requise) ──
     "FundingExtremeReversalStrategy":     FundingExtremeReversalStrategy,
+    # ── Réversions PHASE 5 (NO-GO en backtest OOS — recherche, non activables) ──
+    "CrossSectionalReversalStrategy":     CrossSectionalReversalStrategy,
+    "LiquidationCascadeReversalStrategy": LiquidationCascadeReversalStrategy,
+    "ResidualBTCReversionStrategy":       ResidualBTCReversionStrategy,
 }
 
 
