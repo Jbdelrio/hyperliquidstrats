@@ -48,6 +48,11 @@ CEX_FEES = {
     "binance": 0.0010, "bybit": 0.0010, "okx": 0.0010,
     "kucoin": 0.0010, "gateio": 0.0010,
 }
+# DEX Solana via Jupiter : le quote API renvoie déjà un prix exécutable (frais de
+# pool + slippage inclus dans le bid/ask), donc on n'ajoute qu'un coût de gas ~négl.
+JUPITER_FEE = 0.0003
+ENABLE_JUPITER = True
+VENUE_FEES = {**CEX_FEES, "jupiter": JUPITER_FEE}
 
 _UNIVERSE_CACHE: dict = {"ts": 0.0, "coins": []}
 _COINGECKO = "https://api.coingecko.com/api/v3/coins/markets"
@@ -103,6 +108,13 @@ def _fetch_exchange_tickers(name: str) -> dict:
 def scan_once() -> dict:
     universe = get_universe()
     venue_data = {name: _fetch_exchange_tickers(name) for name in CEX_FEES}
+    # Venue DEX Solana (Jupiter) — prix exécutables sur les tokens Solana liquides.
+    if ENABLE_JUPITER:
+        try:
+            from metarbitrage.jupiter import fetch_jupiter_tickers
+            venue_data["jupiter"] = fetch_jupiter_tickers([c["symbol"] for c in universe])
+        except Exception as e:
+            print(f"  [warn] jupiter: {e.__class__.__name__}")
     live_venues = [v for v, d in venue_data.items() if d]
 
     opportunities = []
@@ -121,7 +133,7 @@ def scan_once() -> dict:
         if buy_venue == sell_venue or buy_ask <= 0:
             continue
         gross_bps = (sell_bid - buy_ask) / buy_ask * 1e4
-        cost_bps = (CEX_FEES[buy_venue] + CEX_FEES[sell_venue]) * 1e4 + 2 * SLIPPAGE_BPS
+        cost_bps = (VENUE_FEES[buy_venue] + VENUE_FEES[sell_venue]) * 1e4 + 2 * SLIPPAGE_BPS
         net_bps = gross_bps - cost_bps
         suspect = gross_bps > MAX_SANE_GROSS_BPS    # leurre probable (illiquide/stale)
         opportunities.append({

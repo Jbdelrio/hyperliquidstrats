@@ -32,11 +32,15 @@ python gui/app.py        # http://127.0.0.1:8050
 Vert = net positif (rare, à vérifier) · rouge = net négatif (pas d'arb) ·
 ⚠️ SUSPECT = leurre intradeable.
 
-## Périmètre v1 et extensions
-- v1 : spread **cross-CEX spot** par symbole (Binance, Bybit, OKX, KuCoin, Gate.io
-  via ccxt public). Univers sélectionné dynamiquement (CoinGecko, ≥ 500 M$).
-- À ajouter (mapping d'adresses par coin requis) : venues **DEX** (Jupiter/Raydium/
-  Orca sur Solana, Uniswap/PancakeSwap) via leurs APIs.
+## Périmètre et extensions
+- **CEX spot** par symbole : Binance, Bybit, OKX, KuCoin, Gate.io (ccxt public).
+  Univers sélectionné dynamiquement (CoinGecko, ≥ 500 M$).
+- **DEX Solana via Jupiter** (`metarbitrage/jupiter.py`) : prix **exécutable** par
+  quote API (slippage AMM + frais de pool inclus), sur un registre curé de tokens
+  Solana liquides (SOL, JUP, BONK, WIF, PYTH, JTO, RAY, W…). HYPE/LINK/PEPE/ASTER
+  n'ont pas de marché Solana natif liquide → non couverts (documenté).
+  Constat : SOL DEX(Jupiter) vs CEX = ~10 bps brut → **NET négatif** lui aussi.
+- À ajouter ensuite : Uniswap/PancakeSwap (EVM) — même logique de quote exécutable.
 - **Exécution** : sera envisagée UNIQUEMENT si le moniteur démontre, sur plusieurs
   jours, un net positif persistant hors leurres — et alors derrière une gestion de
   clés sécurisée + blackout macro + tests.
