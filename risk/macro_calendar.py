@@ -159,3 +159,23 @@ class MacroCalendar:
 
     def is_blackout(self, now: Optional[datetime] = None) -> bool:
         return self.status(now)["in_blackout"]
+
+    def upcoming(self, limit: int = 20, now: Optional[datetime] = None) -> list[dict]:
+        """Prochaines fenêtres (en cours + futures) pour la vue calendrier GUI."""
+        now = now or datetime.now(timezone.utc)
+        out = []
+        for e in self._events:
+            if e.end < now:
+                continue
+            out.append({
+                "type": e.etype,
+                "when_utc": e.when_utc.isoformat(),
+                "start_utc": e.start.isoformat(),
+                "end_utc": e.end.isoformat(),
+                "pre_min": e.pre_min, "post_min": e.post_min,
+                "active": e.start <= now <= e.end,
+                "seconds_to_start": int((e.start - now).total_seconds()),
+            })
+            if len(out) >= limit:
+                break
+        return out
