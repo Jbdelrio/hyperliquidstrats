@@ -230,11 +230,37 @@ def _update_global_conn(_n):
         }
     )
 
+    # ── Badge blackout macro (toujours visible) ──────────────────────────
+    macro_badge = None
+    try:
+        import json as _json
+        _mp = _Path(__file__).resolve().parent.parent / "runtime" / "macro_status.json"
+        if _mp.exists():
+            _ms = _json.loads(_mp.read_text(encoding="utf-8"))
+            if _ms.get("in_blackout"):
+                macro_badge = html.Span(
+                    f"⏸ BLACKOUT {_ms.get('event','')} ({_ms.get('phase','')}) — STOP+FREEZE",
+                    style={"marginLeft": "12px", "padding": "1px 8px", "borderRadius": "3px",
+                           "fontSize": "10px", "fontWeight": "700", "letterSpacing": "1px",
+                           "backgroundColor": COLORS["danger"] + "33", "color": COLORS["danger"],
+                           "border": f"1px solid {COLORS['danger']}"})
+            elif _ms.get("next_event"):
+                _s = _ms.get("seconds_to_next") or 0
+                _h = int(_s // 3600); _m = int((_s % 3600) // 60)
+                macro_badge = html.Span(
+                    f"📅 {_ms['next_event']} dans {_h}h{_m:02d}",
+                    style={"marginLeft": "12px", "fontSize": "10px", "color": COLORS["text"],
+                           "opacity": 0.7})
+    except Exception:
+        macro_badge = None
+
     children = [
         dot,
         html.Span(msg, style={"color": color, "fontSize": "12px", "fontWeight": "600"}),
         llm_badge,
     ]
+    if macro_badge is not None:
+        children.append(macro_badge)
     style = {
         "border":          border,
         "borderRadius":    "4px",

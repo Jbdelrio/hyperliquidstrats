@@ -422,6 +422,25 @@ class EngineV9:
         self._trading_enabled: bool  = True
         self._pause_until:     float = 0.0
 
+        # ── Blackout macro (NFP/CPI/FOMC/discours Fed) : STOP+FREEZE auto ──
+        # 15 min avant → liquide les positions et gèle les nouvelles entrées ;
+        # reprise après la fenêtre. Discours Fed : post plus long (30 min).
+        self._macro = None
+        self._macro_frozen = False
+        self._macro_in_blackout = False
+        self._macro_reload_t = 0.0
+        try:
+            _mcfg = (self.cfg.get("macro_blackout") or {})
+            if _mcfg.get("enabled", True):
+                from risk.macro_calendar import MacroCalendar
+                self._macro = MacroCalendar(
+                    pre_min=int(_mcfg.get("pre_min", 15)),
+                    post_min=int(_mcfg.get("post_min", 15)))
+                log.info("Macro blackout enabled (pre=%dm, post=%dm) — STOP+FREEZE auto",
+                         int(_mcfg.get("pre_min", 15)), int(_mcfg.get("post_min", 15)))
+        except Exception as _me:
+            log.warning("Macro calendar init failed: %s", _me)
+
         self._dashboard_interval = log_cfg.get("dashboard_interval_s", 60)
         self._running            = False
 
@@ -1061,6 +1080,13 @@ class EngineV9:
             except Exception:
                 pass
 
+            # Blackout macro : STOP (liquide) + FREEZE autour des gros events.
+            if self._macro is not None:
+                try:
+                    self._macro_check(ts)
+                except Exception as _mce:
+                    log.debug("macro check error: %s", _mce)
+
             if ts - last_status_t >= status_s:
                 await self._write_status(status_file, calib_file)
                 last_status_t = ts
@@ -1104,6 +1130,36 @@ class EngineV9:
     # ------------------------------------------------------------------
     # Fill callback — called by executor inside check_fills
     # ------------------------------------------------------------------
+
+    def _macro_check(self, ts: float) -> None:
+        """Blackout macro : à l'ENTRÉE d'une fenêtre (NFP/CPI/FOMC/discours) →
+        liquide toutes les positions (STOP) + gèle les nouvelles entrées (FREEZE) ;
+        à la SORTIE → reprend. Écrit runtime/macro_status.json pour le GUI."""
+        if ts - self._macro_reload_t > 21600:        # recharge calendrier /6h (NFP roulant)
+            try:
+                self._macro.reload()
+            except Exception:
+                pass
+            self._macro_reload_t = ts
+        st = self._macro.status()
+        in_bo = bool(st.get("in_blackout"))
+        try:
+            Path("runtime/macro_status.json").write_text(
+                json.dumps({**st, "macro_frozen": in_bo}), encoding="utf-8")
+        except Exception:
+            pass
+        if in_bo and not self._macro_in_blackout:
+            log.warning("[MACRO] BLACKOUT %s (%s) → STOP + FREEZE jusqu'à %s",
+                        st.get("event"), st.get("phase"), st.get("blackout_until"))
+            try:
+                self._flatten_all_sync(ts)
+            except Exception as e:
+                log.warning("[MACRO] liquidation échec: %s", e)
+            self._macro_frozen = True
+        elif not in_bo and self._macro_in_blackout:
+            log.warning("[MACRO] fin de blackout → reprise du trading")
+            self._macro_frozen = False
+        self._macro_in_blackout = in_bo
 
     def _on_fill(self, fill, pos: OpenPosition) -> None:
         ts = time.time()
@@ -1162,8 +1218,8 @@ class EngineV9:
 
         # ── PLACE actions: SANITY → ledger → portfolio → KS → EF → LLM → execute ──
         if action in ("PLACE_QUOTES", "PLACE_BUY", "PLACE_SELL"):
-            if not self._trading_enabled or ts < self._pause_until:
-                return
+            if not self._trading_enabled or self._macro_frozen or ts < self._pause_until:
+                return  # _macro_frozen = blackout macro (NFP/CPI/FOMC) en cours
 
             strat = self.manager.get(strat_name)
             requested_notional = decision.notional_usd or (
