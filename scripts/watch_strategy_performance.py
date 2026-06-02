@@ -103,6 +103,29 @@ def one_pass(cost_bps: float, focus: str | None) -> None:
               f"net=${r['net']:+8.2f}  AvgGross={r['avg_gross_bps']:+6.1f}bps  "
               f"(edge {r['edge_vs_cost']:+5.1f})  WR={r['win_rate']:.0f}%")
     append_timeline(g)
+    _arena_alert()
+
+
+_PREV_READY: set = set()
+
+
+def _arena_alert() -> None:
+    """Recalcule l'Arena (met à jour runtime/strategy_arena.json pour le GUI 🏆) et
+    alerte dès qu'une stratégie devient LIVE-READY (GO OOS + AvgGross live ≥ coût)."""
+    global _PREV_READY
+    try:
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        from scripts.strategy_arena import build_arena
+        a = build_arena()
+    except Exception as e:
+        print(f"   [arena] recalcul échoué: {e.__class__.__name__}")
+        return
+    ready = {r["strategy"] for r in a["strategies"] if r["status"] == "LIVE_READY"}
+    print(f"   [arena] LIVE-READY: {len(ready)} · {a['recommendation'][:88]}")
+    for s in sorted(ready - _PREV_READY):
+        print(f"   🟢🟢🟢 NOUVELLE STRAT LIVE-READY : {s} → éligible promotion live !")
+    _PREV_READY = ready
 
 
 def main() -> int:
