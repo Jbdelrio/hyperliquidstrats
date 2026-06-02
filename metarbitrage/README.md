@@ -40,7 +40,14 @@ Vert = net positif (rare, à vérifier) · rouge = net négatif (pas d'arb) ·
   Solana liquides (SOL, JUP, BONK, WIF, PYTH, JTO, RAY, W…). HYPE/LINK/PEPE/ASTER
   n'ont pas de marché Solana natif liquide → non couverts (documenté).
   Constat : SOL DEX(Jupiter) vs CEX = ~10 bps brut → **NET négatif** lui aussi.
-- À ajouter ensuite : Uniswap/PancakeSwap (EVM) — même logique de quote exécutable.
+- **Hyperliquid & Aster** (`metarbitrage/venues.py`) : PERP, prix par symbole
+  (HL `allMids` ; Aster `bookTicker` bid/ask). HL-perp vs Aster-perp = vrai spread
+  cross-venue (même instrument).
+- **PancakeSwap & DexScreener** (`metarbitrage/venues.py`) : SPOT, interrogés par
+  **adresse de contrat** (résolue via CoinGecko `platforms`) — pas par symbole (qui
+  attrape des tokens-arnaque). Un spread perp↔spot est un **BASIS** (funding), flaggé
+  comme tel, pas un arb atomique. Filtre d'outliers (>20% de la médiane = rejet).
+- À ajouter ensuite : Uniswap (EVM) — même logique.
 - **Exécution** : sera envisagée UNIQUEMENT si le moniteur démontre, sur plusieurs
   jours, un net positif persistant hors leurres — et alors derrière une gestion de
   clés sécurisée + blackout macro + tests.

@@ -71,15 +71,18 @@ def _build_body():
     for o in d.get("opportunities", []):
         if o.get("suspect"):
             net_col, flag = COLORS["warning"], "⚠️ SUSPECT (leurre)"
+        elif o.get("basis"):
+            net_col, flag = COLORS["accent"], "BASIS (perp↔spot, pas arb)"
         elif o["net_bps"] > 0:
             net_col, flag = COLORS["success"], "net + (vérifier)"
         else:
             net_col, flag = COLORS["danger"], ""
+        bt = o.get("buy_type", "")[:4]; stt = o.get("sell_type", "")[:4]
         rows.append(html.Tr([
             _cell(o["coin"], color=COLORS["text_light"], fontWeight="700"),
             _cell(f"{o['mktcap_m']:,}"),
-            _cell(f"{o['buy_venue']} @ {o['buy_ask']:.6g}"),
-            _cell(f"{o['sell_venue']} @ {o['sell_bid']:.6g}"),
+            _cell(f"{o['buy_venue']} ({bt}) @ {o['buy_ask']:.6g}"),
+            _cell(f"{o['sell_venue']} ({stt}) @ {o['sell_bid']:.6g}"),
             _cell(f"{o['gross_bps']:+.1f}"),
             _cell(f"{o['cost_bps']:.0f}", color=COLORS["text"]),
             _cell(f"{o['net_bps']:+.1f}", color=net_col, fontWeight="700"),
