@@ -45,7 +45,8 @@ def static_layout() -> list:
         html.Div(id="macro-table"),
         html.Div("NFP généré automatiquement (1er vendredi 08:30 ET). CPI/FOMC depuis "
                  "config/macro_events.json (à tenir à jour : bls.gov, federalreserve.gov). "
-                 "Heures converties UTC (DST géré).",
+                 "Heures affichées en HEURE LOCALE de cette machine (CEST/BST/…) ; le moteur "
+                 "déclenche en UTC (instant réel correct, DST géré).",
                  style={"marginTop": "12px", "fontSize": "10px", "color": COLORS["text"],
                         "fontFamily": M, "opacity": 0.7}),
     ]
@@ -66,10 +67,26 @@ def _cell(v, **st):
 
 
 def _short(iso: str) -> str:
+    """UTC ISO → heure LOCALE de la machine (CEST/BST/… auto), format court."""
     try:
-        return datetime.fromisoformat(iso).strftime("%a %d %b %H:%M")
+        return datetime.fromisoformat(iso).astimezone().strftime("%a %d %b %H:%M")
     except Exception:
         return iso
+
+
+def _hm(iso: str) -> str:
+    """UTC ISO → HH:MM en heure locale."""
+    try:
+        return datetime.fromisoformat(iso).astimezone().strftime("%H:%M")
+    except Exception:
+        return iso
+
+
+def _tzname() -> str:
+    try:
+        return datetime.now().astimezone().strftime("%Z") or "locale"
+    except Exception:
+        return "locale"
 
 
 def register_callbacks(app) -> None:
@@ -91,7 +108,7 @@ def register_callbacks(app) -> None:
             pass
         st = cal.status()
         if st["in_blackout"]:
-            banner = f"⏸ BLACKOUT EN COURS — {st['event']} ({st['phase']}) → STOP+FREEZE jusqu'à {_short(st['blackout_until'])} UTC"
+            banner = f"⏸ BLACKOUT EN COURS — {st['event']} ({st['phase']}) → STOP+FREEZE jusqu'à {_short(st['blackout_until'])} ({_tzname()})"
             col = COLORS["danger"]
         else:
             banner = (f"✅ Trading actif · prochain : {st['next_event']} dans "
@@ -100,7 +117,7 @@ def register_callbacks(app) -> None:
             col = COLORS["success"]
         style = {**base_style, "color": col, "border": f"1px solid {col}55"}
 
-        cols = ["Événement", "Heure (UTC)", "Fenêtre STOP+FREEZE", "Dans"]
+        cols = ["Événement", f"Heure ({_tzname()})", "Fenêtre STOP+FREEZE (locale)", "Dans"]
         header = html.Tr([html.Th(c, style={"padding": "6px 10px", "fontFamily": M,
                                             "fontSize": "10px", "color": COLORS["accent"],
                                             "textAlign": "left", "textTransform": "uppercase",
@@ -114,7 +131,7 @@ def register_callbacks(app) -> None:
                 _cell(_TYPE_LABEL.get(e["type"], e["type"]),
                       color=COLORS["text_light"], fontWeight="700"),
                 _cell(_short(e["when_utc"])),
-                _cell(f"{_short(e['start_utc'])} → {datetime.fromisoformat(e['end_utc']).strftime('%H:%M')}"),
+                _cell(f"{_short(e['start_utc'])} → {_hm(e['end_utc'])}"),
                 _cell("⏸ EN COURS" if active else _fmt_eta(e["seconds_to_start"]),
                       color=rcol, fontWeight="700" if active else "400"),
             ]))
