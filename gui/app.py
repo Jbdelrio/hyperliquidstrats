@@ -68,7 +68,7 @@ if "--fresh" in _sys.argv:
 from gui.control_api import ControlAPI
 from gui.theme import COLORS, THEME
 from gui.tabs import calibration, coins, decisions, overview, risk, strategies, trades
-from gui.tabs import llm_overlay, exchanges, orders, triggers, metarbitrage, arena, macro
+from gui.tabs import llm_overlay, exchanges, orders, triggers, metarbitrage, arena, macro, live_radar
 
 _HERE = _os.path.dirname(_os.path.abspath(__file__))
 _api  = ControlAPI()
@@ -115,6 +115,7 @@ _TABS = [
     ("⚡ Metarbitrage", "tab-metarbitrage", metarbitrage),
     ("🏆 Arena",      "tab-arena",        arena),
     ("📅 Macro",      "tab-macro",        macro),
+    ("📡 Live",       "tab-live-radar",   live_radar),
 ]
 
 app.layout = dbc.Container(
@@ -290,6 +291,7 @@ exchanges.register_callbacks(app)
 metarbitrage.register_callbacks(app)
 arena.register_callbacks(app)
 macro.register_callbacks(app)
+live_radar.register_callbacks(app)
 
 
 if __name__ == "__main__":
