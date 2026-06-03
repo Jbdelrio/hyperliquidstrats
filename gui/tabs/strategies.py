@@ -602,7 +602,11 @@ def static_layout() -> html.Div:
                 dbc.Col(dcc.Dropdown(
                     id="engine-config-select",
                     options=[
-                        {"label": "★ Paper 500 ALL ACTIVE — recalibré 2026-05-24 (RECOMMENDED)",
+                        {"label": "★ ZEC 1h breakout — seul edge validé OOS ($500/5x, RECOMMANDÉ)",
+                         "value": "config/presets/paper_500_hl1h_breakout.json"},
+                        {"label": "Recalibré — zoo stops larges + holds 30min + levier 5x (test honnête)",
+                         "value": "config/presets/paper_500_recal.json"},
+                        {"label": "Paper 500 ALL ACTIVE — ancien zoo (NO-GO, déconseillé)",
                          "value": "config/presets/paper_500_all_active.json"},
                         {"label": "Paper 500 ADAPTIVE — all strats $500 + regime controller + manual exec",
                          "value": "config/presets/paper_500_all_strategies_adaptive.json"},
@@ -621,7 +625,7 @@ def static_layout() -> html.Div:
                         {"label": "Default (config_v9.json)",
                          "value": "config_v9.json"},
                     ],
-                    value="config/presets/paper_500_all_active.json",
+                    value="config/presets/paper_500_hl1h_breakout.json",
                     clearable=False,
                     className="dropdown-dark",
                 ), width=5),
