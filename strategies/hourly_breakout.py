@@ -342,7 +342,7 @@ class HourlyBreakoutStrategy(BaseStrategy):
         ready = len(closes) >= self._period + 1
         sig = self.breakout_signal(closes, self._period) if ready else 0
         atr_bps = self._atr_bps(agg.highs(), agg.lows(), closes, 14) if ready else 0.0
-        return {
+        out = {
             "tf_minutes": self._tf,
             "bars_1h": len(closes),
             "ready": ready,
@@ -350,3 +350,20 @@ class HourlyBreakoutStrategy(BaseStrategy):
             "atr_bps": round(atr_bps, 1),
             "in_position": symbol in self._pos,
         }
+        # ── Données pour le graphe "proximité de cassure" (GUI) ──────────
+        if ready:
+            window = closes[-(self._period + 1):-1]   # canal sur les N closes passés
+            hi, lo = max(window), min(window)
+            c = closes[-1]
+            min_atr = float(self.config.params.get("min_atr_bps", 25.0))
+            out.update({
+                "last_close": c, "mid": c,
+                "channel_hi": hi, "channel_lo": lo,
+                # distance (bps) avant de déclencher la cassure ; ≤0 = cassé
+                "dist_to_long_bps": round((hi - c) / c * 1e4, 1),
+                "dist_to_short_bps": round((c - lo) / c * 1e4, 1),
+                "min_atr_bps": min_atr,
+                "atr_gate_open": atr_bps >= min_atr,
+                "closes_recent": [round(float(x), 6) for x in closes[-40:]],
+            })
+        return out

@@ -152,6 +152,8 @@ def register_callbacks(app) -> None:
 # ── Strategy-specific chart builders ──────────────────────────────────────
 
 def _strategy_specific_chart(strat_name: str, coin_data: dict, accent: str) -> html.Div:
+    if strat_name.startswith("H1Breakout"):
+        return _hourly_breakout_chart(coin_data, accent)
     if strat_name == "DonchianTrend":
         return _donchian_chart(coin_data, accent)
     if strat_name == "RSIBollingerReversion":
@@ -163,6 +165,43 @@ def _strategy_specific_chart(strat_name: str, coin_data: dict, accent: str) -> h
     if strat_name == "MeanReversionKalman":
         return _mean_reversion_kalman_chart(coin_data, accent)
     return html.Div()
+
+
+def _hourly_breakout_chart(coin_data: dict, accent: str) -> html.Div:
+    """Graphe live « proximité de cassure » : closes 1h récents + bandes du canal
+    (cassure haute/basse) + prix actuel + distance en bps avant déclenchement."""
+    blocks = []
+    for coin, d in coin_data.items():
+        cl = d.get("closes_recent")
+        hi, lo = d.get("channel_hi"), d.get("channel_lo")
+        if not cl or not hi or not lo:
+            continue
+        c = d.get("last_close", cl[-1])
+        x = list(range(len(cl)))
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=x, y=cl, mode="lines",
+                                 line=dict(color=accent, width=2), name="close 1h"))
+        fig.add_hline(y=hi, line_dash="dash", line_color=COLORS["success"],
+                      annotation_text="cassure LONG", annotation_position="top left")
+        fig.add_hline(y=lo, line_dash="dash", line_color=COLORS["danger"],
+                      annotation_text="cassure SHORT", annotation_position="bottom left")
+        fig.add_trace(go.Scatter(x=[x[-1]], y=[c], mode="markers",
+                                 marker=dict(color=COLORS["text_light"], size=12, symbol="diamond"),
+                                 name="prix actuel"))
+        du, dd = d.get("dist_to_long_bps"), d.get("dist_to_short_bps")
+        gate = ("✅ vol OK" if d.get("atr_gate_open")
+                else f"⚠️ vol faible (ATR {d.get('atr_bps')} < {d.get('min_atr_bps')} bps)")
+        pos = " · 🟢 EN POSITION" if d.get("in_position") else ""
+        fig.update_layout(
+            title=(f"{coin} — proximité cassure 1h · LONG dans {du} bps / "
+                   f"SHORT dans {dd} bps · {gate}{pos}"),
+            height=260, yaxis_title="prix", showlegend=False)
+        apply_dark_theme(fig)
+        blocks.append(dcc.Graph(figure=fig, config={"displayModeBar": False},
+                                style={"marginBottom": "12px"}))
+    if not blocks:
+        return no_data("Breakout : warmup en cours (pas encore assez de barres 1h).")
+    return html.Div(blocks)
 
 
 def _donchian_chart(coin_data: dict, accent: str) -> html.Div:
