@@ -100,6 +100,7 @@ def check_live_feed() -> dict:
     sf = d.get("seconds_features", {}) or {}
     per = []
     fresh = stale = bad = 0
+    dead = []
     for sym, v in sf.items():
         if not isinstance(v, dict):
             continue
@@ -108,10 +109,15 @@ def check_live_feed() -> dict:
         sane = bool(bid and ask and bid > 0 and ask >= bid)
         is_fresh = age <= FEED_STALE_S and sane
         fresh += is_fresh; stale += (age > FEED_STALE_S); bad += (not sane)
+        if not sane:
+            dead.append(sym)                      # coin sans carnet (illiquide/délisté)
         per.append({"sym": sym, "age_s": round(age, 1), "spread_bps": v.get("spread_bps"), "sane": sane})
-    return {"ok": (feed_age <= FEED_STALE_S and stale == 0 and bad == 0 and fresh > 0),
-            "feed_age_s": round(feed_age, 1), "n_symbols": len(per),
-            "fresh": fresh, "stale": stale, "bad": bad,
+    n = len(per)
+    # Sain = statut frais, AUCUN symbole périmé, et ≥80% des coins cotés. Un coin
+    # sans carnet (ex. BLAST) est signalé mais ne condamne pas tout le feed.
+    ok = (feed_age <= FEED_STALE_S and stale == 0 and n > 0 and fresh >= max(1, int(0.8 * n)))
+    return {"ok": ok, "feed_age_s": round(feed_age, 1), "n_symbols": n,
+            "fresh": fresh, "stale": stale, "bad": bad, "dead_symbols": dead,
             "running": (d.get("data_feed_health", {}) or {}).get("running"),
             "per": sorted(per, key=lambda x: -x["age_s"])[:8]}
 
@@ -155,8 +161,11 @@ def main() -> int:
     else:
         L.append(f"- Verdict : {'✅ feed sain' if live['ok'] else '⚠️ feed dégradé'}")
         L.append(f"- Âge du statut : {live['feed_age_s']}s · symboles {live['n_symbols']} · "
-                 f"frais {live['fresh']} / périmés {live['stale']} / incohérents {live['bad']} · "
+                 f"frais {live['fresh']} / périmés {live['stale']} / sans carnet {live['bad']} · "
                  f"running={live.get('running')}")
+        if live.get("dead_symbols"):
+            L.append(f"- ⚠️ Sans carnet (illiquide/délisté HL — à retirer de l'univers) : "
+                     f"{', '.join(live['dead_symbols'])}")
         L.append(f"- (seuil fraîcheur : ≤ {FEED_STALE_S:.0f}s)\n")
         L.append("| Symbole | Âge tick (s) | Spread bps | Sain |\n|---|---:|---:|:--:|")
         for p in live["per"]:
@@ -172,7 +181,8 @@ def main() -> int:
         print(f"FEED LIVE : {live.get('why')}")
     else:
         print(f"FEED LIVE : {'OK' if live['ok'] else 'DÉGRADÉ'} — {live['fresh']} frais / "
-              f"{live['stale']} périmés / {live['bad']} incohérents (âge statut {live['feed_age_s']}s)")
+              f"{live['stale']} périmés / {live['bad']} sans carnet (âge statut {live['feed_age_s']}s)"
+              + (f" · sans carnet: {', '.join(live['dead_symbols'])}" if live.get('dead_symbols') else ""))
     print(f"Rapport -> {REPORT}")
     return 0
 

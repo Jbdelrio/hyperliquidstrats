@@ -1,6 +1,6 @@
 # Vérification de fiabilité des données
 
-*2026-06-03T01:41:15*
+*2026-06-03T12:06:52*
 
 ## 1. Historique (backtest)
 
@@ -136,17 +136,18 @@
 
 ## 3. Feed live (paper trading)
 
-- Verdict : ⚠️ feed dégradé
-- Âge du statut : 5.5s · symboles 16 · frais 0 / périmés 15 / incohérents 1 · running=True
+- Verdict : ✅ feed sain
+- Âge du statut : 4.3s · symboles 16 · frais 15 / périmés 0 / sans carnet 1 · running=True
+- ⚠️ Sans carnet (illiquide/délisté HL — à retirer de l'univers) : BLAST
 - (seuil fraîcheur : ≤ 30s)
 
 | Symbole | Âge tick (s) | Spread bps | Sain |
 |---|---:|---:|:--:|
-| APE | 35.1 | 4.052684903747162 | ✅ |
-| AVAX | 35.1 | 2.4659392145969936 | ✅ |
-| BANANA | 35.1 | 4.181351173764547 | ✅ |
-| BTC | 35.1 | 0.15037254798763938 | ✅ |
-| CHIP | 35.1 | 2.760385952145965 | ✅ |
-| COMP | 35.1 | 2.890758245887321 | ✅ |
-| ETH | 35.1 | 0.540818258023899 | ✅ |
-| HYPE | 35.1 | 0.721630885803307 | ✅ |
+| APE | 5.0 | 9.954540929754867 | ✅ |
+| AVAX | 5.0 | 1.8037626488856433 | ✅ |
+| BANANA | 5.0 | 17.15363943049855 | ✅ |
+| BTC | 5.0 | 0.14865578010837005 | ✅ |
+| CHIP | 5.0 | 5.935158394538726 | ✅ |
+| COMP | 5.0 | 8.746515060404656 | ✅ |
+| ETH | 5.0 | 0.5313637450511919 | ✅ |
+| HYPE | 5.0 | 0.1383345898731852 | ✅ |
