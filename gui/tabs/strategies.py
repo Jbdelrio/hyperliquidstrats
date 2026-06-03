@@ -942,7 +942,11 @@ def register_callbacks(app) -> None:
         stale = status_age is not None and status_age > 30
 
         pills = []
-        for name in _ALL:
+        # _ALL (liste connue) UNION les stratégies réellement enregistrées par le
+        # moteur en cours (live) → toute strat chargée (ex. H1Breakout_ZEC, absente
+        # de _ALL) apparaît quand même dans les toggles.
+        _names = list(_ALL) + [n for n in live if n and n not in _ALL]
+        for name in _names:
             s = live.get(name, {})
             if stale and not s:
                 state = "ENGINE OFF"
