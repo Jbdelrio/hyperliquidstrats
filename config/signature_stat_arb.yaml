@@ -1,0 +1,104 @@
+# Signature-based statistical-arbitrage — default STARTING configuration.
+# These are prudent starting values, NOT optimal parameters. All windows/horizons
+# are in SECONDS (the code is second-based); the GUI exposes them as hours/minutes.
+# Load with: StrategyConfig.from_dict(yaml.safe_load(open(...)))
+
+name: signature_stat_arb
+backtest_only: true          # SECURITY: never sends live orders (§32)
+seed: 0
+
+data:
+  exchange: binance          # binance | bybit | hyperliquid | file
+  symbol_1: BTC
+  symbol_2: ETH
+  factor_symbols: [BTC, ETH]
+  quote: USDT
+  start: "2024-01-01"
+  end: "2024-03-01"
+  market_data_frequency: 5s  # 1s|5s|10s|15s|30s|1min|5min
+  decision_frequency: 10s
+  source: auto               # auto | file | binance | demo
+  file_1: null
+  file_2: null
+  gap_fill: ffill
+  max_gap_seconds: 120
+
+spread:
+  method: kalman             # ratio | ols | ridge | kalman | factor
+  window_seconds: 28800      # 8h
+  zscore_window_seconds: 28800
+  ridge_lambda: 1.0
+  static_beta: 1.0
+  kalman_process_variance: 1.0e-5      # Q
+  kalman_observation_variance: 1.0e-3  # R
+  hedge_ratio_min: -10.0
+  hedge_ratio_max: 10.0
+  adf_pvalue_max: 0.10       # regime gate: require stationarity
+  hedge_stability_max: 0.5
+  max_zscore_abs: 8.0
+
+signature:
+  depth: 2                   # 1 | 2 | 3 (3 warns: dimension + overfit)
+  window_seconds: 1800       # 30min episode
+  channels: [normalized_time, spread, zscore, asset_1_return, asset_2_return, realized_volatility]
+  normalization: rolling_robust   # rolling_zscore|rolling_robust|rolling_minmax|none|train_fit
+  include_levy: true
+  use_iisignature: true      # uses lib if importable, exact numpy fallback otherwise
+
+alpha:
+  method: ridge              # zscore | ridge | elasticnet
+  horizon_seconds: 600       # 10min
+  ridge_penalty: 1.0
+  target: neg_spread_change  # neg_spread_change | hedged_pnl
+  min_confidence: 0.0
+
+optimizer:                   # v_t = B x_t objective weights
+  execution_ridge_rho: 1.0
+  inventory_risk_phi: 1.0
+  dollar_neutrality_eta: 5.0
+  terminal_penalty_gamma: 10.0
+  execution_cost_lambda: 1.0
+  maximum_velocity: 0.10
+  inventory_cap: 1.0
+  policy_scale_target: 0.5   # target p95(|Q|)/cap (0 = raw solved policy)
+
+execution:
+  mode: maker_first          # maker_only | taker_only | maker_first
+  fill_model: bid_ask        # simple | bid_ask | maker_prob
+  no_trade_band_usd: 10.0
+  minimum_order_notional: 10.0
+  maker_timeout_seconds: 10
+  emergency_exit_mode: taker
+  simulated_latency_ms: 250
+  max_orders_per_minute: 30
+
+costs:                       # per-exchange overridable; never hard-coded "current" fees
+  maker_fee_bps: 1.5
+  taker_fee_bps: 4.5
+  default_slippage_bps: 1.0
+  temporary_impact_coefficient: 0.0
+  fixed_cost_per_trade_usd: 0.0
+  funding_bps_per_interval: 0.0
+  latency_penalty_bps: 0.0
+
+risk:                        # prudent 1000$ preset
+  initial_capital: 1000.0
+  maximum_gross_exposure: 500.0
+  maximum_net_exposure: 50.0
+  maximum_leverage: 2.0
+  maximum_position_per_leg: 250.0
+  cash_buffer_ratio: 0.35
+  maximum_holding_period_seconds: 3600
+  maximum_daily_loss_pct: 2.0
+  maximum_drawdown_pct: 8.0
+  warmup_seconds: 28800
+  kill_switch: true
+
+walk_forward:
+  scheme: walk_forward       # fixed | expanding | rolling | walk_forward
+  train_days: 30
+  validation_days: 7
+  test_days: 7
+  step_days: 7
+  purge_seconds: 3600
+  embargo_seconds: 1800
